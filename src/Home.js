@@ -50,7 +50,6 @@ function Home() {
     }, 'o~>halS(K>UJ]ET1[Gh?Uo-#rr3Dp[=>'))*/
 
     const [moatName,setMoatName] = React.useState('');
-    const [moats,setMoats] = React.useState([]);
     const [loading,setLoading] = React.useState(false);
     const [signingPhrase,setSigningPhrase] = React.useState('');
 
@@ -106,18 +105,6 @@ function Home() {
         }, 0);*/
     };
 
-    const getMoats = (e) => {
-        e.preventDefault();
-        //debug, DELETE
-        setTimeout(async function () {
-
-            setMoats(await KwilDB.getMoats("http://34.138.54.12:80",'0xFeE8197af2aAd0d506357d39EF42b3183dcDbc54'))
-            //console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
-            //console.log(await kwilDB.current.query('INSERT INTO tab (bundle_id,height) VALUES '));
-
-        }, 0);
-    };
-
     return (
         <div style={{width:'100vw',minHeight:'100vh',display:'flex',flexDirection:'column'}}>
             <img
@@ -154,21 +141,13 @@ function Home() {
                     </Fade>
                 )}
             </Popper>
-            <div style={{marginBottom:'auto',width:'350px',marginLeft:'auto',marginRight:'auto',display:'flex',flexDirection:'column',placeContent:'center'}}>
-                <LoadingButton onClick={createMoat} sx={{color:'#717AFF', "& .MuiLoadingButton-loadingIndicator":{color:'#717AFF'}}} loading={loading} >Create Moat</LoadingButton>
-
-                <Button onClick={createMoat} sx={{position:'absolute',top:10,right:10,color:'#717AFF', "& .MuiLoadingButton-loadingIndicator":{color:'#717AFF'}}} loading={loading} >DB Manager</Button>
+            <div style={{marginBottom:'auto',width:'350px',marginLeft:'auto',marginRight:'auto',display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+                <LoadingButton  sx={{color:'#717AFF', "& .MuiLoadingButton-loadingIndicator":{color:'#717AFF'}}} loading={loading} >Create Moat (ArConnect)</LoadingButton>
+                <LoadingButton onClick={createMoat} sx={{color:'#717AFF', "& .MuiLoadingButton-loadingIndicator":{color:'#717AFF'}}} loading={loading} >Create Moat (Metamask)</LoadingButton>
+                <Button href={'/moats'} sx={{position:'absolute',top:10,right:10,color:'#717AFF', "& .MuiLoadingButton-loadingIndicator":{color:'#717AFF'}}} loading={loading} >DB Manager</Button>
             </div>
             {/*<button onClick={createMoat}>sign</button>
             <button onClick={getMoats}>Get Moats</button>*/}
-            {moats.map((moat, index) => (
-                <div key = {index} style={{maxWidth:'100vw',overflow:'hidden',border:"1px solid black"}}>
-                    <p>Moat: {moat.moat}</p>
-                    <p>Encrypted Private Key: {moat.api_key}</p>
-                    <p>Owner Address: {moat.owner}</p>
-                    <p>Encrypted Secret: {moat.secret}</p>
-                </div>
-            ))}
         </div>
     );
 }
