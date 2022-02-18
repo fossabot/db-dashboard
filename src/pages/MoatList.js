@@ -77,7 +77,7 @@ function MoatList() {
 					</Button>
 				</div>
 			</div>
-			<div style={{ backgroundColor: '#434343', padding: '20px', margin: '40px', borderRadius: '12px' }}>
+			<div style={{ backgroundColor: '#434343', margin: '40px', borderRadius: '12px' }}>
 				{moats.reverse().map((moat, index) => (
 					<Moat key={index} owner={moat.owner} secret={moat.secret} privateKey={moat.api_key} moatName={moat.moat} />
 				))}

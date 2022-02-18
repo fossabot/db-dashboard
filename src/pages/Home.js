@@ -27,7 +27,6 @@ export default function Home() {
 					fontSize: 50,
 					marginLeft: 'auto',
 					marginRight: 'auto',
-
 					background: '-webkit-linear-gradient(45deg, #FF4F99 30%, #717AFF 90%)',
 					WebkitBackgroundClip: 'text',
 					WebkitTextFillColor: 'transparent',

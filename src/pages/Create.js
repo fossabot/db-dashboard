@@ -173,7 +173,6 @@ export default function Create() {
 				<LoadingButton
 					fullWidth
 					sx={{
-						color: '#717AFF',
 						textTransform: 'none',
 						fontSize: 16,
 						border: 'none',
@@ -197,7 +196,6 @@ export default function Create() {
 					onClick={createMoat}
 					fullWidth
 					sx={{
-						color: '#717AFF',
 						textTransform: 'none',
 						fontSize: 16,
 						border: 'none',
