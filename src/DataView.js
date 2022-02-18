@@ -1,23 +1,22 @@
 import React from 'react';
 import {useLocation} from "react-router-dom";
 import KwilDB from "kwildbweb";
-import Moat from "./Moat";
 import SchemaEntry from "./SchemaEntry";
+import Column from "./Column";
 
-function MoatManager() {
+function DataView() {
 
-    const navigate  = useLocation();
-
-    /*const [moatName, setMoatName] = React.useState(
-        typeof history.location.state === 'undefined' ? 'undefined' : history.location.state?.moatName
-    );*/
+    const navigate = useLocation();
 
     const [moat,setMoat] = React.useState(navigate.state.moatName)
     const [owner,setOwner] = React.useState(navigate.state.owner)
     const [privKey,setPrivKey] = React.useState(navigate.state.privKey)
     const [secret,setSecret] = React.useState(navigate.state.secret)
+    const [schema,setSchema] = React.useState(navigate.state.schemaName)
+    const [table,setTable] = React.useState(navigate.state.tableName)
 
-    const [schema,setSchema] = React.useState([])
+    const [cols,setCols] = React.useState([])
+    const [rows,setRows] = React.useState([])
 
     React.useEffect(() => {
         console.log(navigate);
@@ -25,6 +24,8 @@ function MoatManager() {
         console.log(owner);
         console.log(privKey);
         console.log(secret);
+        console.log(schema);
+        console.log(table);
 
         /*SELECT schema_name
         FROM information_schema.schemata;*/
@@ -37,21 +38,24 @@ function MoatManager() {
                 moat: moat,
                 privateKey: privKey,
             }, secret))
-            setSchema((await kwilDB.query(`SELECT schema_name FROM information_schema.schemata;`)).rows)
+            const result = await kwilDB.query(`SELECT * FROM ${table};`);
+            console.log(result);
+            setCols(result.fields)
+            setRows(result.rows)
         });
     }, []);
 
     return (
         <div>
-            <h1 style={{textAlign:'center'}}>Schema</h1>
-            {schema.map((schema, index) => (
-                (schema.schema_name !== 'pg_catalog'&&schema.schema_name !=='information_schema'?
-                    (<SchemaEntry name ={schema.schema_name} moatName={moat} secret={secret} owner={owner} privKey={privKey}/>)
-                    : (<div/>)
-                )
-            ))}
+            <h1 style = {{textAlign:'center'}}>{table} table</h1>
+            <div style={{minWidth:'30vw',border:'1px solid black',marginLeft:'auto',marginRight:'auto',display:'flex'}}>
+                {cols.map((column, index) => (
+                    <Column header = {column.name} arr={rows}/>
+
+                ))}
+            </div>
         </div>
     )
 }
 
-export default MoatManager;
+export default DataView;
