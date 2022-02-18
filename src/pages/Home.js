@@ -33,22 +33,6 @@ function Home() {
         setAnchorEl(null);
     };
 
-    /*const kwilDB = React.useRef(KwilDB.createConnector({
-        host: '34.1',
-        protocol: 'http',
-        port: null,
-        moat: 'testermoat4',
-        privateKey: devkey,
-    }, '<,c(n6,P[7oEHB4%pbb.I>$@V4XNRDW}'))*/
-
-    /*const kwilDB2 = React.useRef(KwilDB2.createConnectorRegistry({
-        host: 'localhost',
-        protocol: 'http',
-        port: 1984,
-        moat: 'test7',
-        apiKey: '9ydoed[GGu,KJ<m6Wm<FhrdHY;fl5bpX',
-    }, 'o~>halS(K>UJ]ET1[Gh?Uo-#rr3Dp[=>'))*/
-
     const [moatName,setMoatName] = React.useState('');
     const [loading,setLoading] = React.useState(false);
     const [signingPhrase,setSigningPhrase] = React.useState('');
@@ -89,20 +73,6 @@ function Home() {
             }
 
         }, 0);
-        /*setTimeout(async function () {
-
-            //console.log(await KwilDB.getMoats("http://34.138.54.12:80",'0xFeE8197af2aAd0d506357d39EF42b3183dcDbc54'));
-            //console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
-            const kwilDB = (KwilDB.createConnector({
-                host: '34.138.54.12:80',
-                protocol: 'http',
-                port: null,
-                moat: 'testermoat4',
-                privateKey: devkey,
-            }, '<,c(n6,P[7oEHB4%pbb.I>$@V4XNRDW}'))
-            console.log(await kwilDB.query('INSERT INTO tab (bundle_id,height) VALUES (hello,5);'));
-
-        }, 0);*/
     };
 
     return (
@@ -146,8 +116,6 @@ function Home() {
                 <LoadingButton onClick={createMoat} sx={{color:'#717AFF', "& .MuiLoadingButton-loadingIndicator":{color:'#717AFF'}}} loading={loading} >Create Moat (Metamask)</LoadingButton>
                 <Button href={'/moats'} sx={{position:'absolute',top:10,right:10,color:'#717AFF', "& .MuiLoadingButton-loadingIndicator":{color:'#717AFF'}}} loading={loading} >DB Manager</Button>
             </div>
-            {/*<button onClick={createMoat}>sign</button>
-            <button onClick={getMoats}>Get Moats</button>*/}
         </div>
     );
 }

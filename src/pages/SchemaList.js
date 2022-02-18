@@ -1,22 +1,19 @@
 import React from 'react';
 import {useLocation} from "react-router-dom";
 import KwilDB from "kwildbweb";
-import SchemaEntry from "../components/SchemaEntry";
-import Column from "../components/Column";
+import Moat from "../components/Moat";
+import Schema from "../components/Schema";
 
-function DataView() {
+function SchemaList() {
 
-    const navigate = useLocation();
+    const navigate  = useLocation();
 
     const [moat,setMoat] = React.useState(navigate.state.moatName)
     const [owner,setOwner] = React.useState(navigate.state.owner)
     const [privKey,setPrivKey] = React.useState(navigate.state.privKey)
     const [secret,setSecret] = React.useState(navigate.state.secret)
-    const [schema,setSchema] = React.useState(navigate.state.schemaName)
-    const [table,setTable] = React.useState(navigate.state.tableName)
 
-    const [cols,setCols] = React.useState([])
-    const [rows,setRows] = React.useState([])
+    const [schema,setSchema] = React.useState([])
 
     React.useEffect(() => {
         console.log(navigate);
@@ -24,8 +21,6 @@ function DataView() {
         console.log(owner);
         console.log(privKey);
         console.log(secret);
-        console.log(schema);
-        console.log(table);
 
         /*SELECT schema_name
         FROM information_schema.schemata;*/
@@ -38,24 +33,21 @@ function DataView() {
                 moat: moat,
                 privateKey: privKey,
             }, secret))
-            const result = await kwilDB.query(`SELECT * FROM ${table};`);
-            console.log(result);
-            setCols(result.fields)
-            setRows(result.rows)
+            setSchema((await kwilDB.query(`SELECT schema_name FROM information_schema.schemata;`)).rows)
         });
     }, []);
 
     return (
         <div>
-            <h1 style = {{textAlign:'center'}}>{table} table</h1>
-            <div style={{minWidth:'30vw',border:'1px solid black',marginLeft:'auto',marginRight:'auto',display:'flex'}}>
-                {cols.map((column, index) => (
-                    <Column header = {column.name} arr={rows}/>
-
-                ))}
-            </div>
+            <h1 style={{textAlign:'center'}}>Schema</h1>
+            {schema.map((schema, index) => (
+                (schema.schema_name !== 'pg_catalog'&&schema.schema_name !=='information_schema'?
+                    (<Schema name ={schema.schema_name} moatName={moat} secret={secret} owner={owner} privKey={privKey}/>)
+                    : (<div/>)
+                )
+            ))}
         </div>
     )
 }
 
-export default DataView;
+export default SchemaList;

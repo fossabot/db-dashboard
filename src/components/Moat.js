@@ -14,17 +14,6 @@ function Moat({moatName,privateKey,owner,secret}) {
 
     const navigateToMoat = (e) => {
         e.preventDefault();
-        //debug, DELETE
-
-        /*history.push({
-            pathname: '/moat',
-            state: {
-                moatName: moatName,
-                privKey:privateKey,
-                owner: owner,
-                secret:secret,
-            },
-        });*/
         setTimeout(async function () {
             console.log(phrase);
             await window.ethereum.send('eth_requestAccounts');
@@ -39,22 +28,8 @@ function Moat({moatName,privateKey,owner,secret}) {
             console.log(privKeyResult);
             console.log(secretResult);
 
-            /*history.push({
-                pathname: '/moat',
-                state: {
-                    moatName: moatName,
-                    privKey: privKeyResult,
-                    owner: owner,
-                    secret: secretResult,
-                },
-            });*/
-            navigate('/moat',{state:{moatName: moatName, privKey: privKeyResult, owner: owner, secret: secretResult}});
+            navigate('/schemas',{state:{moatName: moatName, privKey: privKeyResult, owner: owner, secret: secretResult}});
 
-
-
-
-            //console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
-            //console.log(await kwilDB.current.query('INSERT INTO tab (bundle_id,height) VALUES '));
 
         }, 0);
     };

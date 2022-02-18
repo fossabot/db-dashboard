@@ -1,10 +1,10 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home'
-import Moats from "./pages/Moats";
-import MoatManager from "./pages/MoatManager";
+import MoatList from "./pages/MoatList";
+import SchemaList from "./pages/SchemaList";
+import TableList from "./pages/TableList";
 import TableView from "./pages/TableView";
-import DataView from "./pages/DataView";
 
 function Main() {
 
@@ -12,10 +12,10 @@ function Main() {
         <Routes>
             {/* The Switch decides which component to show based on the current URL.*/}
             <Route exact path='/' element={<Home/>}/>
-            <Route exact path='/moats' element={<Moats/>}/>
-            <Route exact path='/moat' element={<MoatManager/>}/>
-            <Route exact path='/schema' element={<TableView/>}/>
-            <Route exact path='/data' element={<DataView/>}/>
+            <Route exact path='/moats' element={<MoatList/>}/>
+            <Route exact path='/schemas' element={<SchemaList/>}/>
+            <Route exact path='/tables' element={<TableList/>}/>
+            <Route exact path='/data' element={<TableView/>}/>
 
 
             {/*<Route element={<Home/>} />*/}

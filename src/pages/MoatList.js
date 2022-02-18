@@ -4,7 +4,7 @@ import {Button, Modal} from "@mui/material";
 import {ethers} from "ethers";
 import Moat from "../components/Moat"
 
-function Moats() {
+function MoatList() {
 
     const [moats,setMoats] = React.useState([]);
     const [open,setOpen] = React.useState(false);
@@ -41,4 +41,4 @@ function Moats() {
     )
 }
 
-export default Moats;
+export default MoatList;
