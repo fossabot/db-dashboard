@@ -1,10 +1,10 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Home from './Home'
-import Moats from "./Moats";
-import MoatManager from "./MoatManager";
-import TableView from "./TableView";
-import DataView from "./DataView";
+import Home from './pages/Home'
+import Moats from "./pages/Moats";
+import MoatManager from "./pages/MoatManager";
+import TableView from "./pages/TableView";
+import DataView from "./pages/DataView";
 
 function Main() {
 

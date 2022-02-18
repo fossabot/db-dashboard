@@ -1,8 +1,8 @@
 import React from 'react';
 import {useLocation} from "react-router-dom";
 import KwilDB from "kwildbweb";
-import SchemaEntry from "./SchemaEntry";
-import Column from "./Column";
+import SchemaEntry from "../components/SchemaEntry";
+import Column from "../components/Column";
 
 function DataView() {
 

@@ -2,7 +2,7 @@ import React from 'react';
 import KwilDB from "kwildbweb";
 import {Button, Modal} from "@mui/material";
 import {ethers} from "ethers";
-import Moat from "./Moat"
+import Moat from "../components/Moat"
 
 function Moats() {
 

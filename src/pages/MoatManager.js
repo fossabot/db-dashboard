@@ -1,8 +1,8 @@
 import React from 'react';
 import {useLocation} from "react-router-dom";
 import KwilDB from "kwildbweb";
-import Moat from "./Moat";
-import SchemaEntry from "./SchemaEntry";
+import Moat from "../components/Moat";
+import SchemaEntry from "../components/SchemaEntry";
 
 function MoatManager() {
 

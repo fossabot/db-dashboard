@@ -2,8 +2,8 @@ import React from 'react';
 import {useLocation} from "react-router-dom";
 import KwilDB from "kwildbweb";
 import {Button} from "@mui/material";
-import SchemaEntry from "./SchemaEntry";
-import Table from "./Table";
+import SchemaEntry from "../components/SchemaEntry";
+import Table from "../components/Table";
 
 function TableView() {
 
@@ -75,7 +75,7 @@ function TableView() {
     return (
         <div>
             <h1 style={{textAlign:'center'}}>Tables in {schema} Schema</h1>
-            <Button onClick={insertTable}>create table</Button>
+            {/*<Button onClick={insertTable}>create table</Button>*/}
             {tables.map((table, index) => (
                 <Table name={table.table_name} privKey={privKey} moatName={moat} owner={owner} secret={secret} schemaName={schema} />
             ))}

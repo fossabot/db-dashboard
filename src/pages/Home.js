@@ -11,7 +11,7 @@ import {
     InputBase,
     Popper,
 } from "@mui/material";
-import kwilPattern from "./kwil_pattern_dark_2.svg";
+import kwilPattern from "../kwil_pattern_dark_2.svg";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CloseIcon from '@mui/icons-material/Close';
 
