@@ -1,22 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import KwilDB from 'kwildbweb';
+
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Box, Button, Fade, IconButton, InputAdornment, InputBase, Popper, SvgIcon } from '@mui/material';
-import kwilPattern from '../kwil_pattern_dark_2.svg';
+import { Box, Fade, IconButton, InputAdornment, InputBase, Popper } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CloseIcon from '@mui/icons-material/Close';
-import grad2 from '../assets/gradients/grad2.svg';
-import grad3 from '../assets/gradients/grad3.svg';
 
-import SendIcon from '@mui/icons-material/Send';
 import { ReactComponent as Metamask } from '../assets/logos/MetaMask_Fox.svg';
+import Arconnect from '../assets/logos/arconnect.png';
+import Navbar from '../components/Navbar';
 
 export default function Create() {
-	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [anchorEl, setAnchorEl] = useState(null);
 
 	const open = Boolean(anchorEl);
 	const id = open ? 'simple-popper' : undefined;
+
+	//const [status, setStatus] = useState(null);
 
 	const handleClick = (event) => {
 		setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -26,9 +27,9 @@ export default function Create() {
 		setAnchorEl(null);
 	};
 
-	const [moatName, setMoatName] = React.useState('');
-	const [loading, setLoading] = React.useState(false);
-	const [signingPhrase, setSigningPhrase] = React.useState('');
+	const [moatName, setMoatName] = useState('');
+	const [loading, setLoading] = useState(false);
+	const [signingPhrase, setSigningPhrase] = useState('');
 
 	const createMoat = (e) => {
 		e.preventDefault();
@@ -61,7 +62,7 @@ export default function Create() {
 			if (result.creation === false) {
 				window.alert('Moat creation was not Successful. Reason: ' + result.reason);
 			} else {
-				window.alert('Moat creation was Successful! Start querying and/or head over to the DB Manager!');
+				window.alert('Moat creation was Successful! Start querying or head over to the DB Manager!');
 			}
 		}, 0);
 	};
@@ -76,21 +77,7 @@ export default function Create() {
 				background: 'linear-gradient(30deg, #212121, #000)',
 			}}
 		>
-			{/* <img
-				style={{ width: '100vw', height: '100vh', position: 'fixed', left: 0, objectFit: 'cover', zIndex: -1 }}
-				src={kwilPattern}
-				alt={''}
-			/> */}
-			<Button
-				variant='text'
-				href='/'
-				sx={{ position: 'absolute', color: '#fff', textTransform: 'none', top: '20px', left: '20px' }}
-			>
-				Back
-			</Button>
-
-			{/* <img src={grad3} alt='bg-gradient' style={{ position: 'absolute', height: '100vh' }} />
-			<img src={grad2} alt='bg-gradient' style={{ position: 'absolute', height: '100vh', right: 0 }} /> */}
+			<Navbar />
 			<h1
 				style={{
 					textAlign: 'center',
@@ -129,7 +116,7 @@ export default function Create() {
 				sx={{
 					paddingLeft: '15px',
 					paddingRight: '10px',
-					margin: '30px auto 70px auto',
+					margin: '30px auto 50px auto',
 					width: '350px',
 					height: '40px',
 					backgroundColor: 'white',
@@ -157,7 +144,6 @@ export default function Create() {
 					</InputAdornment>
 				}
 			/>
-
 			<Popper id={id} open={open} anchorEl={anchorEl} placement={'bottom-start'} transition>
 				{({ TransitionProps }) => (
 					<Fade {...TransitionProps} timeout={350}>
@@ -176,15 +162,16 @@ export default function Create() {
 			<div
 				style={{
 					marginBottom: 'auto',
-					width: '350px',
+					maxWidth: '400px',
 					marginLeft: 'auto',
 					marginRight: 'auto',
 					display: 'flex',
-					flexDirection: 'column',
-					justifyContent: 'space-between',
+					flexDirection: 'row',
+					//justifyContent: 'space-between',
 				}}
 			>
 				<LoadingButton
+					fullWidth
 					sx={{
 						color: '#717AFF',
 						textTransform: 'none',
@@ -192,19 +179,23 @@ export default function Create() {
 						border: 'none',
 						borderRadius: '9px',
 						padding: '6px 20px',
-						width: '300px',
+						//width: '300px',
 						color: '#000',
 						boxShadow: 'none !important',
 						backgroundColor: '#fff !important',
-						margin: '20px 20px auto auto',
+						margin: 'auto 10px auto auto',
 						'& .MuiLoadingButton-loadingIndicator': { color: '#717AFF' },
 					}}
 					loading={loading}
+					loadingPosition='end'
+					endIcon={<img src={Arconnect} alt='' style={{ height: '24px', marginTop: '-4px' }} />}
 				>
-					Create Moat on ArConnect
+					Create Moat
 				</LoadingButton>
-				<Button
+				<p style={{ color: '#fff', margin: 'auto 0px' }}>or</p>
+				<LoadingButton
 					onClick={createMoat}
+					fullWidth
 					sx={{
 						color: '#717AFF',
 						textTransform: 'none',
@@ -212,17 +203,19 @@ export default function Create() {
 						border: 'none',
 						borderRadius: '9px',
 						padding: '6px 20px',
-						width: '300px',
+						//width: '300px',
 						color: '#000',
 						boxShadow: 'none !important',
 						backgroundColor: '#fff !important',
-						margin: '20px 20px auto auto',
+						margin: 'auto auto auto 10px',
 						'& .MuiLoadingButton-loadingIndicator': { color: '#717AFF' },
 					}}
-					endIcon={<SvgIcon style={{ height: '24px' }} component={Metamask} />}
+					loading={loading}
+					loadingPosition='end'
+					endIcon={<Metamask style={{ height: '24px' }} />}
 				>
 					Create Moat
-				</Button>
+				</LoadingButton>
 			</div>
 		</div>
 	);

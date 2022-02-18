@@ -1,44 +1,89 @@
-import React from 'react';
-import KwilDB from "kwildbweb";
-import {Button, Modal} from "@mui/material";
-import {ethers} from "ethers";
-import Moat from "../components/Moat"
+import React, { useState } from 'react';
+import KwilDB from 'kwildbweb';
+import { ethers } from 'ethers';
+
+import { Button, Modal } from '@mui/material';
+
+import Moat from '../components/Moat';
+import { ReactComponent as Metamask } from '../assets/logos/MetaMask_Fox.svg';
+import Arconnect from '../assets/logos/arconnect.png';
+import Navbar from '../components/Navbar';
 
 function MoatList() {
+	const [moats, setMoats] = useState([]);
+	const [showing, setShowing] = useState(false);
 
-    const [moats,setMoats] = React.useState([]);
-    const [open,setOpen] = React.useState(false);
+	const getMoatsMeta = (e) => {
+		e.preventDefault();
+		//debug, DELETE
+		setTimeout(async function () {
+			await window.ethereum.send('eth_requestAccounts');
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const signer = provider.getSigner();
+			const address = await signer.getAddress();
 
-    const getMoatsMeta = (e) => {
-        e.preventDefault();
-        //debug, DELETE
-        setTimeout(async function () {
+			setMoats(await KwilDB.getMoats('http://34.138.54.12:80', address));
+			setShowing(true);
+			//console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
+			//console.log(await kwilDB.current.query('INSERT INTO tab (bundle_id,height) VALUES '));
+		}, 0);
+	};
 
-            await window.ethereum.send('eth_requestAccounts');
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
-            const address = await signer.getAddress();
+	return (
+		<div style={{ background: 'linear-gradient(30deg, #212121, #000)', width: '100vw', height: '100vh' }}>
+			<div style={{ display: 'flex', flexDirection: 'column' }}>
+				<Navbar page='moats' />
+				<h1 style={{ margin: '20px auto', color: '#fff' }}>Database Manager</h1>
 
-            setMoats(await KwilDB.getMoats("http://34.138.54.12:80",address))
-            //console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
-            //console.log(await kwilDB.current.query('INSERT INTO tab (bundle_id,height) VALUES '));
-
-        }, 0);
-    };
-
-    return (
-        <div>
-            <div style={{display:'flex',justifyContent:'space-between'}}>
-                <Button onClick={getMoatsMeta}>Get Moats w/ Metamask</Button>
-                <h1>Database Manager</h1>
-                <Button >Get Moats w/ Arweave</Button>
-            </div>
-            {moats.reverse().map((moat, index) => (
-                <Moat key = {index} owner={moat.owner} secret={moat.secret} privateKey={moat.api_key} moatName={moat.moat}/>
-            ))}
-
-        </div>
-    )
+				<div style={{ display: showing ? 'none' : 'flex' }}>
+					<Button
+						sx={{
+							color: '#717AFF',
+							textTransform: 'none',
+							fontSize: 16,
+							border: 'none',
+							borderRadius: '9px',
+							padding: '6px 20px',
+							//width: '300px',
+							color: '#000',
+							boxShadow: 'none !important',
+							backgroundColor: '#fff !important',
+							margin: 'auto 10px auto auto',
+							'& .MuiLoadingButton-loadingIndicator': { color: '#717AFF' },
+						}}
+						endIcon={<img src={Arconnect} alt='' style={{ height: '24px', marginTop: '-4px' }} />}
+					>
+						Load
+					</Button>
+					<Button
+						onClick={getMoatsMeta}
+						sx={{
+							color: '#717AFF',
+							textTransform: 'none',
+							fontSize: 16,
+							border: 'none',
+							borderRadius: '9px',
+							padding: '6px 20px',
+							//width: '300px',
+							color: '#000',
+							boxShadow: 'none !important',
+							backgroundColor: '#fff !important',
+							margin: 'auto auto auto 10px',
+							'& .MuiLoadingButton-loadingIndicator': { color: '#717AFF' },
+						}}
+						endIcon={<Metamask style={{ height: '24px' }} />}
+					>
+						Load
+					</Button>
+				</div>
+			</div>
+			<div style={{ backgroundColor: '#434343', padding: '20px', margin: '40px', borderRadius: '12px' }}>
+				{moats.reverse().map((moat, index) => (
+					<Moat key={index} owner={moat.owner} secret={moat.secret} privateKey={moat.api_key} moatName={moat.moat} />
+				))}
+			</div>
+		</div>
+	);
 }
 
 export default MoatList;
