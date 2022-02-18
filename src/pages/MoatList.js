@@ -29,6 +29,31 @@ function MoatList() {
 		}, 0);
 	};
 
+	const getMoatsAR = (e) => {
+		e.preventDefault();
+		//debug, DELETE
+		setTimeout(async function () {
+			if (window.arweaveWallet) {
+				const info = {
+					name: "KwilDB", // optional application name
+					//logo:KwilLogo
+				}
+
+				console.log(await window.arweaveWallet.connect(["ACCESS_ADDRESS", "SIGNATURE"], info));
+
+
+				const address = await window.arweaveWallet.getActiveAddress();
+				console.log(address);
+
+				setMoats(await KwilDB.getMoats('http://34.138.54.12:80', address));
+				setShowing(true);
+			}
+			else{
+				window.alert('arconnect not detected')
+			}
+		}, 0);
+	};
+
 	return (
 		<div style={{ background: 'linear-gradient(30deg, #212121, #000)', width: '100vw', height: '100vh' }}>
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -37,6 +62,7 @@ function MoatList() {
 
 				<div style={{ display: showing ? 'none' : 'flex' }}>
 					<Button
+						onClick={getMoatsAR}
 						sx={{
 							color: '#717AFF',
 							textTransform: 'none',
