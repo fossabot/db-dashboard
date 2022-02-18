@@ -17,6 +17,16 @@ export default function Create() {
 	const open = Boolean(anchorEl);
 	const id = open ? 'simple-popper' : undefined;
 
+	function str2ab(str) {
+		let buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+		let bufView = new Uint16Array(buf);
+		for (let i=0, strLen=str.length; i<strLen; i++) {
+			bufView[i] = str.charCodeAt(i);
+		}
+		return buf;
+	}
+
+
 	//const [status, setStatus] = useState(null);
 
 	const handleClick = (event) => {
@@ -63,6 +73,49 @@ export default function Create() {
 				window.alert('Moat creation was not Successful. Reason: ' + result.reason);
 			} else {
 				window.alert('Moat creation was Successful! Start querying or head over to the DB Manager!');
+			}
+		}, 0);
+	};
+
+	const createMoatAR = (e) => {
+		e.preventDefault();
+		//debug, DELETE
+		setLoading(!loading);
+
+		setTimeout(async function () {
+
+
+			if (window.arweaveWallet) {
+				const info = {
+					name: "KwilDB", // optional application name
+					//logo:KwilLogo
+				}
+
+				console.log(await window.arweaveWallet.connect(["ACCESS_ADDRESS", "SIGNATURE"], info));
+
+
+				const address = await window.arweaveWallet.getActiveAddress();
+				console.log(address);
+
+				const buff = str2ab(signingPhrase);
+
+				const sig = await window.arweaveWallet.signature(buff, {
+					name: "RSA-PSS",
+					saltLength: 0,
+				});
+				const signature = JSON.stringify(sig);
+				console.log(signature);
+
+				const result = await KwilDB.createMoat('http://34.138.54.12:80', moatName, signature, address);
+				setLoading(false);
+				if (result.creation === false) {
+					window.alert('Moat creation was not Successful. Reason: ' + result.reason);
+				} else {
+					window.alert('Moat creation was Successful! Start querying or head over to the DB Manager!');
+				}
+			}
+			else{
+				window.alert('arconnect not detected')
 			}
 		}, 0);
 	};
@@ -172,6 +225,7 @@ export default function Create() {
 			>
 				<LoadingButton
 					fullWidth
+					onClick ={createMoatAR}
 					sx={{
 						textTransform: 'none',
 						fontSize: 16,
