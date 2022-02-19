@@ -1,32 +1,45 @@
 import React from 'react';
-import {ethers} from "ethers";
-import KwilDB from "kwildbweb";
-import {useNavigate} from "react-router-dom";
+import { ethers } from 'ethers';
+import KwilDB from 'kwildbweb';
+import { useNavigate } from 'react-router-dom';
 
-function Schema({name,moatName,privKey,owner,secret}) {
+import { Button } from '@mui/material';
 
-    const navigate = useNavigate();
+function Schema({ name, moatName, privKey, owner, secret }) {
+	const navigate = useNavigate();
 
-    const navigateToTables = (e) => {
-        e.preventDefault();
-        setTimeout(async function () {
+	const navigateToTables = (e) => {
+		e.preventDefault();
+		setTimeout(async function () {
+			navigate('/tables', {
+				state: { moatName: moatName, privKey: privKey, owner: owner, secret: secret, schemaName: name },
+			});
 
-            navigate('/tables',{state:{moatName: moatName, privKey: privKey, owner: owner, secret: secret, schemaName:name}});
+			//console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
+			//console.log(await kwilDB.current.query('INSERT INTO tab (bundle_id,height) VALUES '));
+		}, 0);
+	};
 
-
-
-
-            //console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
-            //console.log(await kwilDB.current.query('INSERT INTO tab (bundle_id,height) VALUES '));
-
-        }, 0);
-    };
-
-    return (
-        <div onClick={navigateToTables}>
-            <p>{name}</p>
-        </div>
-    )
+	return (
+		<div
+			style={{
+				maxWidth: '90vw',
+				overflow: 'hidden',
+				borderBottom: '1px solid black',
+				marginLeft: 'auto',
+				marginRight: 'auto',
+				padding: '5px',
+			}}
+		>
+			<Button
+				fullWidth
+				onClick={navigateToTables}
+				sx={{ textTransform: 'none', color: '#fff', justifyContent: 'start' }}
+			>
+				{name}
+			</Button>
+		</div>
+	);
 }
 
 export default Schema;

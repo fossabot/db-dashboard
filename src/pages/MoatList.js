@@ -35,31 +35,29 @@ function MoatList() {
 		setTimeout(async function () {
 			if (window.arweaveWallet) {
 				const info = {
-					name: "KwilDB", // optional application name
+					name: 'KwilDB', // optional application name
 					//logo:KwilLogo
-				}
+				};
 
-				console.log(await window.arweaveWallet.connect(["ACCESS_ADDRESS", "SIGNATURE"], info));
-
+				console.log(await window.arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGNATURE'], info));
 
 				const address = await window.arweaveWallet.getActiveAddress();
 				console.log(address);
 
 				setMoats(await KwilDB.getMoats('http://34.138.54.12:80', address));
 				setShowing(true);
-			}
-			else{
-				window.alert('arconnect not detected')
+			} else {
+				window.alert('arconnect not detected');
 			}
 		}, 0);
 	};
 
 	return (
-		<div style={{ background: 'linear-gradient(30deg, #212121, #000)', width: '100vw', height: '100vh' }}>
+		<div style={{ background: 'linear-gradient(30deg, #212121, #000)', width: '100vw', minHeight: '100vh' }}>
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
 				<Navbar page='moats' />
-				<h1 style={{ margin: '20px auto', color: '#fff' }}>Database Manager</h1>
-
+				<h1 style={{ margin: '20px auto 10px auto', color: '#fff' }}>Database Manager</h1>
+				<h3 style={{ margin: '0px auto 20px auto', color: '#808080' }}>Moats</h3>
 				<div style={{ display: showing ? 'none' : 'flex' }}>
 					<Button
 						onClick={getMoatsAR}
@@ -103,8 +101,15 @@ function MoatList() {
 					</Button>
 				</div>
 			</div>
-			<div style={{ backgroundColor: '#434343', margin: '40px', borderRadius: '12px' }}>
-				{moats.reverse().map((moat, index) => (
+			<div
+				style={{
+					backgroundColor: '#434343',
+					margin: '40px',
+					borderRadius: '12px',
+					paddingBottom: showing ? '20px' : 'none',
+				}}
+			>
+				{moats.map((moat, index) => (
 					<Moat key={index} owner={moat.owner} secret={moat.secret} privateKey={moat.api_key} moatName={moat.moat} />
 				))}
 			</div>

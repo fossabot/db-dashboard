@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import KwilDB from 'kwildbweb';
-import { Button, Modal, TextField } from '@mui/material';
+import { Button, Popover, InputBase } from '@mui/material';
 import { ethers } from 'ethers';
 
 function Moat({ moatName, privateKey, owner, secret }) {
 	const navigate = useNavigate();
 
-	const [open, setOpen] = React.useState(false);
+	const [phrase, setPhrase] = useState('');
 
-	const [phrase, setPhrase] = React.useState('');
+	const [anchorEl, setAnchorEl] = React.useState(null);
+
+	const handleClick = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleClose = () => {
+		console.log('what the fuck');
+		setAnchorEl(null);
+		console.log(open);
+	};
+	const open = Boolean(anchorEl);
 
 	const navigateToMoat = (e) => {
 		e.preventDefault();
@@ -34,28 +45,65 @@ function Moat({ moatName, privateKey, owner, secret }) {
 	};
 
 	return (
-		<div
-			onClick={() => setOpen(true)}
-			style={{
-				maxWidth: '90vw',
-				overflow: 'hidden',
-				borderBottom: '1px solid black',
-				marginLeft: 'auto',
-				marginRight: 'auto',
-				padding: '5px',
-			}}
-		>
-			<p style={{ color: '#fff' }}>Moat: {moatName}</p>
-			<p style={{ color: '#fff' }}>Encrypted Private Key: {privateKey}</p>
-			<p style={{ color: '#fff' }}>Owner Address: {owner}</p>
-			<p style={{ color: '#fff' }}>Encrypted Secret: {secret}</p>
-			<Modal open={open}>
-				<div>
-					<TextField value={phrase} placeholder={'Signing Phrase'} onChange={(e) => setPhrase(e.target.value)} />
-					<Button onClick={navigateToMoat}>Submit</Button>
+		<>
+			<div
+				onClick={handleClick}
+				style={{
+					maxWidth: '90vw',
+					overflow: 'hidden',
+					borderBottom: '1px solid black',
+					marginLeft: 'auto',
+					marginRight: 'auto',
+					padding: '5px',
+				}}
+			>
+				<p style={{ color: '#fff' }}>Moat: {moatName}</p>
+				<p style={{ color: '#fff' }}>Encrypted Private Key: {privateKey}</p>
+				<p style={{ color: '#fff' }}>Owner Address: {owner}</p>
+				<p style={{ color: '#fff' }}>Encrypted Secret: {secret}</p>
+			</div>
+			<Popover
+				sx={{
+					borderRadius: '9px',
+					'& .MuiPopover-paper': {
+						backgroundColor: '#151515',
+					},
+				}}
+				open={open}
+				anchorEl={anchorEl}
+				onClose={handleClose}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'left',
+				}}
+			>
+				<div style={{ display: 'flex', backgroundColor: '#151515', margin: '4px' }}>
+					<InputBase
+						sx={{
+							flex: 1,
+							bgcolor: '#212121',
+							color: '#fff',
+							borderRadius: '9px',
+							pl: '10px',
+							minHeight: '45px',
+						}}
+						onChange={(e) => setPhrase(e.target.value)}
+						placeholder='Signing phrase'
+						value={phrase}
+						inputProps={{
+							autoCorrect: 'off',
+						}}
+					/>
+
+					<Button
+						sx={{ color: '#fff', textTransform: 'none', margin: '0px 10px', borderRadius: '9px' }}
+						onClick={navigateToMoat}
+					>
+						Submit
+					</Button>
 				</div>
-			</Modal>
-		</div>
+			</Popover>
+		</>
 	);
 }
 
