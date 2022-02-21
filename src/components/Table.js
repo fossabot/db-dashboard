@@ -26,11 +26,12 @@ function Table({ name, schemaName, moatName, privKey, owner, secret }) {
 		<div
 			style={{
 				maxWidth: '90vw',
+				minWidth: '90vw',
 				overflow: 'hidden',
-				borderBottom: '1px solid black',
 				marginLeft: 'auto',
 				marginRight: 'auto',
 				padding: '5px',
+
 			}}
 		>
 			<Button

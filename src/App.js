@@ -18,7 +18,7 @@ import {
 	Popper,
 	TextField,
 } from '@mui/material';
-import kwilPattern from './kwil_pattern_dark_2.svg';
+import kwilPattern from './assets/backgrounds/kwil_pattern_dark_2.svg';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import Main from './Main';

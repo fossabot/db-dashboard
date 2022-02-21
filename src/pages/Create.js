@@ -18,14 +18,13 @@ export default function Create() {
 	const id = open ? 'simple-popper' : undefined;
 
 	function str2ab(str) {
-		let buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+		let buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
 		let bufView = new Uint16Array(buf);
-		for (let i=0, strLen=str.length; i<strLen; i++) {
+		for (let i = 0, strLen = str.length; i < strLen; i++) {
 			bufView[i] = str.charCodeAt(i);
 		}
 		return buf;
 	}
-
 
 	//const [status, setStatus] = useState(null);
 
@@ -33,7 +32,7 @@ export default function Create() {
 		setAnchorEl(anchorEl ? null : event.currentTarget);
 	};
 
-	const closePopper = (event) => {
+	const closePopper = () => {
 		setAnchorEl(null);
 	};
 
@@ -46,7 +45,6 @@ export default function Create() {
 		//debug, DELETE
 		console.log(moatName);
 		setLoading(!loading);
-
 		setTimeout(async function () {
 			await window.ethereum.send('eth_requestAccounts');
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -83,16 +81,13 @@ export default function Create() {
 		setLoading(!loading);
 
 		setTimeout(async function () {
-
-
 			if (window.arweaveWallet) {
 				const info = {
-					name: "KwilDB", // optional application name
+					name: 'KwilDB', // optional application name
 					//logo:KwilLogo
-				}
+				};
 
-				console.log(await window.arweaveWallet.connect(["ACCESS_ADDRESS", "SIGNATURE"], info));
-
+				console.log(await window.arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGNATURE'], info));
 
 				const address = await window.arweaveWallet.getActiveAddress();
 				console.log(address);
@@ -100,7 +95,7 @@ export default function Create() {
 				const buff = str2ab(signingPhrase);
 
 				const sig = await window.arweaveWallet.signature(buff, {
-					name: "RSA-PSS",
+					name: 'RSA-PSS',
 					saltLength: 0,
 				});
 				const signature = JSON.stringify(sig);
@@ -113,9 +108,8 @@ export default function Create() {
 				} else {
 					window.alert('Moat creation was Successful! Start querying or head over to the DB Manager!');
 				}
-			}
-			else{
-				window.alert('arconnect not detected')
+			} else {
+				window.alert('arconnect not detected');
 			}
 		}, 0);
 	};
@@ -225,7 +219,7 @@ export default function Create() {
 			>
 				<LoadingButton
 					fullWidth
-					onClick ={createMoatAR}
+					onClick={createMoatAR}
 					sx={{
 						textTransform: 'none',
 						fontSize: 16,

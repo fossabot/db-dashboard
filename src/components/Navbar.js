@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+
+import Kwil from "../assets/logos/kwil.svg";
 
 export default function NavBar({ page }) {
 	const navigate = useNavigate();
@@ -45,6 +47,19 @@ export default function NavBar({ page }) {
 				>
 					Back
 				</Button>
+				<h1
+					style={{
+						textAlign: 'center',
+						fontSize: '32px',
+						margin: 'auto 0px auto 20px',
+						background: '-webkit-linear-gradient(45deg, #FF4F99 30%, #717AFF 90%)',
+						WebkitBackgroundClip: 'text',
+						WebkitTextFillColor: 'transparent',
+					}}
+				>
+					KwilDB
+				</h1>
+				<img src={Kwil} alt='kwil-logo' style={{ height: '32px', margin: 'auto auto auto 10px' }} />
 				<Button
 					onClick={openHome}
 					sx={{

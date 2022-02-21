@@ -1,6 +1,4 @@
 import React from 'react';
-import { ethers } from 'ethers';
-import KwilDB from 'kwildbweb';
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@mui/material';
@@ -24,8 +22,8 @@ function Schema({ name, moatName, privKey, owner, secret }) {
 		<div
 			style={{
 				maxWidth: '90vw',
+				minWidth: '90vw',
 				overflow: 'hidden',
-				borderBottom: '1px solid black',
 				marginLeft: 'auto',
 				marginRight: 'auto',
 				padding: '5px',

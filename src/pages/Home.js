@@ -20,7 +20,7 @@ export default function Home() {
 		>
 			<Navbar page='home' />
 			<img src={grad1} alt='bg-gradient' style={{ position: 'absolute', top: 200 }} />
-			<img src={Kwil} style={{ height: '90px', marginTop: '20vh' }} />
+			<img src={Kwil} alt='kwil-logo' style={{ height: '90px', marginTop: '20vh' }} />
 			<h1
 				style={{
 					textAlign: 'center',
