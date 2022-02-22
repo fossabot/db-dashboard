@@ -5,8 +5,14 @@ import { Button } from '@mui/material';
 import Kwil from '../assets/logos/kwil.svg';
 import grad1 from '../assets/gradients/grad1.svg';
 import Navbar from '../components/Navbar';
+import KwilDB from 'kwildb';
 
 export default function Home() {
+
+	/*const createPool = async (event) => {
+		console.log(await)
+	};*/
+
 	return (
 		<div
 			style={{
@@ -69,6 +75,9 @@ export default function Home() {
 				>
 					Create New Moat
 				</Button>
+				{/*<Button onClick={createPool}>
+					create pool
+				</Button>*/}
 			</div>
 		</div>
 	);
