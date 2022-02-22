@@ -2,7 +2,17 @@ import React, {useState, useEffect, useRef} from 'react';
 import {useLocation} from 'react-router-dom';
 import KwilDB from 'kwildbweb';
 
-import {TableContainer, Paper, Table, TableCell, TableBody, TableRow, TableHead, Skeleton} from '@mui/material';
+import {
+    TableContainer,
+    Paper,
+    Table,
+    TableCell,
+    TableBody,
+    TableRow,
+    TableHead,
+    Skeleton,
+    Breadcrumbs, Link
+} from '@mui/material';
 
 import Navbar from '../components/Navbar';
 // import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
@@ -76,10 +86,18 @@ function TableView() {
                     flexDirection: 'column',
                 }}
             >
-                <h3 style={{margin: '0px auto 20px 0px', color: '#808080'}}>
-                    {moat.current} / {schema.current} / {table.current}
-                </h3>
-                <TableContainer sx={{backgroundColor: '#212121', borderRadius: '12px'}} component={Paper}>
+                <Breadcrumbs sx={{color: '#808080'}} aria-label="breadcrumb">
+                    <Link sx={{color: '#808080'}} underline="hover"  href="/schemas">
+                        {moat.current}
+                    </Link>
+                    <Link sx={{color: '#808080'}} underline="hover"  href="/tables">
+                        {schema.current}
+                    </Link>
+                    <p style={{color: '#808080'}} >
+                        {table.current}
+                    </p>
+                </Breadcrumbs>
+                <TableContainer sx={{backgroundColor: '#212121', borderRadius: '12px',}} component={Paper}>
                     <Table sx={{minWidth: 650}} aria-label="simple table">
                         <TableHead>
                             <TableRow>

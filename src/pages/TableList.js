@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {useLocation} from 'react-router-dom';
 import KwilDB from 'kwildbweb';
 
-import {Button, InputBase, Modal, Skeleton} from '@mui/material';
+import {Breadcrumbs, Button, InputBase, Link, Modal, Skeleton} from '@mui/material';
 
 import Navbar from '../components/Navbar';
 import Table from '../components/Table';
@@ -110,9 +110,15 @@ function TableList() {
                 }}
             >
                 <div style={{display: 'flex', margin: '0px 0px 10px 0px'}}>
-                    <h3 style={{margin: '0px auto 0px 0px', color: '#808080'}}>
-                        {moat.current} / {schema.current}
-                    </h3>
+                    <Breadcrumbs sx={{color: '#808080'}} aria-label="breadcrumb">
+                        <Link sx={{color: '#808080'}} underline="hover"  href="/schemas">
+                            {moat.current}
+                        </Link>
+                        <p style={{color: '#808080'}} >
+                            {schema.current}
+                        </p>
+
+                    </Breadcrumbs>
                    {/* <Button onClick={() => setAdding(true)}
                             sx={{textTransform: 'none', color: '#fff', borderRadius: '9px', margin: '0px 0px 0px auto'}}
                             startIcon={<AddIcon/>}>Add Table</Button>*/}

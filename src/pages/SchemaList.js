@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {useLocation} from 'react-router-dom';
 import KwilDB from 'kwildbweb';
 
-import {Button, InputBase, Modal} from '@mui/material';
+import {Button, InputBase, Modal, Breadcrumbs} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add'
 
 import Schema from '../components/Schema';
@@ -63,7 +63,7 @@ function SchemaList() {
                 secret.current
             );
             console.log(
-                await kwilDB.preparedQuery(`CREATE SCHEMA if NOT EXISTS $1`, [newSchema])
+                await kwilDB.query(`CREATE SCHEMA if NOT EXISTS ${newSchema}`)
             );
             setAdding(false)
         });
@@ -86,11 +86,14 @@ function SchemaList() {
                 }}
             >
                 <div style={{display: 'flex', margin: '0px 0px 10px 0px'}}>
-                    <h3 style={{margin: '0px auto 0px 0px', color: '#808080'}}>
-                        {moat.current}
-                    </h3>
+                    <Breadcrumbs sx={{color: '#808080'}} aria-label="breadcrumb">
+                        <p style={{color: '#808080'}} >
+                            {moat.current}
+                        </p>
+
+                    </Breadcrumbs>
                     <Button onClick={() => setAdding(true)}
-                            sx={{textTransform: 'none', color: '#000', backgroundColor: '#fff !important', borderRadius: '9px', margin: '0px 0px 0px auto'}}
+                            sx={{textTransform: 'none', color: '#000', backgroundColor: '#fff !important', borderRadius: '9px', margin: '0px 0px 0px auto', maxHeight: '40px'}}
                             startIcon={<AddIcon/>}>Add Schema</Button>
 
                 </div>
