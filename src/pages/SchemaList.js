@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import KwilDB from 'kwildbweb';
 
 import {Button, InputBase, Modal, Breadcrumbs} from '@mui/material';
@@ -11,12 +11,12 @@ import Navbar from '../components/Navbar';
 import {Skeleton} from "@mui/material";
 
 function SchemaList() {
-    const navigate = useLocation();
+    const location = useLocation();
 
-    const moat = useRef(navigate.state.moatName);
-    const owner = useRef(navigate.state.owner);
-    const privKey = useRef(navigate.state.privKey);
-    const secret = useRef(navigate.state.secret);
+    const moat = useRef(location.state.moatName);
+    const owner = useRef(location.state.owner);
+    const privKey = useRef(location.state.privKey);
+    const secret = useRef(location.state.secret);
 
     const [schemas, setSchemas] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -25,7 +25,7 @@ function SchemaList() {
     const [adding, setAdding] = useState(false);
 
     useEffect(() => {
-        console.log(navigate);
+        console.log(location);
         console.log(moat.current);
         console.log(owner.current);
         console.log(privKey.current);
@@ -46,7 +46,7 @@ function SchemaList() {
                                            FROM information_schema.schemata;`)).rows);
             setLoading(false)
         });
-    }, [navigate]);
+    }, [location]);
 
     const createSchema = (e) => {
         e.preventDefault();
@@ -90,7 +90,6 @@ function SchemaList() {
                         <p style={{color: '#808080'}} >
                             {moat.current}
                         </p>
-
                     </Breadcrumbs>
                     <Button onClick={() => setAdding(true)}
                             sx={{textTransform: 'none', color: '#000', backgroundColor: '#fff !important', borderRadius: '9px', margin: '0px 0px 0px auto', maxHeight: '40px'}}

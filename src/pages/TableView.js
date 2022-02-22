@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import KwilDB from 'kwildbweb';
 
 import {
@@ -18,21 +18,22 @@ import Navbar from '../components/Navbar';
 // import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
 
 function TableView() {
-    const navigate = useLocation();
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    const moat = useRef(navigate.state.moatName);
-    const owner = useRef(navigate.state.owner);
-    const privKey = useRef(navigate.state.privKey);
-    const secret = useRef(navigate.state.secret);
-    const schema = useRef(navigate.state.schemaName);
-    const table = useRef(navigate.state.tableName);
+    const moat = useRef(location.state.moatName);
+    const owner = useRef(location.state.owner);
+    const privKey = useRef(location.state.privKey);
+    const secret = useRef(location.state.secret);
+    const schema = useRef(location.state.schemaName);
+    const table = useRef(location.state.tableName);
 
     const [cols, setCols] = useState([]);
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        console.log(navigate);
+        console.log(location);
         console.log(moat.current);
         console.log(owner.current);
         console.log(privKey.current);
@@ -67,7 +68,7 @@ function TableView() {
             setRows(result.rows);
             setLoading(false);
         });
-    }, [navigate]);
+    }, [location]);
 
     return (
         <div style={{background: 'linear-gradient(30deg, #101010, #000)', width: '100vw', minHeight: '100vh'}}>
@@ -87,10 +88,14 @@ function TableView() {
                 }}
             >
                 <Breadcrumbs sx={{color: '#808080'}} aria-label="breadcrumb">
-                    <Link sx={{color: '#808080'}} underline="hover"  href="/schemas">
+                    <Link sx={{color: '#808080'}} underline="hover"  onClick={() => navigate('/schemas', {
+                        state: {moatName: moat.current, privKey: privKey.current, owner: owner.current, secret: secret.current},
+                    })}>
                         {moat.current}
                     </Link>
-                    <Link sx={{color: '#808080'}} underline="hover"  href="/tables">
+                    <Link sx={{color: '#808080'}} underline="hover"  onClick={() => navigate('/tables', {
+                        state: {moatName: moat.current, privKey: privKey.current, owner: owner.current, secret: secret.current, schemaName: schema.current},
+                    })}>
                         {schema.current}
                     </Link>
                     <p style={{color: '#808080'}} >

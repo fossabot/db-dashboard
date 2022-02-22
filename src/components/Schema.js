@@ -12,9 +12,6 @@ function Schema({ name, moatName, privKey, owner, secret }) {
 			navigate('/tables', {
 				state: { moatName: moatName, privKey: privKey, owner: owner, secret: secret, schemaName: name },
 			});
-
-			//console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
-			//console.log(await kwilDB.current.query('INSERT INTO tab (bundle_id,height) VALUES '));
 		}, 0);
 	};
 

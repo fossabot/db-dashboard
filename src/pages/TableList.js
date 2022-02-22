@@ -1,22 +1,23 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import KwilDB from 'kwildbweb';
 
 import {Breadcrumbs, Button, InputBase, Link, Modal, Skeleton} from '@mui/material';
 
 import Navbar from '../components/Navbar';
 import Table from '../components/Table';
-import AddIcon from "@mui/icons-material/Add";
-// import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
+
+// import AddIcon from "@mui/icons-material/Add";
 
 function TableList() {
-    const navigate = useLocation();
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    const moat = useRef(navigate.state.moatName);
-    const owner = useRef(navigate.state.owner);
-    const privKey = useRef(navigate.state.privKey);
-    const secret = useRef(navigate.state.secret);
-    const schema = useRef(navigate.state.schemaName);
+    const moat = useRef(location.state.moatName);
+    const owner = useRef(location.state.owner);
+    const privKey = useRef(location.state.privKey);
+    const secret = useRef(location.state.secret);
+    const schema = useRef(location.state.schemaName);
 
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -64,7 +65,7 @@ function TableList() {
     };
 
     useEffect(() => {
-        console.log(navigate);
+        console.log(location);
         console.log(moat.current);
         console.log(owner.current);
         console.log(privKey.current);
@@ -91,7 +92,7 @@ function TableList() {
             );
             setLoading(false);
         });
-    }, [navigate]);
+    }, [location]);
 
     return (
         <div style={{background: 'linear-gradient(30deg, #101010, #000)', width: '100vw', minHeight: '100vh'}}>
@@ -111,15 +112,17 @@ function TableList() {
             >
                 <div style={{display: 'flex', margin: '0px 0px 10px 0px'}}>
                     <Breadcrumbs sx={{color: '#808080'}} aria-label="breadcrumb">
-                        <Link sx={{color: '#808080'}} underline="hover"  href="/schemas">
+                        <Link sx={{color: '#808080'}} underline="hover" onClick={() => navigate('/schemas', {
+                            state: {moatName: moat.current, privKey: privKey.current, owner: owner.current, secret: secret.current},
+                        })}>
                             {moat.current}
                         </Link>
-                        <p style={{color: '#808080'}} >
+                        <p style={{color: '#808080'}}>
                             {schema.current}
                         </p>
 
                     </Breadcrumbs>
-                   {/* <Button onClick={() => setAdding(true)}
+                    {/* <Button onClick={() => setAdding(true)}
                             sx={{textTransform: 'none', color: '#fff', borderRadius: '9px', margin: '0px 0px 0px auto'}}
                             startIcon={<AddIcon/>}>Add Table</Button>*/}
                 </div>
