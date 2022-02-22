@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import KwilDB from 'kwildbweb';
+import KwilDB from 'kwildb';
 import {ethers} from 'ethers';
 
 import LoadingButton from '@mui/lab/LoadingButton';

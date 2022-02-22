@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import KwilDB from 'kwildbweb';
+import KwilDB from 'kwildb';
 
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Box, Fade, IconButton, InputAdornment, InputBase, Popper } from '@mui/material';

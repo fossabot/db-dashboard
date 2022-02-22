@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import KwilDB from 'kwildbweb';
+import KwilDB from 'kwildb';
 
 import {Button, InputBase, Modal, Breadcrumbs} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add'
