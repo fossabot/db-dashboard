@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import KwilDB from 'kwildbweb';
+import KwilDB from 'kwildb';
 import {ethers} from 'ethers';
 
 import {Button, Popover, InputBase, Snackbar, Alert} from '@mui/material';

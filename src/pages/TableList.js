@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import KwilDB from 'kwildbweb';
+import KwilDB from 'kwildb';
 
 import {Breadcrumbs, Button, InputBase, Link, Modal, Skeleton} from '@mui/material';
 
