@@ -2,9 +2,12 @@ import React, {useState, useEffect, useRef} from 'react';
 import {useLocation} from 'react-router-dom';
 import KwilDB from 'kwildbweb';
 
+import {Button, InputBase, Modal} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add'
+
 import Schema from '../components/Schema';
 import Navbar from '../components/Navbar';
-import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
+// import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
 import {Skeleton} from "@mui/material";
 
 function SchemaList() {
@@ -15,8 +18,12 @@ function SchemaList() {
     const privKey = useRef(navigate.state.privKey);
     const secret = useRef(navigate.state.secret);
 
-    const [schema, setSchema] = useState([]);
-const [loading, setLoading] = useState(true);
+    const [schemas, setSchemas] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const [newSchema, setNewSchema] = useState('');
+    const [adding, setAdding] = useState(false);
+
     useEffect(() => {
         console.log(navigate);
         console.log(moat.current);
@@ -24,8 +31,6 @@ const [loading, setLoading] = useState(true);
         console.log(privKey.current);
         console.log(secret.current);
 
-        /*SELECT schema_name
-        FROM information_schema.schemata;*/
         setTimeout(async function () {
             const kwilDB = KwilDB.createConnector(
                 {
@@ -37,18 +42,39 @@ const [loading, setLoading] = useState(true);
                 },
                 secret.current
             );
-            setSchema((await kwilDB.query(`SELECT schema_name
+            setSchemas((await kwilDB.query(`SELECT schema_name
                                            FROM information_schema.schemata;`)).rows);
-           setLoading(false)
+            setLoading(false)
         });
     }, [navigate]);
+
+    const createSchema = (e) => {
+        e.preventDefault();
+        //debug, DELETE
+        setTimeout(async function () {
+            const kwilDB = KwilDB.createConnector(
+                {
+                    host: '34.138.54.12:80',
+                    protocol: 'http',
+                    port: null,
+                    moat: moat.current,
+                    privateKey: privKey.current,
+                },
+                secret.current
+            );
+            console.log(
+                await kwilDB.preparedQuery(`CREATE SCHEMA if NOT EXISTS $1`, [newSchema])
+            );
+            setAdding(false)
+        });
+    };
 
     return (
         <div style={{background: 'linear-gradient(30deg, #101010, #000)', width: '100vw', minHeight: '100vh'}}>
             <div style={{display: 'flex', flexDirection: 'column'}}>
-                <Navbar page='schema'/>
+                <Navbar page='schemas'/>
                 <h1 style={{margin: '20px auto 10px auto', color: '#fff'}}>Database Manager</h1>
-                <h3 style={{margin: '0px auto 10px auto', color: '#808080'}}>Schemas</h3>
+                <h3 style={{margin: '0px auto 20px auto', color: '#808080'}}>Schemas</h3>
             </div>
             <div
                 style={{
@@ -59,9 +85,16 @@ const [loading, setLoading] = useState(true);
                     flexDirection: 'column',
                 }}
             >
-                <h3 style={{margin: '0px auto 20px 0px', color: '#808080'}}>
-                    {moat.current}
-                </h3>
+                <div style={{display: 'flex', margin: '0px 0px 10px 0px'}}>
+                    <h3 style={{margin: '0px auto 0px 0px', color: '#808080'}}>
+                        {moat.current}
+                    </h3>
+                    <Button onClick={() => setAdding(true)}
+                            sx={{textTransform: 'none', color: '#000', backgroundColor: '#fff !important', borderRadius: '9px', margin: '0px 0px 0px auto'}}
+                            startIcon={<AddIcon/>}>Add Schema</Button>
+
+                </div>
+
                 <div id='table' style={{
                     maxWidth: '90vw',
                     minWidth: '90vw',
@@ -81,10 +114,11 @@ const [loading, setLoading] = useState(true);
                         margin: '0px'
                     }}>Schema Name</p>
 
-                    {schema.map((schema, index) =>
+                    {schemas.map((schema, index) =>
                         schema.schema_name !== 'pg_catalog' && schema.schema_name !== 'information_schema' ? (
-                            <div style={{borderBottom: index + 1 < schema.length ? '1px solid #808080' : 'none'}}>
-                                <Schema name={schema.schema_name} moatName={moat.current} secret={secret.current} owner={owner.current}
+                            <div style={{borderBottom: index + 1 < schemas.length ? '1px solid #808080' : 'none'}}>
+                                <Schema name={schema.schema_name} moatName={moat.current} secret={secret.current}
+                                        owner={owner.current}
                                         privKey={privKey.current}/>
                             </div>
                         ) : (
@@ -127,14 +161,38 @@ const [loading, setLoading] = useState(true);
                     </div>
                 </div>
 
-
-                {/*{schema.map((schema, index) =>
-					schema.schema_name !== 'pg_catalog' && schema.schema_name !== 'information_schema' ? (
-						<Schema name={schema.schema_name} moatName={moat.current} secret={secret.current} owner={owner.current} privKey={privKey.current} />
-					) : (
-						<div />
-					)
-				)}*/}
+                <Modal sx={{display: 'flex'}} open={adding} onClose={() => setAdding(false)}>
+                    <div style={{
+                        backgroundColor: '#151515',
+                        margin: 'auto',
+                        padding: '10px',
+                        borderRadius: '12px',
+                        display: 'flex'
+                    }}>
+                        <InputBase
+                            sx={{
+                                flex: 1,
+                                backgroundColor: '#212121',
+                                color: '#fff',
+                                borderRadius: '9px',
+                                pl: '10px',
+                                minHeight: '45px',
+                            }}
+                            onChange={(e) => setNewSchema(e.target.value)}
+                            placeholder='New schema name...'
+                            value={newSchema}
+                            inputProps={{
+                                autoCorrect: 'off',
+                            }}
+                        />
+                        <Button
+                            sx={{color: '#fff', textTransform: 'none', margin: '0px 10px', borderRadius: '9px'}}
+                            onClick={createSchema}
+                        >
+                            Create Schema
+                        </Button>
+                    </div>
+                </Modal>
             </div>
         </div>
     );

@@ -8,7 +8,7 @@ import Moat from '../components/Moat';
 import {ReactComponent as Metamask} from '../assets/logos/MetaMask_Fox.svg';
 import Arconnect from '../assets/logos/arconnect.png';
 import Navbar from '../components/Navbar';
-import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
+// import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
 
 function MoatList() {
     const [moats, setMoats] = useState([]);

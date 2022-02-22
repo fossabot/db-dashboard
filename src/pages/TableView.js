@@ -5,7 +5,7 @@ import KwilDB from 'kwildbweb';
 import {TableContainer, Paper, Table, TableCell, TableBody, TableRow, TableHead, Skeleton} from '@mui/material';
 
 import Navbar from '../components/Navbar';
-import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
+// import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
 
 function TableView() {
     const navigate = useLocation();

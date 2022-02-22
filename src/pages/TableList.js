@@ -2,11 +2,12 @@ import React, {useState, useEffect, useRef} from 'react';
 import {useLocation} from 'react-router-dom';
 import KwilDB from 'kwildbweb';
 
-import {Skeleton} from '@mui/material';
+import {Button, InputBase, Modal, Skeleton} from '@mui/material';
 
 import Navbar from '../components/Navbar';
 import Table from '../components/Table';
-import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
+import AddIcon from "@mui/icons-material/Add";
+// import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
 
 function TableList() {
     const navigate = useLocation();
@@ -19,6 +20,9 @@ function TableList() {
 
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const [newTable, setNewTable] = useState({});
+    const [adding, setAdding] = useState(false);
 
     const createTable = (e) => {
         e.preventDefault();
@@ -105,9 +109,15 @@ function TableList() {
                     flexDirection: 'column',
                 }}
             >
-                <h3 style={{margin: '0px auto 20px 0px', color: '#808080'}}>
-                    {moat.current} / {schema.current}
-                </h3>
+                <div style={{display: 'flex', margin: '0px 0px 10px 0px'}}>
+                    <h3 style={{margin: '0px auto 0px 0px', color: '#808080'}}>
+                        {moat.current} / {schema.current}
+                    </h3>
+                   {/* <Button onClick={() => setAdding(true)}
+                            sx={{textTransform: 'none', color: '#fff', borderRadius: '9px', margin: '0px 0px 0px auto'}}
+                            startIcon={<AddIcon/>}>Add Table</Button>*/}
+                </div>
+
                 <div id='table' style={{
                     maxWidth: '90vw',
                     minWidth: '90vw',
@@ -174,6 +184,39 @@ function TableList() {
                         </div>
                     </div>
                 </div>
+
+                <Modal sx={{display: 'flex'}} open={adding} onClose={() => setAdding(false)}>
+                    <div style={{
+                        backgroundColor: '#151515',
+                        margin: 'auto',
+                        padding: '10px',
+                        borderRadius: '12px',
+                        display: 'flex'
+                    }}>
+                        <InputBase
+                            sx={{
+                                flex: 1,
+                                backgroundColor: '#212121',
+                                color: '#fff',
+                                borderRadius: '9px',
+                                pl: '10px',
+                                minHeight: '45px',
+                            }}
+                            onChange={(e) => setNewTable(e.target.value)}
+                            placeholder='New table name...'
+                            value={newTable.name}
+                            inputProps={{
+                                autoCorrect: 'off',
+                            }}
+                        />
+                        <Button
+                            sx={{color: '#fff', textTransform: 'none', margin: '0px 10px', borderRadius: '9px'}}
+                            onClick={createTable}
+                        >
+                            Create Table
+                        </Button>
+                    </div>
+                </Modal>
 
             </div>
         </div>
