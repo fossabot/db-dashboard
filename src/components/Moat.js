@@ -215,7 +215,7 @@ export default function Moat({ moatName, privateKey, owner, secret }) {
       </Snackbar>
       <Snackbar
         sx={{ margin: "0px auto" }}
-        open={copyStatus === "error"}
+        open={copyStatus === "fail"}
         autoHideDuration={4000}
         onClose={() => setCopyStatus(null)}
       >

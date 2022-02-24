@@ -4,7 +4,14 @@ import { ethers } from "ethers";
 import KwilDB from "kwildb";
 
 import LoadingButton from "@mui/lab/LoadingButton";
-import { FormControl, Select, InputBase, MenuItem } from "@mui/material";
+import {
+  FormControl,
+  Select,
+  InputBase,
+  MenuItem,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 
 import Navbar from "../components/Navbar";
 
@@ -14,6 +21,9 @@ export default function CreatePool() {
   const moat = useRef(location.state.moatName);
   const [poolName, setPoolName] = useState("");
   const [chain, setChain] = useState("");
+  const [status, setStatus] = useState(null);
+  const [errMsg, setErrMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setChain(e.target.value);
@@ -23,6 +33,7 @@ export default function CreatePool() {
     e.preventDefault();
 
     setTimeout(async function () {
+      setLoading(true);
       await window.ethereum.send("eth_requestAccounts");
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       console.log(provider);
@@ -37,21 +48,22 @@ export default function CreatePool() {
       const result = await KwilDB.pools.createFundingPool(
         poolName,
         address,
+        address,
         chain,
-        "USDC"
+        "USDC",
+        moat.current
       );
+      console.log(result);
+      console.log(typeof result);
       setLoading(false);
-      if (result.blockHash === null) {
-        window.alert("Pool creation failed");
+      if (typeof result === "string") {
+        setStatus("fail");
+        setErrMsg(result);
       } else {
-        window.alert(
-          "Pool creation was Successful! Go to the Database Manager to add funds!"
-        );
+        setStatus("success");
       }
     }, 0);
   };
-
-  const [loading, setLoading] = useState(false);
 
   return (
     <div
@@ -164,6 +176,37 @@ export default function CreatePool() {
           Create Pool
         </LoadingButton>
       </div>
+      <Snackbar
+        sx={{ margin: "0px auto" }}
+        open={status === "success"}
+        autoHideDuration={4000}
+        onClose={() => setStatus(null)}
+      >
+        <Alert
+          variant="filled"
+          onClose={() => setStatus(null)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Funding Pool created successfully. Go to the Database Manager to add
+          funds!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        sx={{ margin: "0px auto" }}
+        open={status === "fail"}
+        autoHideDuration={6000}
+        onClose={() => setStatus(null)}
+      >
+        <Alert
+          variant="filled"
+          onClose={() => setStatus(null)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Funding Pool creation failed. Reason: {errMsg};
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
