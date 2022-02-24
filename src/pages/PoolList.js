@@ -18,18 +18,11 @@ export default function PoolList() {
 
   useEffect(() => {
     setTimeout(async function () {
-      const result = await KwilDB.pools.getPool("test", "goerli", "USDC");
+      const result = await KwilDB.getPoolsByMoat("https://registry.kwil.xyz", moat.current)
       console.log(result);
-      for (let i = 0; i < 3; i++) {
-        setPools((old) => [
-          ...old,
-          {
-            name: "test",
-            creator: result.creator,
-            validator: result.validator,
-            balance: result.pool / 1000000,
-          },
-        ]);
+      for (let i = 0; i < result.length; i++) {
+          const result2 = await KwilDB.pools.getPool(result[i].pool_name, "goerli", "USDC")
+          setPools((old) => [...old, {name: result[i].pool_name, validator: result2.validator, creator: result2.creator, balance: result2.pool}])
       }
       setLoading(false);
     }, 0);

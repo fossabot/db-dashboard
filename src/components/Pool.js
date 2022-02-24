@@ -48,6 +48,7 @@ export default function Moat({ poolName, creator, validator, balance }) {
           "USDC",
           amount * 1000000
         );
+        console.log({result})
         setAdding(false);
         if (result.blockHash === null) {
           window.alert("Funds failed to transfer");
