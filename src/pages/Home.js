@@ -44,92 +44,40 @@ export default function Home() {
         Welcome to Kwil DB
       </h1>
       <div style={{ display: "flex" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            margin: "0px 20px 0px auto",
-            width: 300,
+        <Button
+          href="/moats"
+          sx={{
+            textTransform: "none",
+            fontSize: 16,
+            border: "none",
+            borderRadius: "9px",
+            padding: "6px 20px",
+            width: "300px",
+            color: "#000",
+            boxShadow: "none !important",
+            backgroundColor: "#fff !important",
+            margin: "20px 20px 0 auto",
           }}
         >
-          <Button
-            href="/moats"
-            sx={{
-              textTransform: "none",
-              fontSize: 16,
-              border: "none",
-              borderRadius: "9px",
-              padding: "6px 20px",
-              width: "100%",
-              color: "#000",
-              boxShadow: "none !important",
-              backgroundColor: "#fff !important",
-              margin: "20px auto 0 auto",
-            }}
-          >
-            Database Manager
-          </Button>
-          <Button
-            href="/createmoat"
-            sx={{
-              textTransform: "none",
-              fontSize: 16,
-              border: "none",
-              borderRadius: "9px",
-              padding: "6px 20px",
-              width: "100%",
-              color: "#000",
-              boxShadow: "none !important",
-              background: "#fff !important",
-              margin: "20px auto auto auto",
-            }}
-          >
-            Create New Moat
-          </Button>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            margin: "0px auto 0px 20px",
-            width: 300,
+          Database Manager
+        </Button>
+        <Button
+          href="/createmoat"
+          sx={{
+            textTransform: "none",
+            fontSize: 16,
+            border: "none",
+            borderRadius: "9px",
+            padding: "6px 20px",
+            width: "300px",
+            color: "#000",
+            boxShadow: "none !important",
+            background: "#fff !important",
+            margin: "20px auto auto 20px",
           }}
         >
-          <Button
-            href="/"
-            sx={{
-              textTransform: "none",
-              fontSize: 16,
-              border: "none",
-              borderRadius: "9px",
-              padding: "6px 20px",
-              width: "100%",
-              color: "#000",
-              boxShadow: "none !important",
-              backgroundColor: "#fff !important",
-              margin: "20px auto 0 auto",
-            }}
-          >
-            Fund Pool Manager
-          </Button>
-          <Button
-            href="/createpool"
-            sx={{
-              textTransform: "none",
-              fontSize: 16,
-              border: "none",
-              borderRadius: "9px",
-              padding: "6px 20px",
-              width: "100%",
-              color: "#000",
-              boxShadow: "none !important",
-              background: "#fff !important",
-              margin: "20px auto auto auto",
-            }}
-          >
-            Create New Fund Pool
-          </Button>
-        </div>
+          Create New Moat
+        </Button>
       </div>
     </div>
   );

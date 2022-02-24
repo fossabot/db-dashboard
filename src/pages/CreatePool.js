@@ -1,36 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { ethers } from "ethers";
 import KwilDB from "kwildb";
 
 import LoadingButton from "@mui/lab/LoadingButton";
 import { FormControl, Select, InputBase, MenuItem } from "@mui/material";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import CloseIcon from "@mui/icons-material/Close";
 
-import { ReactComponent as Metamask } from "../assets/logos/MetaMask_Fox.svg";
-import Arconnect from "../assets/logos/arconnect.png";
 import Navbar from "../components/Navbar";
 
-export default function Create() {
-  const [anchorEl, setAnchorEl] = useState(null);
+export default function CreatePool() {
+  const location = useLocation();
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popper" : undefined;
-
-  const handleClick = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
-
-  const closePopper = () => {
-    setAnchorEl(null);
-  };
-
+  const moat = useRef(location.state.moatName);
   const [poolName, setPoolName] = useState("");
   const [chain, setChain] = useState("");
-  const blockchains = ["Ethereum", "Matic", "Goerli"];
 
   const handleChange = (e) => {
     setChain(e.target.value);
+  };
+
+  const createPool = (e) => {
+    e.preventDefault();
+
+    setTimeout(async function () {
+      await window.ethereum.send("eth_requestAccounts");
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      console.log(provider);
+      const signer = provider.getSigner();
+      console.log(signer);
+      const address = await signer.getAddress();
+
+      console.log(poolName);
+      console.log(address);
+      console.log(chain);
+
+      const result = await KwilDB.pools.createFundingPool(
+        poolName,
+        address,
+        chain,
+        "USDC"
+      );
+      setLoading(false);
+      if (result.blockHash === null) {
+        window.alert("Pool creation failed");
+      } else {
+        window.alert(
+          "Pool creation was Successful! Go to the Database Manager to add funds!"
+        );
+      }
+    }, 0);
   };
 
   const [loading, setLoading] = useState(false);
@@ -59,7 +77,7 @@ export default function Create() {
           WebkitTextFillColor: "transparent",
         }}
       >
-        Create your Funding Pool
+        Create a Funding Pool for {moat.current}
       </h1>
       <InputBase
         value={poolName}
@@ -109,9 +127,9 @@ export default function Create() {
           <MenuItem disabled value="">
             <em>Blockchain</em>
           </MenuItem>
-          <MenuItem value="eth">Ethereum</MenuItem>
-          <MenuItem value="matic">Matic</MenuItem>
-          <MenuItem value="goerli">Goerli</MenuItem>
+          <MenuItem value="ethereum">Ethereum</MenuItem>
+          <MenuItem value="polygon">Polygon</MenuItem>
+          <MenuItem value="goerli">Goerli Ethereum Testnet</MenuItem>
         </Select>
       </FormControl>
       <div
@@ -126,7 +144,7 @@ export default function Create() {
         }}
       >
         <LoadingButton
-          //onClick={createMoat}
+          onClick={createPool}
           //fullWidth
           sx={{
             textTransform: "none",
