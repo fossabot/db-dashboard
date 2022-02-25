@@ -20,7 +20,7 @@ export default function CreatePool() {
 
   const moat = useRef(location.state.moatName);
   const [poolName, setPoolName] = useState("");
-  const [chain, setChain] = useState("");
+  const [chain, setChain] = useState("goerli");
   const [status, setStatus] = useState(null);
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
@@ -140,7 +140,7 @@ export default function CreatePool() {
             <em>Blockchain</em>
           </MenuItem>
           {/*<MenuItem value="ethereum">Ethereum</MenuItem>*/}
-          <MenuItem value="polygon">Polygon</MenuItem>
+          {/*<MenuItem value="polygon">Polygon</MenuItem>*/}
           <MenuItem value="goerli">Goerli Ethereum Testnet</MenuItem>
         </Select>
       </FormControl>
