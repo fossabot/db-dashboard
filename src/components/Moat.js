@@ -83,9 +83,8 @@ export default function Moat({ moatName, privateKey, owner, secret }) {
       console.log(privKeyResult);
       console.log(secretResult);
       handleClose();
-      navigate("/schemas", {
+      navigate("/" + moatName, {
         state: {
-          moatName: moatName,
           privKey: privKeyResult,
           owner: owner,
           secret: secretResult,

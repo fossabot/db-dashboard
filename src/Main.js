@@ -18,9 +18,13 @@ function Main() {
       <Route exact path="/createpool" element={<CreatePool />} />
       <Route exact path="/moats" element={<MoatList />} />
       <Route exact path="/pools" element={<PoolList />} />
-      <Route exact path="/schemas" element={<SchemaList />} />
-      <Route exact path="/tables" element={<TableList />} />
-      <Route exact path="/data" element={<TableView />} />
+      <Route exact path="/:moatName" element={<SchemaList />} />
+      <Route exact path="/:moatName/:schemaName" element={<TableList />} />
+      <Route
+        exact
+        path="/:moatName/:schemaName/:tableName"
+        element={<TableView />}
+      />
 
       {/*<Route element={<Home/>} />*/}
     </Routes>

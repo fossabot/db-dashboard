@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KwilDB from "kwildb";
 
 import { Button, InputBase, Modal, Breadcrumbs } from "@mui/material";
@@ -14,7 +14,7 @@ import { Skeleton } from "@mui/material";
 function SchemaList() {
   const location = useLocation();
 
-  const moat = useRef(location.state.moatName);
+  const { moatName } = useParams();
   const owner = useRef(location.state.owner);
   const privKey = useRef(location.state.privKey);
   const secret = useRef(location.state.secret);
@@ -27,7 +27,7 @@ function SchemaList() {
 
   useEffect(() => {
     console.log(location);
-    console.log(moat.current);
+    console.log(moatName);
     console.log(owner.current);
     console.log(privKey.current);
     console.log(secret.current);
@@ -38,15 +38,16 @@ function SchemaList() {
           host: "34.138.54.12:80",
           protocol: "http",
           port: null,
-          moat: moat.current,
+          moat: moatName,
           privateKey: privKey.current,
         },
         secret.current
       );
       setSchemas(
         (
-          await kwilDB.query(`SELECT schema_name
-                                           FROM information_schema.schemata;`)
+          await kwilDB.query(
+            `SELECT schema_name FROM information_schema.schemata EXCEPT SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'pg_toast%' OR schema_name LIKE 'pg_temp%' OR schema_name = 'pg_catalog' OR schema_name = 'information_schema';`
+          )
         ).rows
       );
       setLoading(false);
@@ -62,7 +63,7 @@ function SchemaList() {
           host: "34.138.54.12:80",
           protocol: "http",
           port: null,
-          moat: moat.current,
+          moat: moatName,
           privateKey: privKey.current,
         },
         secret.current
@@ -104,7 +105,7 @@ function SchemaList() {
         >
           <div style={{ display: "flex", margin: "0px 0px 10px 0px" }}>
             <Breadcrumbs sx={{ color: "#808080" }} aria-label="breadcrumb">
-              <p style={{ color: "#808080" }}>{moat.current}</p>
+              <p style={{ color: "#808080" }}>{moatName}</p>
             </Breadcrumbs>
             <Button
               onClick={() => setAdding(true)}
@@ -150,7 +151,10 @@ function SchemaList() {
 
             {schemas.map((schema, index) =>
               schema.schema_name !== "pg_catalog" &&
-              schema.schema_name !== "information_schema" ? (
+              schema.schema_name !== "information_schema" &&
+              schema.schema_name !== "pg_toast" &&
+              schema.schema_name !== "pg_temp_1" &&
+              schema.schema_name !== "pg_toast_temp_1" ? (
                 <div
                   key={index}
                   style={{
@@ -160,7 +164,7 @@ function SchemaList() {
                 >
                   <Schema
                     name={schema.schema_name}
-                    moatName={moat.current}
+                    moatName={moatName}
                     secret={secret.current}
                     owner={owner.current}
                     privKey={privKey.current}

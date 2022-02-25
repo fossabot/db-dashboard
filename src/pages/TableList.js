@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KwilDB from "kwildb";
 
 import {
@@ -21,11 +21,11 @@ function TableList() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const moat = useRef(location.state.moatName);
+  const { moatName } = useParams();
+  const { schemaName } = useParams();
   const owner = useRef(location.state.owner);
   const privKey = useRef(location.state.privKey);
   const secret = useRef(location.state.secret);
-  const schema = useRef(location.state.schemaName);
 
   const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +42,7 @@ function TableList() {
           host: "34.138.54.12:80",
           protocol: "http",
           port: null,
-          moat: moat.current,
+          moat: moatName,
           privateKey: privKey.current,
         },
         secret
@@ -64,7 +64,7 @@ function TableList() {
           host: "34.138.54.12:80",
           protocol: "http",
           port: null,
-          moat: moat.current,
+          moat: moatName,
           privateKey: privKey.current,
         },
         secret
@@ -78,11 +78,11 @@ function TableList() {
 
   useEffect(() => {
     console.log(location);
-    console.log(moat.current);
+    console.log(moatName);
     console.log(owner.current);
     console.log(privKey.current);
     console.log(secret.current);
-    console.log(schema.current);
+    console.log(schemaName);
 
     /*SELECT schema_name
         FROM information_schema.schemata;*/
@@ -92,7 +92,7 @@ function TableList() {
           host: "34.138.54.12:80",
           protocol: "http",
           port: null,
-          moat: moat.current,
+          moat: moatName,
           privateKey: privKey.current,
         },
         secret.current
@@ -101,7 +101,7 @@ function TableList() {
         (
           await kwilDB.query(`SELECT table_name
                                      FROM information_schema.tables
-                                     WHERE table_schema = '${schema.current}';`)
+                                     WHERE table_schema = '${schemaName}';`)
         ).rows
       );
       setLoading(false);
@@ -144,7 +144,7 @@ function TableList() {
                 onClick={() =>
                   navigate("/schemas", {
                     state: {
-                      moatName: moat.current,
+                      moatName: moatName,
                       privKey: privKey.current,
                       owner: owner.current,
                       secret: secret.current,
@@ -152,9 +152,9 @@ function TableList() {
                   })
                 }
               >
-                {moat.current}
+                {moatName}
               </Link>
-              <p style={{ color: "#808080" }}>{schema.current}</p>
+              <p style={{ color: "#808080" }}>{schemaName}</p>
             </Breadcrumbs>
             {/* <Button onClick={() => setAdding(true)}
                             sx={{textTransform: 'none', color: '#fff', borderRadius: '9px', margin: '0px 0px 0px auto'}}
@@ -198,10 +198,10 @@ function TableList() {
                 <Table
                   name={table.table_name}
                   privKey={privKey.current}
-                  moatName={moat.current}
+                  moatName={moatName}
                   owner={owner.current}
                   secret={secret.current}
-                  schemaName={schema.current}
+                  schemaName={schemaName}
                 />
               </div>
             ))}

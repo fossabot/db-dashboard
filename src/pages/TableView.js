@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KwilDB from "kwildb";
 
 import {
@@ -23,12 +23,12 @@ function TableView() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const moat = useRef(location.state.moatName);
+  const { moatName } = useParams();
+  const { schemaName } = useParams();
+  const { tableName } = useParams();
   const owner = useRef(location.state.owner);
   const privKey = useRef(location.state.privKey);
   const secret = useRef(location.state.secret);
-  const schema = useRef(location.state.schemaName);
-  const table = useRef(location.state.tableName);
 
   const [cols, setCols] = useState([]);
   const [rows, setRows] = useState([]);
@@ -36,12 +36,12 @@ function TableView() {
 
   useEffect(() => {
     console.log(location);
-    console.log(moat.current);
+    console.log(moatName);
     console.log(owner.current);
     console.log(privKey.current);
     console.log(secret.current);
-    console.log(schema.current);
-    console.log(table.current);
+    console.log(schemaName);
+    console.log(tableName);
 
     /*SELECT schema_name
         FROM information_schema.schemata;*/
@@ -51,13 +51,13 @@ function TableView() {
           host: "34.138.54.12:80",
           protocol: "http",
           port: null,
-          moat: moat.current,
+          moat: moatName,
           privateKey: privKey.current,
         },
         secret.current
       );
       const result = await kwilDB.query(`SELECT *
-                                               FROM ${table.current};`);
+                                               FROM ${tableName};`);
       console.log(result);
       console.log(result.fields.length);
       let columns = [];
@@ -107,7 +107,7 @@ function TableView() {
               onClick={() =>
                 navigate("/schemas", {
                   state: {
-                    moatName: moat.current,
+                    moatName: moatName,
                     privKey: privKey.current,
                     owner: owner.current,
                     secret: secret.current,
@@ -115,7 +115,7 @@ function TableView() {
                 })
               }
             >
-              {moat.current}
+              {moatName}
             </Link>
             <Link
               sx={{ color: "#808080" }}
@@ -123,18 +123,18 @@ function TableView() {
               onClick={() =>
                 navigate("/tables", {
                   state: {
-                    moatName: moat.current,
+                    moatName: moatName,
                     privKey: privKey.current,
                     owner: owner.current,
                     secret: secret.current,
-                    schemaName: schema.current,
+                    schemaName: schemaName,
                   },
                 })
               }
             >
-              {schema.current}
+              {schemaName}
             </Link>
-            <p style={{ color: "#808080" }}>{table.current}</p>
+            <p style={{ color: "#808080" }}>{tableName}</p>
           </Breadcrumbs>
           <TableContainer
             sx={{ backgroundColor: "#212121", borderRadius: "12px" }}
