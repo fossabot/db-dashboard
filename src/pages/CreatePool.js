@@ -139,7 +139,7 @@ export default function CreatePool() {
           <MenuItem disabled value="">
             <em>Blockchain</em>
           </MenuItem>
-          <MenuItem value="ethereum">Ethereum</MenuItem>
+          {/*<MenuItem value="ethereum">Ethereum</MenuItem>*/}
           <MenuItem value="polygon">Polygon</MenuItem>
           <MenuItem value="goerli">Goerli Ethereum Testnet</MenuItem>
         </Select>

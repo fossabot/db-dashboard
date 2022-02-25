@@ -9,14 +9,21 @@ import {
   TextField,
   Backdrop,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+
+// import KwilLoader from "../assets/kwil_loader.svg";
+// import LoadAnim from "../assets/Kwil_feather_icon_animation_loop.svg";
 
 export default function Moat({ poolName, creator, validator, balance }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [amount, setAmount] = useState(0);
 
   const [adding, setAdding] = useState(false);
+  const [status, setStatus] = useState(null);
+  const [errMsg, setErrMsg] = useState("");
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -48,12 +55,15 @@ export default function Moat({ poolName, creator, validator, balance }) {
           "USDC",
           amount * 1000000
         );
-        console.log({result})
+        console.log(result);
         setAdding(false);
-        if (result.blockHash === null) {
-          window.alert("Funds failed to transfer");
+        if (typeof result === "string") {
+          setStatus("fail");
+          setErrMsg(result);
+          window.location.reload();
         } else {
-          window.alert("Funds added successfully!");
+          setStatus("success");
+          window.location.reload();
         }
       }, 0);
     }
@@ -87,7 +97,7 @@ export default function Moat({ poolName, creator, validator, balance }) {
         <p style={{ color: "#fff" }}>Validator: {validator}</p>
         <div style={{ display: "flex", marginBottom: "10px" }}>
           <p style={{ color: "#fff", margin: "auto 0px" }}>
-            Balance: {balance} USDC
+            Balance: {balance / 1000000} USDC
           </p>
           <Button
             onClick={handleClick}
@@ -172,6 +182,37 @@ export default function Moat({ poolName, creator, validator, balance }) {
             </div>
           </Popover>
         </div>
+        <Snackbar
+          sx={{ margin: "0px auto" }}
+          open={status === "success"}
+          autoHideDuration={4000}
+          onClose={() => setStatus(null)}
+        >
+          <Alert
+            variant="filled"
+            onClose={() => setStatus(null)}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Funding Pool created successfully. Go to the Database Manager to add
+            funds!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          sx={{ margin: "0px auto" }}
+          open={status === "fail"}
+          autoHideDuration={6000}
+          onClose={() => setStatus(null)}
+        >
+          <Alert
+            variant="filled"
+            onClose={() => setStatus(null)}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            Funding Pool creation failed. Reason: {errMsg};
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );
