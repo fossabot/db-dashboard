@@ -25,7 +25,7 @@ export default function MoatList() {
       const signer = provider.getSigner();
       const address = await signer.getAddress();
 
-      setMoats(await KwilDB.getMoats("http://34.138.54.12:80", address));
+      setMoats(await KwilDB.getMoats("https://test-db.kwil.xyz", address));
       setLoaded(true);
       setLoadingMeta(false);
       //console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
