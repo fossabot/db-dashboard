@@ -3,11 +3,14 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KwilDB from "kwildbweb";
 
 import { TreeView, TreeItem } from "@mui/lab";
+import { Drawer } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
 import { ethers } from "ethers";
 
-export default function NavTree() {
+export default function NavTree({ expanded, setExpanded }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -108,6 +111,7 @@ export default function NavTree() {
             privKey: privKey.current,
             owner: owner.current,
             secret: secret.current,
+            expanded: expanded,
           },
         });
       } else if (id.split(" ")[0] === "schema") {
@@ -120,6 +124,7 @@ export default function NavTree() {
             privKey: privKey.current,
             owner: owner.current,
             secret: secret.current,
+            expanded: expanded,
           },
         });
       } else if (id.split(" ")[0] === "table") {
@@ -129,13 +134,13 @@ export default function NavTree() {
           schema.children.forEach((table) => {
             if (table.id === id) {
               console.log(table);
-
               //window.location.reload();
               navigate("/" + moatName + "/" + schema.name + "/" + table.name, {
                 state: {
                   privKey: privKey.current,
                   owner: owner.current,
                   secret: secret.current,
+                  expanded: expanded,
                 },
               });
             }
@@ -169,24 +174,83 @@ export default function NavTree() {
   );
 
   return (
-    <TreeView
-      onNodeSelect={(e, value) => navigateToPage(e, value)}
-      aria-label="rich object"
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpanded={["root"]}
-      defaultExpandIcon={<ChevronRightIcon />}
-      sx={{
-        height: "calc(100vh - 200px)",
-        flexGrow: 1,
-        maxWidth: 200,
-        backgroundColor: "#000",
-        padding: "15px 16px 15px 0px",
-        borderRadius: "0px 12px 12px 0px",
-        border: "2px solid #323232",
-        borderLeft: "none",
-      }}
-    >
-      {renderTree(data)}
-    </TreeView>
+    <>
+      <Drawer
+        variant="persistent"
+        anchor="left"
+        open={!expanded}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          "& .MuiDrawer-paper": {
+            height: "fit-content",
+            border: "2px solid #323232",
+            borderLeft: "none",
+            borderRadius: "0px 12px 12px 0px",
+            backgroundColor: "#000",
+            overflowX: "hidden",
+            marginTop: "80px",
+          },
+        }}
+      >
+        <MenuIcon
+          onClick={() => setExpanded(true)}
+          sx={{
+            margin: "5px",
+            color: "#808080",
+            "&:hover": {
+              cursor: "pointer",
+            },
+          }}
+        />
+      </Drawer>
+      <Drawer
+        variant="persistent"
+        anchor="left"
+        open={expanded}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          "& .MuiDrawer-paper": {
+            height: "calc(100vh - 200px)",
+            border: "2px solid #323232",
+            borderLeft: "none",
+            borderRadius: "0px 12px 12px 0px",
+            backgroundColor: "#000",
+            overflowX: "hidden",
+            marginTop: "80px",
+          },
+        }}
+      >
+        <CloseIcon
+          onClick={() => setExpanded(false)}
+          sx={{
+            margin: "5px 5px 5px auto",
+            color: "#808080",
+            "&:hover": {
+              cursor: "pointer",
+            },
+          }}
+        />
+        <TreeView
+          onNodeSelect={(e, value) => navigateToPage(e, value)}
+          aria-label="rich object"
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpanded={["root"]}
+          defaultExpandIcon={<ChevronRightIcon />}
+          sx={{
+            height: "calc(100vh - 200px)",
+            flexGrow: 1,
+            minWidth: 200,
+            maxWidth: 200,
+            backgroundColor: "#000",
+            // padding: "15px 16px 15px 0px",
+            borderRadius: "0px 12px 12px 0px",
+          }}
+        >
+          {renderTree(data)}
+        </TreeView>
+      </Drawer>
+    </>
   );
 }

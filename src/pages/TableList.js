@@ -29,6 +29,7 @@ function TableList() {
 
   const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState(location.state.expanded);
 
   const [newTable, setNewTable] = useState({});
   const [adding, setAdding] = useState(false);
@@ -126,11 +127,14 @@ function TableList() {
         </h3>
       </div>
       <div style={{ display: "flex" }}>
-        <NavTree />
+        <NavTree expanded={expanded} setExpanded={setExpanded} />
         <div
           style={{
-            maxWidth: "calc(90vw - 200px)",
-            marginLeft: "40px",
+            maxWidth: expanded ? "calc(90vw - 200px)" : "90vw",
+            marginLeft: expanded ? "240px" : "60px",
+            transitionProperty: "margin-left, max-width",
+            transitionDuration: ".15s",
+            transitionTimingFunction: expanded ? "ease-out" : "ease-in",
             marginRight: "auto",
             display: "flex",
             flexDirection: "column",
@@ -142,12 +146,12 @@ function TableList() {
                 sx={{ color: "#808080" }}
                 underline="hover"
                 onClick={() =>
-                  navigate("/schemas", {
+                  navigate("/" + moatName, {
                     state: {
-                      moatName: moatName,
                       privKey: privKey.current,
                       owner: owner.current,
                       secret: secret.current,
+                      expanded: expanded,
                     },
                   })
                 }
@@ -164,8 +168,11 @@ function TableList() {
           <div
             id="table"
             style={{
-              maxWidth: "calc(90vw - 200px)",
-              minWidth: "calc(90vw - 200px)",
+              maxWidth: expanded ? "calc(90vw - 200px)" : "90vw",
+              minWidth: expanded ? "calc(90vw - 200px)" : "90vw",
+              transitionProperty: "min-width, max-width",
+              transitionDuration: ".15s",
+              transitionTimingFunction: expanded ? "ease-out" : "ease-in",
               marginLeft: "auto",
               marginRight: "auto",
               display: "flex",
@@ -202,6 +209,7 @@ function TableList() {
                   owner={owner.current}
                   secret={secret.current}
                   schemaName={schemaName}
+                  expanded={expanded}
                 />
               </div>
             ))}

@@ -3,7 +3,15 @@ import { useNavigate } from "react-router-dom";
 
 import { Button } from "@mui/material";
 
-function Table({ name, schemaName, moatName, privKey, owner, secret }) {
+function Table({
+  name,
+  schemaName,
+  moatName,
+  privKey,
+  owner,
+  secret,
+  expanded,
+}) {
   const navigate = useNavigate();
 
   const navigateToTableData = (e) => {
@@ -14,6 +22,7 @@ function Table({ name, schemaName, moatName, privKey, owner, secret }) {
           privKey: privKey,
           owner: owner,
           secret: secret,
+          expanded: expanded,
         },
       });
     }, 0);

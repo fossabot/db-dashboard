@@ -33,6 +33,7 @@ function TableView() {
   const [cols, setCols] = useState([]);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState(location.state.expanded);
 
   useEffect(() => {
     console.log(location);
@@ -90,11 +91,14 @@ function TableView() {
         </h3>
       </div>
       <div style={{ display: "flex" }}>
-        <NavTree />
+        <NavTree expanded={expanded} setExpanded={setExpanded} />
         <div
           style={{
-            maxWidth: "calc(90vw - 200px)",
-            marginLeft: "auto",
+            maxWidth: expanded ? "calc(90vw - 200px)" : "90vw",
+            marginLeft: expanded ? "240px" : "60px",
+            transitionProperty: "margin-left, max-width",
+            transitionDuration: ".15s",
+            transitionTimingFunction: expanded ? "ease-out" : "ease-in",
             marginRight: "auto",
             display: "flex",
             flexDirection: "column",
@@ -105,12 +109,12 @@ function TableView() {
               sx={{ color: "#808080" }}
               underline="hover"
               onClick={() =>
-                navigate("/schemas", {
+                navigate("/" + moatName, {
                   state: {
-                    moatName: moatName,
                     privKey: privKey.current,
                     owner: owner.current,
                     secret: secret.current,
+                    expanded: expanded,
                   },
                 })
               }
@@ -121,13 +125,12 @@ function TableView() {
               sx={{ color: "#808080" }}
               underline="hover"
               onClick={() =>
-                navigate("/tables", {
+                navigate("/" + moatName + "/" + schemaName, {
                   state: {
-                    moatName: moatName,
                     privKey: privKey.current,
                     owner: owner.current,
                     secret: secret.current,
-                    schemaName: schemaName,
+                    expanded: expanded,
                   },
                 })
               }
@@ -142,8 +145,11 @@ function TableView() {
           >
             <Table
               sx={{
-                minWidth: "calc(90vw - 200px)",
-                maxWidth: "calc(90vw - 200px)",
+                maxWidth: expanded ? "calc(90vw - 200px)" : "90vw",
+                minWidth: expanded ? "calc(90vw - 200px)" : "90vw",
+                transitionProperty: "min-width, max-width",
+                transitionDuration: ".15s",
+                transitionTimingFunction: expanded ? "ease-out" : "ease-in",
               }}
               aria-label="simple table"
             >
@@ -185,8 +191,11 @@ function TableView() {
           <div
             id="loading-table"
             style={{
-              maxWidth: "90vw",
-              minWidth: "90vw",
+              maxWidth: expanded ? "calc(90vw - 200px)" : "90vw",
+              minWidth: expanded ? "calc(90vw - 200px)" : "90vw",
+              transitionProperty: "min-width, max-width",
+              transitionDuration: ".15s",
+              transitionTimingFunction: expanded ? "ease-out" : "ease-in",
               marginLeft: "auto",
               marginRight: "auto",
               display: loading ? "flex" : "none",

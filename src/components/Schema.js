@@ -3,14 +3,19 @@ import { useNavigate } from "react-router-dom";
 
 import { Button } from "@mui/material";
 
-function Schema({ name, moatName, privKey, owner, secret }) {
+function Schema({ name, moatName, privKey, owner, secret, expanded }) {
   const navigate = useNavigate();
 
   const navigateToTables = (e) => {
     e.preventDefault();
     setTimeout(async function () {
       navigate("/" + moatName + "/" + name, {
-        state: { privKey: privKey, owner: owner, secret: secret },
+        state: {
+          privKey: privKey,
+          owner: owner,
+          secret: secret,
+          expanded: expanded,
+        },
       });
     }, 0);
   };

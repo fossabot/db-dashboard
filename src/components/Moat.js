@@ -88,6 +88,7 @@ export default function Moat({ moatName, privateKey, owner, secret }) {
           privKey: privKeyResult,
           owner: owner,
           secret: secretResult,
+          expanded: true,
         },
       });
     }, 0);
