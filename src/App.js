@@ -84,7 +84,7 @@ function App() {
 			//kwilDB2.current.addMoat('tester',address,'superencrypted','supahsecret');
 			//kwilDB2.current.updateSecret('tester','newseccc')
 			//console.log(await KwilDB.createMoat("http://34.138.54.12:80",moatName,signature,address));
-			const result = await KwilDB.createMoat('http://34.138.54.12:80', moatName, signature, address);
+			const result = await KwilDB.createMoat("https://test-db.kwil.xyz", moatName, signature, address);
 			setLoading(false);
 			if (result.creation === false) {
 				window.alert('Moat creation was not Successful. Reason: ' + result.reason);
@@ -112,7 +112,7 @@ function App() {
 		e.preventDefault();
 		//debug, DELETE
 		setTimeout(async function () {
-			setMoats(await KwilDB.getMoats('http://34.138.54.12:80', '0xFeE8197af2aAd0d506357d39EF42b3183dcDbc54'));
+			setMoats(await KwilDB.getMoats("https://test-db.kwil.xyz", '0xFeE8197af2aAd0d506357d39EF42b3183dcDbc54'));
 			//console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
 			//console.log(await kwilDB.current.query('INSERT INTO tab (bundle_id,height) VALUES '));
 		}, 0);

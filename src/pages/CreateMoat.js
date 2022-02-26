@@ -79,7 +79,7 @@ export default function Create() {
       //kwilDB2.current.updateSecret('tester','newseccc')
       //console.log(await KwilDB.createMoat("http://34.138.54.12:80",moatName,signature,address));
       const result = await KwilDB.createMoat(
-        "http://34.138.54.12:80",
+          "https://test-db.kwil.xyz",
         moatName,
         signature,
         address
@@ -128,7 +128,7 @@ export default function Create() {
         console.log(signature);
 
         const result = await KwilDB.createMoat(
-          "http://34.138.54.12:80",
+            "https://test-db.kwil.xyz",
           moatName,
           signature,
           address

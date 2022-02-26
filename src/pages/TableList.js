@@ -40,8 +40,8 @@ function TableList() {
     setTimeout(async function () {
       const kwilDB = KwilDB.createConnector(
         {
-          host: "34.138.54.12:80",
-          protocol: "http",
+          host: "test-db.kwil.xyz",
+          protocol: "https",
           port: null,
           moat: moatName,
           privateKey: privKey.current,
@@ -62,8 +62,8 @@ function TableList() {
     setTimeout(async function () {
       const kwilDB = KwilDB.createConnector(
         {
-          host: "34.138.54.12:80",
-          protocol: "http",
+          host: "test-db.kwil.xyz",
+          protocol: "https",
           port: null,
           moat: moatName,
           privateKey: privKey.current,
@@ -90,8 +90,8 @@ function TableList() {
     setTimeout(async function () {
       const kwilDB = KwilDB.createConnector(
         {
-          host: "34.138.54.12:80",
-          protocol: "http",
+          host: "test-db.kwil.xyz",
+          protocol: "https",
           port: null,
           moat: moatName,
           privateKey: privKey.current,
