@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@mui/material";
 
 import Kwil from "../assets/logos/kwil.svg";
-import grad1 from "../assets/gradients/grad1.svg";
+import grad1 from "../assets/gradients/grad1.png";
 import Navbar from "../components/Navbar";
 
 export default function Home() {
@@ -22,7 +22,7 @@ export default function Home() {
       <img
         src={grad1}
         alt="bg-gradient"
-        style={{ position: "absolute", top: 200 }}
+        style={{ position: "absolute", bottom: 0,maxWidth:'30%' }}
       />
       <img
         src={Kwil}

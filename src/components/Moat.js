@@ -74,6 +74,48 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
     }, 0);
   };
 
+    const pasteCopyAR = (e) => {
+        e.preventDefault();
+        setTimeout(async function () {
+            console.log(phrase);
+            const address = await window.arweaveWallet.getActiveAddress();
+            console.log(address);
+
+            const enc = new TextEncoder(); // always utf-8
+            const buff = (enc.encode(phrase));
+            console.log(buff)
+            const sig = await window.arweaveWallet.signature(buff, {
+                name: "RSA-PSS",
+                saltLength: 0,
+            });
+            const signature = JSON.stringify(sig);
+            console.log(signature);
+
+            const privKeyResult = JSON.parse(
+                await KwilDB.decryptKey(signature, address, privateKey)
+            );
+            const secretResult = await KwilDB.decryptKey(signature, address, secret);
+            console.log(privKeyResult);
+            console.log(secretResult);
+            navigator.clipboard
+                .writeText(
+                    "Secret: " +
+                    secretResult +
+                    "\r\n\r\nPrivate key: " +
+                    JSON.stringify(privKeyResult)
+                )
+                .then(
+                    () => {
+                        setCopyStatus("success");
+                    },
+                    () => {
+                        setCopyStatus("fail");
+                    }
+                );
+            handleClose();
+        }, 0);
+    };
+
   const navigateToMoat = (e) => {
     e.preventDefault();
     setTimeout(async function () {
@@ -122,8 +164,9 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
                 const address = await window.arweaveWallet.getActiveAddress();
                 console.log(address);
 
-                const buff = str2ab(phrase);
-
+                const enc = new TextEncoder(); // always utf-8
+                const buff = (enc.encode(phrase));
+                console.log(buff)
                 const sig = await window.arweaveWallet.signature(buff, {
                     name: "RSA-PSS",
                     saltLength: 0,
@@ -134,6 +177,7 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
                 const privKeyResult = JSON.parse(
                     await KwilDB.decryptKey(signature, address, privateKey)
                 );
+                console.log(privKeyResult);
                 const secretResult = await KwilDB.decryptKey(signature, address, secret);
 
                 handleClose();
@@ -249,7 +293,7 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
               margin: "0px 10px",
               borderRadius: "9px",
             }}
-            onClick={copying ? pasteCopy : arweave ? navigateToMoatAR : navigateToMoat}
+            onClick={copying ?arweave?pasteCopyAR: pasteCopy : arweave ? navigateToMoatAR : navigateToMoat}
           >
             Submit
           </Button>

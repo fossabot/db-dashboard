@@ -118,7 +118,11 @@ export default function Create() {
         const address = await window.arweaveWallet.getActiveAddress();
         console.log(address);
 
-        const buff = str2ab(signingPhrase);
+          const enc = new TextEncoder(); // always utf-8
+          const buff = (enc.encode(signingPhrase));
+          console.log(buff)
+
+        //const buff = str2ab(signingPhrase);
 
         const sig = await window.arweaveWallet.signature(buff, {
           name: "RSA-PSS",
