@@ -12,15 +12,17 @@ export default function Moat({ moatName, privateKey, owner, secret }) {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [copying, setCopying] = useState(false);
+  const [toCopy, setToCopy] = useState("");
   const [copyStatus, setCopyStatus] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleCopy = (e) => {
+  const handleCopy = (e, value) => {
     setAnchorEl(e.currentTarget);
     setCopying(true);
+    setToCopy(value);
   };
 
   const handleClose = () => {
@@ -46,14 +48,8 @@ export default function Moat({ moatName, privateKey, owner, secret }) {
       const secretResult = await KwilDB.decryptKey(signature, address, secret);
       console.log(privKeyResult);
       console.log(secretResult);
-      navigator.clipboard
-        .writeText(
-          "Secret: " +
-            secretResult +
-            "\r\n\r\nPrivate key: " +
-            JSON.stringify(privKeyResult)
-        )
-        .then(
+      if (toCopy === "key") {
+        navigator.clipboard.writeText(JSON.stringify(privKeyResult)).then(
           () => {
             setCopyStatus("success");
           },
@@ -61,6 +57,17 @@ export default function Moat({ moatName, privateKey, owner, secret }) {
             setCopyStatus("fail");
           }
         );
+      } else {
+        navigator.clipboard.writeText(secretResult).then(
+          () => {
+            setCopyStatus("success");
+          },
+          () => {
+            setCopyStatus("fail");
+          }
+        );
+      }
+
       handleClose();
     }, 0);
   };
@@ -119,7 +126,19 @@ export default function Moat({ moatName, privateKey, owner, secret }) {
         </div>
         <div>
           <Button
-            onClick={handleCopy}
+            onClick={handleClick}
+            sx={{
+              textTransform: "none",
+              color: "#fff",
+              backgroundColor: "#438ea0 !important",
+              borderRadius: "9px",
+              margin: "0px  auto 10px 20px",
+            }}
+          >
+            Open Data Moat
+          </Button>
+          <Button
+            onClick={(e) => handleCopy(e, "key")}
             sx={{
               textTransform: "none",
               color: "#000",
@@ -128,7 +147,19 @@ export default function Moat({ moatName, privateKey, owner, secret }) {
               margin: "0px  auto 10px 20px",
             }}
           >
-            Copy Credentials
+            Copy Private Key
+          </Button>
+          <Button
+            onClick={(e) => handleCopy(e, "secret")}
+            sx={{
+              textTransform: "none",
+              color: "#000",
+              backgroundColor: "#fff !important",
+              borderRadius: "9px",
+              margin: "0px  auto 10px 20px",
+            }}
+          >
+            Copy Secret
           </Button>
           <Button
             onClick={() =>
@@ -210,7 +241,7 @@ export default function Moat({ moatName, privateKey, owner, secret }) {
           severity="success"
           sx={{ width: "100%" }}
         >
-          Private key and secret pasted to your clipboard!
+          Successfully pasted to your clipboard!
         </Alert>
       </Snackbar>
       <Snackbar
