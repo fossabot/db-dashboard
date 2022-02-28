@@ -14,6 +14,7 @@ export default function MoatList() {
   const [loaded, setLoaded] = useState(false);
   const [loadingAr, setLoadingAr] = useState(false);
   const [loadingMeta, setLoadingMeta] = useState(false);
+  const arConnect = React.useRef(false);
 
   const getMoatsMeta = (e) => {
     setLoadingMeta(true);
@@ -28,6 +29,7 @@ export default function MoatList() {
       setMoats(await KwilDB.getMoats("https://test-db.kwil.xyz", address));
       setLoaded(true);
       setLoadingMeta(false);
+      arConnect.current = false;
       //console.log(await kwilDB.current.query('CREATE TABLE if NOT EXISTS tab(bundle_id varchar(20) PRIMARY KEY, height integer NOT NULL)'));
       //console.log(await kwilDB.current.query('INSERT INTO tab (bundle_id,height) VALUES '));
     }, 0);
@@ -55,6 +57,8 @@ export default function MoatList() {
         const address = await window.arweaveWallet.getActiveAddress();
         console.log(address);
 
+        arConnect.current = true;
+
         setMoats(await KwilDB.getMoats("https://test-db.kwil.xyz", address));
         setLoaded(true);
         setLoadingAr(false);
@@ -71,6 +75,7 @@ export default function MoatList() {
         background: "linear-gradient(30deg, #101010, #000)",
         width: "100vw",
         minHeight: "100vh",
+        paddingBottom:40,
       }}
     >
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -171,6 +176,7 @@ export default function MoatList() {
               secret={moat.secret}
               privateKey={moat.api_key}
               moatName={moat.moat}
+              arweave={arConnect.current}
             />
           </div>
         ))}
