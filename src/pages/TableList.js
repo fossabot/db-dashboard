@@ -46,7 +46,7 @@ function TableList() {
           moat: moatName,
           privateKey: privKey.current,
         },
-        secret
+        secret.current
       );
       console.log(
         await kwilDB.query(

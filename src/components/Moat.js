@@ -12,7 +12,9 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [copying, setCopying] = useState(false);
+  const [toCopy, setToCopy] = useState("");
   const [copyStatus, setCopyStatus] = useState(null);
+    const [openSignSnackbar, setOpenSignSnackbar] = useState(false);
 
     function str2ab(str) {
         let buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
@@ -27,9 +29,10 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleCopy = (e) => {
+  const handleCopy = (e, value) => {
     setAnchorEl(e.currentTarget);
     setCopying(true);
+    setToCopy(value);
   };
 
   const handleClose = () => {
@@ -55,14 +58,8 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
       const secretResult = await KwilDB.decryptKey(signature, address, secret);
       console.log(privKeyResult);
       console.log(secretResult);
-      navigator.clipboard
-        .writeText(
-          "Secret: " +
-            secretResult +
-            "\r\n\r\nPrivate key: " +
-            JSON.stringify(privKeyResult)
-        )
-        .then(
+      if (toCopy === "key") {
+        navigator.clipboard.writeText(JSON.stringify(privKeyResult)).then(
           () => {
             setCopyStatus("success");
           },
@@ -70,6 +67,17 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
             setCopyStatus("fail");
           }
         );
+      } else {
+        navigator.clipboard.writeText(secretResult).then(
+          () => {
+            setCopyStatus("success");
+          },
+          () => {
+            setCopyStatus("fail");
+          }
+        );
+      }
+
       handleClose();
     }, 0);
   };
@@ -97,14 +105,8 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
             const secretResult = await KwilDB.decryptKey(signature, address, secret);
             console.log(privKeyResult);
             console.log(secretResult);
-            navigator.clipboard
-                .writeText(
-                    "Secret: " +
-                    secretResult +
-                    "\r\n\r\nPrivate key: " +
-                    JSON.stringify(privKeyResult)
-                )
-                .then(
+            if (toCopy === "key") {
+                navigator.clipboard.writeText(JSON.stringify(privKeyResult)).then(
                     () => {
                         setCopyStatus("success");
                     },
@@ -112,6 +114,16 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
                         setCopyStatus("fail");
                     }
                 );
+            } else {
+                navigator.clipboard.writeText(secretResult).then(
+                    () => {
+                        setCopyStatus("success");
+                    },
+                    () => {
+                        setCopyStatus("fail");
+                    }
+                );
+            }
             handleClose();
         }, 0);
     };
@@ -127,10 +139,19 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
       console.log(signer);
       const signature = await signer.signMessage(phrase);
       const address = await signer.getAddress();
-      const privKeyResult = JSON.parse(
-        await KwilDB.decryptKey(signature, address, privateKey)
-      );
-      const secretResult = await KwilDB.decryptKey(signature, address, secret);
+        let privKeyResult;
+        let secretResult;
+        try {
+            privKeyResult = JSON.parse(
+                await KwilDB.decryptKey(signature, address, privateKey)
+            );
+            console.log(privKeyResult);
+            secretResult = await KwilDB.decryptKey(signature, address, secret);
+        }catch(e){
+            setOpenSignSnackbar(true);
+            handleClose();
+            return;
+        }
       console.log(privKeyResult);
       console.log(secretResult);
       handleClose();
@@ -174,11 +195,19 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
                 const signature = JSON.stringify(sig);
                 console.log(signature);
 
-                const privKeyResult = JSON.parse(
-                    await KwilDB.decryptKey(signature, address, privateKey)
-                );
-                console.log(privKeyResult);
-                const secretResult = await KwilDB.decryptKey(signature, address, secret);
+                let privKeyResult;
+                let secretResult;
+                try {
+                    privKeyResult = JSON.parse(
+                        await KwilDB.decryptKey(signature, address, privateKey)
+                    );
+                    console.log(privKeyResult);
+                    secretResult = await KwilDB.decryptKey(signature, address, secret);
+                }catch(e){
+                    setOpenSignSnackbar(true);
+                    handleClose();
+                    return;
+                }
 
                 handleClose();
                 navigate("/" + moatName, {
@@ -220,7 +249,19 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
         </div>
         <div>
           <Button
-            onClick={handleCopy}
+            onClick={handleClick}
+            sx={{
+              textTransform: "none",
+              color: "#fff",
+              backgroundColor: "#438ea0 !important",
+              borderRadius: "9px",
+              margin: "0px  auto 10px 20px",
+            }}
+          >
+            Open Data Moat
+          </Button>
+          <Button
+            onClick={(e) => handleCopy(e, "key")}
             sx={{
               textTransform: "none",
               color: "#000",
@@ -229,7 +270,19 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
               margin: "0px  auto 10px 20px",
             }}
           >
-            Copy Credentials
+            Copy Private Key
+          </Button>
+          <Button
+            onClick={(e) => handleCopy(e, "secret")}
+            sx={{
+              textTransform: "none",
+              color: "#000",
+              backgroundColor: "#fff !important",
+              borderRadius: "9px",
+              margin: "0px  auto 10px 20px",
+            }}
+          >
+            Copy Secret
           </Button>
           <Button
             onClick={() =>
@@ -311,7 +364,7 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
           severity="success"
           sx={{ width: "100%" }}
         >
-          Private key and secret pasted to your clipboard!
+          Successfully pasted to your clipboard!
         </Alert>
       </Snackbar>
       <Snackbar
@@ -329,6 +382,21 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
           An error occurred while pasting to your clipboard!
         </Alert>
       </Snackbar>
+        <Snackbar
+            sx={{ margin: "0px auto" }}
+            open={openSignSnackbar}
+            autoHideDuration={4000}
+            onClose={() => setOpenSignSnackbar(false)}
+        >
+            <Alert
+                variant="filled"
+                onClose={() => setOpenSignSnackbar(null)}
+                severity="error"
+                sx={{ width: "100%" }}
+            >
+                An error occured trying to decrypt moat data
+            </Alert>
+        </Snackbar>
     </>
   );
 }

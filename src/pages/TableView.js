@@ -58,7 +58,7 @@ function TableView() {
         secret.current
       );
       const result = await kwilDB.query(`SELECT *
-                                               FROM ${tableName};`);
+                                               FROM ${schemaName}.${tableName};`);
       console.log(result);
       console.log(result.fields.length);
       let columns = [];
