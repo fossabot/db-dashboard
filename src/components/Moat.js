@@ -16,15 +16,6 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
   const [copyStatus, setCopyStatus] = useState(null);
     const [openSignSnackbar, setOpenSignSnackbar] = useState(false);
 
-    function str2ab(str) {
-        let buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-        let bufView = new Uint16Array(buf);
-        for (let i = 0, strLen = str.length; i < strLen; i++) {
-            bufView[i] = str.charCodeAt(i);
-        }
-        return buf;
-    }
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
