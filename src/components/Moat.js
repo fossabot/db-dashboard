@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import KwilDB from "kwildb";
-import { ethers } from "ethers";
+import Web3 from "web3";
 
 import { Button, Popover, InputBase, Snackbar, Alert } from "@mui/material";
 
@@ -34,7 +34,7 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
 
   const pasteCopy = (e) => {
     e.preventDefault();
-    setTimeout(async function () {
+    /*setTimeout(async function () {
       console.log(phrase);
       await window.ethereum.send("eth_requestAccounts");
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -70,7 +70,7 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
       }
 
       handleClose();
-    }, 0);
+    }, 0);*/
   };
 
     const pasteCopyAR = (e) => {
@@ -122,17 +122,32 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
   const navigateToMoat = (e) => {
     e.preventDefault();
     setTimeout(async function () {
-      console.log(phrase);
+      /*console.log(phrase);
       await window.ethereum.send("eth_requestAccounts");
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       console.log(provider);
       const signer = provider.getSigner();
       console.log(signer);
       const signature = await signer.signMessage(phrase);
-      const address = await signer.getAddress();
+      const address = await signer.getAddress();*/
+        /*const web3 = new Web3(window.ethereum);
+        await window.ethereum.enable();
+        const address = await web3.eth.requestAccounts();
+        console.log(address);
+        const signature= 'hi';
+        console.log(web3.personal.sign(
+            phrase,
+            address,
+            (err, signature) => {
+                if (err) return err;
+                return signature ;
+            }
+        ))*/
+        const {ethereum }= window;
+        console.log(await ethereum.request({ method: 'eth_requestAccounts' }));
         let privKeyResult;
         let secretResult;
-        try {
+        /*try {
             privKeyResult = JSON.parse(
                 await KwilDB.decryptKey(signature, address, privateKey)
             );
@@ -142,18 +157,18 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
             setOpenSignSnackbar(true);
             handleClose();
             return;
-        }
+        }*/
       console.log(privKeyResult);
       console.log(secretResult);
       handleClose();
-      navigate("/" + moatName, {
+      /*navigate("/" + moatName, {
         state: {
           privKey: privKeyResult,
           owner: owner,
           secret: secretResult,
           expanded: true,
         },
-      });
+      });*/
     }, 0);
   };
 
