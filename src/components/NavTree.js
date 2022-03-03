@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import KwilDB from "kwildbweb";
+import KwilDB from "kwildb";
 
 import { TreeView, TreeItem } from "@mui/lab";
 import { Drawer } from "@mui/material";
