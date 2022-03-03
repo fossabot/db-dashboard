@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useRef, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import KwilDB from "kwildb";
 import { ethers } from "ethers";
@@ -17,7 +17,9 @@ import AddIcon from "@mui/icons-material/Add";
 // import KwilLoader from "../assets/kwil_loader.svg";
 // import LoadAnim from "../assets/Kwil_feather_icon_animation_loop.svg";
 
-export default function Moat({ poolName, creator, validator, balance }) {
+export default function Moat({ poolName, creator, validator, balance,token }) {
+    const multiplier = useRef(token === "USDC"?1000000:1000000000000000000)
+    const decimalCheck = useRef(token === "USDC"?.000001:.000000000000000001)
   const [anchorEl, setAnchorEl] = useState(null);
   const [amount, setAmount] = useState(0);
 
@@ -34,7 +36,7 @@ export default function Moat({ poolName, creator, validator, balance }) {
   const open = Boolean(anchorEl);
 
   const addFunds = () => {
-    if (amount > 0.000001) {
+    if (amount > decimalCheck.current) {
       setAdding(true);
       setTimeout(async function () {
         await window.ethereum.send("eth_requestAccounts");
@@ -52,8 +54,8 @@ export default function Moat({ poolName, creator, validator, balance }) {
           poolName,
           address,
           "goerli",
-          "USDC",
-          amount * 1000000
+          "token",
+          amount * multiplier.current
         );
         console.log(result);
         setAdding(false);
@@ -97,7 +99,7 @@ export default function Moat({ poolName, creator, validator, balance }) {
         <p style={{ color: "#fff" }}>Validator: {validator}</p>
         <div style={{ display: "flex", marginBottom: "10px" }}>
           <p style={{ color: "#fff", margin: "auto 0px" }}>
-            Balance: {balance / 1000000} USDC
+            Balance: {balance / multiplier.current} {token}
           </p>
           <Button
             onClick={handleClick}
@@ -160,10 +162,10 @@ export default function Moat({ poolName, creator, validator, balance }) {
                 inputProps={{
                   autoCorrect: "off",
                 }}
-                error={amount < 0.000001}
+                error={amount < decimalCheck.current}
                 helperText={
-                  amount < 0.000001
-                    ? "Enter an amount greater than 0.000001 USDC"
+                  amount < decimalCheck.current
+                    ? `Enter an amount greater than ${decimalCheck.current} USDC`
                     : ""
                 }
               />
