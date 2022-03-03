@@ -20,14 +20,22 @@ export default function CreatePool() {
 
   const moat = useRef(location.state.moatName);
   const [poolName, setPoolName] = useState("");
-  const [chain, setChain] = useState("goerli");
+  const [chain, setChain] = useState("polygon");
+    const [token, setToken] = useState("USDC");
   const [status, setStatus] = useState(null);
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setChain(e.target.value);
+    if (e.target.value){
+        setToken("USDC");
+    }
   };
+
+    const handleChangeToken = (e) => {
+        setToken(e.target.value);
+    };
 
   const createPool = (e) => {
     e.preventDefault();
@@ -44,13 +52,14 @@ export default function CreatePool() {
       console.log(poolName);
       console.log(address);
       console.log(chain);
+      console.log(token);
 
       const result = await KwilDB.pools.createFundingPool(
         poolName,
         address,
         address,
         chain,
-        "USDC",
+        token,
         moat.current
       );
       console.log(result);
@@ -119,7 +128,7 @@ export default function CreatePool() {
           paddingTop: "8px",
           paddingLeft: "15px",
           paddingRight: "10px",
-          margin: "30px auto 50px auto",
+          margin: "30px auto 30px auto",
           width: "325px",
           height: "40px",
           backgroundColor: "white",
@@ -140,10 +149,41 @@ export default function CreatePool() {
             <em>Blockchain</em>
           </MenuItem>
           {/*<MenuItem value="ethereum">Ethereum</MenuItem>*/}
-          {/*<MenuItem value="polygon">Polygon</MenuItem>*/}
+            <MenuItem value="polygon">Polygon</MenuItem>
           <MenuItem value="goerli">Goerli Ethereum Testnet</MenuItem>
         </Select>
       </FormControl>
+        <FormControl
+            required
+            sx={{
+                paddingTop: "8px",
+                paddingLeft: "15px",
+                paddingRight: "10px",
+                margin: "0px auto 50px auto",
+                width: "325px",
+                height: "40px",
+                backgroundColor: "white",
+                borderRadius: "9px",
+                border: "none !important",
+                "& .MuiFilledInput-underline": {
+                    borderBottom: "0px solid black !important",
+                },
+            }}
+        >
+            <Select
+                displayEmpty
+                value={token}
+                onChange={handleChangeToken}
+                input={<InputBase />}
+            >
+                <MenuItem disabled value="">
+                    <em>Token</em>
+                </MenuItem>
+                {/*<MenuItem value="ethereum">Ethereum</MenuItem>*/}
+                <MenuItem value="USDC">USDC</MenuItem>
+                {chain === "polygon"&&<MenuItem value="KRED">KRED</MenuItem>}
+            </Select>
+        </FormControl>
       <div
         style={{
           marginBottom: "auto",

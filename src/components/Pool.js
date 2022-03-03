@@ -17,7 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 // import KwilLoader from "../assets/kwil_loader.svg";
 // import LoadAnim from "../assets/Kwil_feather_icon_animation_loop.svg";
 
-export default function Moat({ poolName, creator, validator, balance,token }) {
+export default function Moat({ poolName, creator, validator, balance,token,chain }) {
     const multiplier = useRef(token === "USDC"?1000000:1000000000000000000)
     const decimalCheck = useRef(token === "USDC"?.000001:.000000000000000001)
   const [anchorEl, setAnchorEl] = useState(null);
@@ -53,8 +53,8 @@ export default function Moat({ poolName, creator, validator, balance,token }) {
         const result = await KwilDB.pools.fundPool(
           poolName,
           address,
-          "goerli",
-          "token",
+          chain,
+          token,
           amount * multiplier.current
         );
         console.log(result);
@@ -94,7 +94,7 @@ export default function Moat({ poolName, creator, validator, balance,token }) {
             Please wait, this may take several minutes...
           </p>
         </Backdrop>
-        <p style={{ color: "#fff" }}>Name: {poolName}</p>
+        <p style={{ color: "#fff" }}>Name: {poolName} ({chain})</p>
         <p style={{ color: "#fff" }}>Creator: {creator}</p>
         <p style={{ color: "#fff" }}>Validator: {validator}</p>
         <div style={{ display: "flex", marginBottom: "10px" }}>
@@ -196,8 +196,7 @@ export default function Moat({ poolName, creator, validator, balance,token }) {
             severity="success"
             sx={{ width: "100%" }}
           >
-            Funding Pool created successfully. Go to the Database Manager to add
-            funds!
+            Funds added succesfully to the funding pool!
           </Alert>
         </Snackbar>
         <Snackbar
@@ -212,7 +211,7 @@ export default function Moat({ poolName, creator, validator, balance,token }) {
             severity="error"
             sx={{ width: "100%" }}
           >
-            Funding Pool creation failed. Reason: {errMsg};
+            Funds not added. Reason: {errMsg};
           </Alert>
         </Snackbar>
       </div>
