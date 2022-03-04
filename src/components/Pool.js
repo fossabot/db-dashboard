@@ -20,6 +20,7 @@ import AddIcon from "@mui/icons-material/Add";
 export default function Moat({ poolName, creator, validator, balance,token,chain }) {
     const multiplier = useRef(token === "USDC"?1000000:1000000000000000000)
     const decimalCheck = useRef(token === "USDC"?.000001:.000000000000000001)
+    const chainID = React.useRef(chain === "goerli"?{hex:"0x5",int:5}:{hex:"0x89",int:137})
   const [anchorEl, setAnchorEl] = useState(null);
   const [amount, setAmount] = useState(0);
 
@@ -37,8 +38,26 @@ export default function Moat({ poolName, creator, validator, balance,token,chain
 
   const addFunds = () => {
     if (amount > decimalCheck.current) {
-      setAdding(true);
       setTimeout(async function () {
+          console.log(window.ethereum.networkVersion);
+          console.log(chainID.current.int);
+          if (window.ethereum.networkVersion !== chainID.current.int) {
+              try {
+                  await window.ethereum.request({
+                      method: 'wallet_switchEthereumChain',
+                      params: [{chainId: chainID.current.hex},],
+                  });
+              } catch (err) {
+                  if (err.message === "User rejected the request.") {
+                      //window.alert("user rejected the thing")
+                      return;
+                  }
+                  window.alert("you do not have the specified chain added to your wallet!")
+                  return;
+
+              }
+          }
+          setAdding(true);
         await window.ethereum.send("eth_requestAccounts");
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         console.log(provider);

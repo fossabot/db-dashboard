@@ -68,6 +68,11 @@ export default function CreatePool() {
                         },
                     ],
                 });*/
+                //console.log(err.message)
+                if (err.message === "User rejected the request."){
+                    //window.alert("user rejected the thing")
+                    return;
+                }
                 window.alert("you do not have the specified chain added to your wallet!")
                 return;
 
