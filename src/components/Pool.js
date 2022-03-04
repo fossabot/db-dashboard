@@ -74,17 +74,17 @@ export default function Moat({ poolName, creator, validator, balance,token,chain
           address,
           chain,
           token,
-          amount * multiplier.current
+            (amount * multiplier.current).toString()
         );
         console.log(result);
         setAdding(false);
         if (typeof result === "string") {
           setStatus("fail");
           setErrMsg(result);
-          window.location.reload();
+          //window.location.reload();
         } else {
           setStatus("success");
-          window.location.reload();
+          //window.location.reload();
         }
       }, 0);
     }
