@@ -21,6 +21,7 @@ export default function CreatePool() {
   const moat = useRef(location.state.moatName);
   const [poolName, setPoolName] = useState("");
   const [chain, setChain] = useState("polygon");
+  const chainID = React.useRef({hex:"0x89",int:137})
     const [token, setToken] = useState("USDC");
   const [status, setStatus] = useState(null);
   const [errMsg, setErrMsg] = useState("");
@@ -28,8 +29,10 @@ export default function CreatePool() {
 
   const handleChange = (e) => {
     setChain(e.target.value);
-    if (e.target.value){
+    chainID.current = {hex:"0x89",int:137};
+    if (e.target.value === "goerli"){
         setToken("USDC");
+        chainID.current = {hex:"0x5",int:5};
     }
   };
 
@@ -40,7 +43,36 @@ export default function CreatePool() {
   const createPool = (e) => {
     e.preventDefault();
 
+      //console.log(ethers.utils.hexlify(chainID.current.hex))
+      console.log(window.ethereum.networkVersion)
+      console.log(ethers.utils.hexlify(chainID.current.int))
+      console.log(chainID.current)
+
     setTimeout(async function () {
+        if (window.ethereum.networkVersion !== chainID.current.int) {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: chainID.current.hex },],
+                });
+            } catch (err) {
+
+                /*await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [
+                        {
+                            chainName: 'Polygon Mainnet',
+                            chainId: ethers.utils.hexlify(chainID.current),
+                            nativeCurrency: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
+                            rpcUrls: ['https://polygon-rpc.com/'],
+                        },
+                    ],
+                });*/
+                window.alert("you do not have the specified chain added to your wallet!")
+                return;
+
+            }
+        }
       setLoading(true);
       await window.ethereum.send("eth_requestAccounts");
       const provider = new ethers.providers.Web3Provider(window.ethereum);
