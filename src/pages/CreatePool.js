@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { ethers } from "ethers";
 import KwilDB from "kwildb";
+import ChainMap from "../ChainMap";
 
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
@@ -17,11 +18,11 @@ import Navbar from "../components/Navbar";
 
 export default function CreatePool() {
   const location = useLocation();
-
+console.log(ChainMap())
   const moat = useRef(location.state.moatName);
   const [poolName, setPoolName] = useState("");
   const [chain, setChain] = useState("polygon");
-  const chainID = React.useRef({hex:"0x89",int:137})
+  //const chainID = React.useRef({hex:"0x89",int:137})
     const [token, setToken] = useState("USDC");
   const [status, setStatus] = useState(null);
   const [errMsg, setErrMsg] = useState("");
@@ -29,11 +30,11 @@ export default function CreatePool() {
 
   const handleChange = (e) => {
     setChain(e.target.value);
-    chainID.current = {hex:"0x89",int:137};
+   /*chainID.current = {hex:"0x89",int:137};
     if (e.target.value === "goerli"){
         setToken("USDC");
         chainID.current = {hex:"0x5",int:5};
-    }
+    }*/
   };
 
     const handleChangeToken = (e) => {
@@ -45,15 +46,17 @@ export default function CreatePool() {
 
       //console.log(ethers.utils.hexlify(chainID.current.hex))
       console.log(window.ethereum.networkVersion)
-      console.log(ethers.utils.hexlify(chainID.current.int))
-      console.log(chainID.current)
+      //console.log(ethers.utils.hexlify(chainID.current.int))
+      //console.log(chainID.current)
+      const chainID = ChainMap().get(chain);
+      console.log(chainID);
 
     setTimeout(async function () {
-        if (window.ethereum.networkVersion !== chainID.current.int) {
+        if (window.ethereum.networkVersion !== chainID.int) {
             try {
                 await window.ethereum.request({
                     method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: chainID.current.hex },],
+                    params: [{ chainId: chainID.hex },],
                 });
             } catch (err) {
 
