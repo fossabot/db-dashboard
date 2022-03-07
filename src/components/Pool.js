@@ -13,6 +13,7 @@ import {
   Alert,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import ChainMap from "../ChainMap";
 
 // import KwilLoader from "../assets/kwil_loader.svg";
 // import LoadAnim from "../assets/Kwil_feather_icon_animation_loop.svg";
@@ -20,7 +21,7 @@ import AddIcon from "@mui/icons-material/Add";
 export default function Moat({ poolName, creator, validator, balance,token,chain }) {
     const multiplier = useRef(token === "USDC"?1000000:1000000000000000000)
     const decimalCheck = useRef(token === "USDC"?.000001:.000000000000000001)
-    const chainID = React.useRef(chain === "goerli"?{hex:"0x5",int:5}:{hex:"0x89",int:137})
+    //const chainID = React.useRef(chain === "goerli"?{hex:"0x5",int:5}:{hex:"0x89",int:137})
   const [anchorEl, setAnchorEl] = useState(null);
   const [amount, setAmount] = useState(0);
 
@@ -38,14 +39,15 @@ export default function Moat({ poolName, creator, validator, balance,token,chain
 
   const addFunds = () => {
     if (amount > decimalCheck.current) {
+        const chainID = ChainMap().get(chain);
       setTimeout(async function () {
           console.log(window.ethereum.networkVersion);
-          console.log(chainID.current.int);
-          if (window.ethereum.networkVersion !== chainID.current.int) {
+          console.log(chainID.int);
+          if (window.ethereum.networkVersion !== chainID.int) {
               try {
                   await window.ethereum.request({
                       method: 'wallet_switchEthereumChain',
-                      params: [{chainId: chainID.current.hex},],
+                      params: [{chainId: chainID.hex},],
                   });
               } catch (err) {
                   if (err.message === "User rejected the request.") {
