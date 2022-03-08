@@ -2,25 +2,8 @@ import React from 'react';
 import './App.css';
 import { ethers } from 'ethers';
 //import ecclesia from "ecclesia";
-import KwilDB from 'kwildbweb';
-import devkey from './devkey';
-import LoadingButton from '@mui/lab/LoadingButton';
+import KwilDB from 'kwildb';
 //import arweave from 'arweave';
-import {
-	Box,
-	Button,
-	Fade,
-	FormControl,
-	Icon,
-	IconButton,
-	InputAdornment,
-	InputBase,
-	Popper,
-	TextField,
-} from '@mui/material';
-import kwilPattern from './assets/backgrounds/kwil_pattern_dark_2.svg';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import CloseIcon from '@mui/icons-material/Close';
 import Main from './Main';
 
 function App() {

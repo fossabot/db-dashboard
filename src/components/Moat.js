@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 
 import { Button, Popover, InputBase, Snackbar, Alert } from "@mui/material";
 
-export default function Moat({ moatName, privateKey, owner, secret, arweave }) {
+export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
   const navigate = useNavigate();
 
   const [phrase, setPhrase] = useState("");
@@ -14,15 +14,7 @@ export default function Moat({ moatName, privateKey, owner, secret, arweave }) {
   const [copying, setCopying] = useState(false);
   const [toCopy, setToCopy] = useState("");
   const [copyStatus, setCopyStatus] = useState(null);
-
-  function str2ab(str) {
-    let buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-    let bufView = new Uint16Array(buf);
-    for (let i = 0, strLen = str.length; i < strLen; i++) {
-      bufView[i] = str.charCodeAt(i);
-    }
-    return buf;
-  }
+    const [openSignSnackbar, setOpenSignSnackbar] = useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -81,6 +73,52 @@ export default function Moat({ moatName, privateKey, owner, secret, arweave }) {
     }, 0);
   };
 
+    const pasteCopyAR = (e) => {
+        e.preventDefault();
+        setTimeout(async function () {
+            console.log(phrase);
+            const address = await window.arweaveWallet.getActiveAddress();
+            console.log(address);
+
+            const enc = new TextEncoder(); // always utf-8
+            const buff = (enc.encode(phrase));
+            console.log(buff)
+            const sig = await window.arweaveWallet.signature(buff, {
+                name: "RSA-PSS",
+                saltLength: 0,
+            });
+            const signature = JSON.stringify(sig);
+            console.log(signature);
+
+            const privKeyResult = JSON.parse(
+                await KwilDB.decryptKey(signature, address, privateKey)
+            );
+            const secretResult = await KwilDB.decryptKey(signature, address, secret);
+            console.log(privKeyResult);
+            console.log(secretResult);
+            if (toCopy === "key") {
+                navigator.clipboard.writeText(JSON.stringify(privKeyResult)).then(
+                    () => {
+                        setCopyStatus("success");
+                    },
+                    () => {
+                        setCopyStatus("fail");
+                    }
+                );
+            } else {
+                navigator.clipboard.writeText(secretResult).then(
+                    () => {
+                        setCopyStatus("success");
+                    },
+                    () => {
+                        setCopyStatus("fail");
+                    }
+                );
+            }
+            handleClose();
+        }, 0);
+    };
+
   const navigateToMoat = (e) => {
     e.preventDefault();
     setTimeout(async function () {
@@ -92,10 +130,19 @@ export default function Moat({ moatName, privateKey, owner, secret, arweave }) {
       console.log(signer);
       const signature = await signer.signMessage(phrase);
       const address = await signer.getAddress();
-      const privKeyResult = JSON.parse(
-        await KwilDB.decryptKey(signature, address, privateKey)
-      );
-      const secretResult = await KwilDB.decryptKey(signature, address, secret);
+        let privKeyResult;
+        let secretResult;
+        try {
+            privKeyResult = JSON.parse(
+                await KwilDB.decryptKey(signature, address, privateKey)
+            );
+            console.log(privKeyResult);
+            secretResult = await KwilDB.decryptKey(signature, address, secret);
+        }catch(e){
+            setOpenSignSnackbar(true);
+            handleClose();
+            return;
+        }
       console.log(privKeyResult);
       console.log(secretResult);
       handleClose();
@@ -110,57 +157,63 @@ export default function Moat({ moatName, privateKey, owner, secret, arweave }) {
     }, 0);
   };
 
-  const navigateToMoatAR = (e) => {
-    e.preventDefault();
-    setTimeout(async function () {
-      if (window.arweaveWallet) {
-        const info = {
-          name: "KwilDB", // optional application name
-          //logo:KwilLogo
-        };
+    const navigateToMoatAR = (e) => {
+        e.preventDefault();
+        setTimeout(async function () {
+            if (window.arweaveWallet) {
+                const info = {
+                    name: "KwilDB", // optional application name
+                    //logo:KwilLogo
+                };
 
-        console.log(
-          await window.arweaveWallet.connect(
-            ["ACCESS_ADDRESS", "SIGNATURE"],
-            info
-          )
-        );
+                console.log(
+                    await window.arweaveWallet.connect(
+                        ["ACCESS_ADDRESS", "SIGNATURE"],
+                        info
+                    )
+                );
 
-        const address = await window.arweaveWallet.getActiveAddress();
-        console.log(address);
+                const address = await window.arweaveWallet.getActiveAddress();
+                console.log(address);
 
-        const buff = str2ab(phrase);
+                const enc = new TextEncoder(); // always utf-8
+                const buff = (enc.encode(phrase));
+                console.log(buff)
+                const sig = await window.arweaveWallet.signature(buff, {
+                    name: "RSA-PSS",
+                    saltLength: 0,
+                });
+                const signature = JSON.stringify(sig);
+                console.log(signature);
 
-        const sig = await window.arweaveWallet.signature(buff, {
-          name: "RSA-PSS",
-          saltLength: 0,
-        });
-        const signature = JSON.stringify(sig);
-        console.log(signature);
+                let privKeyResult;
+                let secretResult;
+                try {
+                    privKeyResult = JSON.parse(
+                        await KwilDB.decryptKey(signature, address, privateKey)
+                    );
+                    console.log(privKeyResult);
+                    secretResult = await KwilDB.decryptKey(signature, address, secret);
+                }catch(e){
+                    setOpenSignSnackbar(true);
+                    handleClose();
+                    return;
+                }
 
-        const privKeyResult = JSON.parse(
-          await KwilDB.decryptKey(signature, address, privateKey)
-        );
-        const secretResult = await KwilDB.decryptKey(
-          signature,
-          address,
-          secret
-        );
-
-        handleClose();
-        navigate("/" + moatName, {
-          state: {
-            privKey: privKeyResult,
-            owner: owner,
-            secret: secretResult,
-            expanded: true,
-          },
-        });
-      } else {
-        window.alert("Arconnect not detected");
-      }
-    }, 0);
-  };
+                handleClose();
+                navigate("/" + moatName, {
+                    state: {
+                        privKey: privKeyResult,
+                        owner: owner,
+                        secret: secretResult,
+                        expanded: true,
+                    },
+                });
+            } else {
+                window.alert("Arconnect not detected");
+            }
+        }, 0);
+    };
 
   return (
     <>
@@ -284,9 +337,7 @@ export default function Moat({ moatName, privateKey, owner, secret, arweave }) {
               margin: "0px 10px",
               borderRadius: "9px",
             }}
-            onClick={
-              copying ? pasteCopy : arweave ? navigateToMoatAR : navigateToMoat
-            }
+            onClick={copying ?arweave?pasteCopyAR: pasteCopy : arweave ? navigateToMoatAR : navigateToMoat}
           >
             Submit
           </Button>
@@ -322,6 +373,21 @@ export default function Moat({ moatName, privateKey, owner, secret, arweave }) {
           An error occurred while pasting to your clipboard!
         </Alert>
       </Snackbar>
+        <Snackbar
+            sx={{ margin: "0px auto" }}
+            open={openSignSnackbar}
+            autoHideDuration={4000}
+            onClose={() => setOpenSignSnackbar(false)}
+        >
+            <Alert
+                variant="filled"
+                onClose={() => setOpenSignSnackbar(null)}
+                severity="error"
+                sx={{ width: "100%" }}
+            >
+                An error occured trying to decrypt moat data
+            </Alert>
+        </Snackbar>
     </>
   );
 }

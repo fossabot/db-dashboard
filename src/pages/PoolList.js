@@ -21,8 +21,9 @@ export default function PoolList() {
       const result = await KwilDB.getPoolsByMoat("https://registry.kwil.xyz", moat.current)
       console.log(result);
       for (let i = 0; i < result.length; i++) {
-          const result2 = await KwilDB.pools.getPool(result[i].pool_name, "goerli", "USDC")
-          setPools((old) => [...old, {name: result[i].pool_name, validator: result2.validator, creator: result2.creator, balance: result2.pool}])
+          const result2 = await KwilDB.pools.getPool(result[i].pool_name, result[i].blockchain, result[i].token)
+          console.log(result2);
+          setPools((old) => [...old, {name: result[i].pool_name, validator: result2.validator, creator: result2.creator, balance: result2.pool,token:result[i].token,chain:result[i].blockchain}])
       }
       setLoading(false);
     }, 0);
@@ -114,6 +115,8 @@ export default function PoolList() {
               creator={pool.creator}
               validator={pool.validator}
               balance={pool.balance}
+              token = {pool.token}
+              chain = {pool.chain}
             />
           </div>
         ))}

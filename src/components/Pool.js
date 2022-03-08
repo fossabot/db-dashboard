@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useRef, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import KwilDB from "kwildb";
 import { ethers } from "ethers";
@@ -13,11 +13,15 @@ import {
   Alert,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import ChainMap from "../ChainMap";
 
 // import KwilLoader from "../assets/kwil_loader.svg";
 // import LoadAnim from "../assets/Kwil_feather_icon_animation_loop.svg";
 
-export default function Moat({ poolName, creator, validator, balance }) {
+export default function Moat({ poolName, creator, validator, balance,token,chain }) {
+    const multiplier = useRef(token === "USDC"?1000000:1000000000000000000)
+    const decimalCheck = useRef(token === "USDC"?.000001:.000000000000000001)
+    //const chainID = React.useRef(chain === "goerli"?{hex:"0x5",int:5}:{hex:"0x89",int:137})
   const [anchorEl, setAnchorEl] = useState(null);
   const [amount, setAmount] = useState(0);
 
@@ -34,9 +38,28 @@ export default function Moat({ poolName, creator, validator, balance }) {
   const open = Boolean(anchorEl);
 
   const addFunds = () => {
-    if (amount > 0.000001) {
-      setAdding(true);
+    if (amount > decimalCheck.current) {
+        const chainID = ChainMap().get(chain);
       setTimeout(async function () {
+          console.log(window.ethereum.networkVersion);
+          console.log(chainID.int);
+          if (window.ethereum.networkVersion !== chainID.int) {
+              try {
+                  await window.ethereum.request({
+                      method: 'wallet_switchEthereumChain',
+                      params: [{chainId: chainID.hex},],
+                  });
+              } catch (err) {
+                  if (err.message === "User rejected the request.") {
+                      //window.alert("user rejected the thing")
+                      return;
+                  }
+                  window.alert("you do not have the specified chain added to your wallet!")
+                  return;
+
+              }
+          }
+          setAdding(true);
         await window.ethereum.send("eth_requestAccounts");
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         console.log(provider);
@@ -51,9 +74,9 @@ export default function Moat({ poolName, creator, validator, balance }) {
         const result = await KwilDB.pools.fundPool(
           poolName,
           address,
-          "goerli",
-          "USDC",
-          amount * 1000000
+          chain,
+          token,
+            (amount * multiplier.current).toString()
         );
         console.log(result);
         setAdding(false);
@@ -92,12 +115,12 @@ export default function Moat({ poolName, creator, validator, balance }) {
             Please wait, this may take several minutes...
           </p>
         </Backdrop>
-        <p style={{ color: "#fff" }}>Name: {poolName}</p>
+        <p style={{ color: "#fff" }}>Name: {poolName} ({chain})</p>
         <p style={{ color: "#fff" }}>Creator: {creator}</p>
         <p style={{ color: "#fff" }}>Validator: {validator}</p>
         <div style={{ display: "flex", marginBottom: "10px" }}>
           <p style={{ color: "#fff", margin: "auto 0px" }}>
-            Balance: {balance / 1000000} USDC
+            Balance: {balance / multiplier.current} {token}
           </p>
           <Button
             onClick={handleClick}
@@ -160,10 +183,10 @@ export default function Moat({ poolName, creator, validator, balance }) {
                 inputProps={{
                   autoCorrect: "off",
                 }}
-                error={amount < 0.000001}
+                error={amount < decimalCheck.current}
                 helperText={
-                  amount < 0.000001
-                    ? "Enter an amount greater than 0.000001 USDC"
+                  amount < decimalCheck.current
+                    ? `Enter an amount greater than ${decimalCheck.current} USDC`
                     : ""
                 }
               />
@@ -194,8 +217,7 @@ export default function Moat({ poolName, creator, validator, balance }) {
             severity="success"
             sx={{ width: "100%" }}
           >
-            Funding Pool created successfully. Go to the Database Manager to add
-            funds!
+            Funds added succesfully to the funding pool!
           </Alert>
         </Snackbar>
         <Snackbar
@@ -210,7 +232,7 @@ export default function Moat({ poolName, creator, validator, balance }) {
             severity="error"
             sx={{ width: "100%" }}
           >
-            Funding Pool creation failed. Reason: {errMsg};
+            Funds not added. Reason: {errMsg};
           </Alert>
         </Snackbar>
       </div>
