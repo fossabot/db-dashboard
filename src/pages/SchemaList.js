@@ -69,7 +69,7 @@ function SchemaList() {
         secret.current
       );
       console.log(
-        await kwilDB.query(`CREATE SCHEMA if NOT EXISTS ${newSchema}`)
+        await kwilDB.query(`CREATE SCHEMA if NOT EXISTS ${newSchema}`, true)
       );
       setAdding(false);
     });

@@ -1,84 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import KwilDB from "kwildb";
+import { ethers } from "ethers";
 
-import { Button } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 
-import Kwil from "../assets/logos/kwil.svg";
-import grad1 from "../assets/gradients/grad1.svg";
+import Moat from "../components/Moat";
+import { ReactComponent as Metamask } from "../assets/logos/MetaMask_Fox.svg";
+import Arconnect from "../assets/logos/arconnect.png";
 import Navbar from "../components/Navbar";
+import NavTree from "../components/NavTree";
 
 export default function Home() {
+  const wallet = localStorage.getItem("wallet");
+  const address = localStorage.getItem("address");
+
+  const [moats, setMoats] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  const arConnect = React.useRef(false);
+
+  useEffect(() => {
+    if (wallet === "metamask") {
+      setTimeout(async function () {
+        const temp = await KwilDB.getMoats("https://test-db.kwil.xyz", address);
+        console.log(temp);
+        setMoats(temp);
+        setLoaded(true);
+      }, 0);
+    } else if (wallet === "arconnect") {
+      setTimeout(async function () {
+        setMoats(await KwilDB.getMoats("https://test-db.kwil.xyz", address));
+        setLoaded(true);
+      }, 0);
+    }
+  }, []);
+
   return (
     <div
       style={{
+        background: "linear-gradient(30deg, #101010, #000)",
         width: "100vw",
         minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        background: "linear-gradient(210deg, #212121, #000)",
-        overflow: "hidden",
+        paddingBottom: 40,
       }}
     >
-      <Navbar page="home" />
-      <img
-        src={grad1}
-        alt="bg-gradient"
-        style={{ position: "absolute", top: 200 }}
-      />
-      <img
-        src={Kwil}
-        alt="kwil-logo"
-        style={{ height: "90px", marginTop: "20vh" }}
-      />
-      <h1
-        style={{
-          textAlign: "center",
-          fontSize: 50,
-          marginLeft: "auto",
-          marginRight: "auto",
-          background:
-            "-webkit-linear-gradient(45deg, #FF4F99 30%, #717AFF 90%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-        }}
-      >
-        Welcome to Kwil DB
-      </h1>
-      <div style={{ display: "flex" }}>
-        <Button
-          href="/moats"
-          sx={{
-            textTransform: "none",
-            fontSize: 16,
-            border: "none",
-            borderRadius: "9px",
-            padding: "6px 20px",
-            width: "300px",
-            color: "#000",
-            boxShadow: "none !important",
-            backgroundColor: "#fff !important",
-            margin: "20px 20px 0 auto",
-          }}
-        >
-          Database Manager
-        </Button>
-        <Button
-          href="/createmoat"
-          sx={{
-            textTransform: "none",
-            fontSize: 16,
-            border: "none",
-            borderRadius: "9px",
-            padding: "6px 20px",
-            width: "300px",
-            color: "#000",
-            boxShadow: "none !important",
-            background: "#fff !important",
-            margin: "20px auto auto 20px",
-          }}
-        >
-          Create New Moat
-        </Button>
-      </div>
+      <NavTree moats={moats} />
     </div>
   );
 }

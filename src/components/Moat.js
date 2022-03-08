@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 
 import { Button, Popover, InputBase, Snackbar, Alert } from "@mui/material";
 
-export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
+export default function Moat({ moatName, privateKey, owner, secret, arweave }) {
   const navigate = useNavigate();
 
   const [phrase, setPhrase] = useState("");
@@ -15,14 +15,14 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
   const [toCopy, setToCopy] = useState("");
   const [copyStatus, setCopyStatus] = useState(null);
 
-    function str2ab(str) {
-        let buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-        let bufView = new Uint16Array(buf);
-        for (let i = 0, strLen = str.length; i < strLen; i++) {
-            bufView[i] = str.charCodeAt(i);
-        }
-        return buf;
+  function str2ab(str) {
+    let buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+    let bufView = new Uint16Array(buf);
+    for (let i = 0, strLen = str.length; i < strLen; i++) {
+      bufView[i] = str.charCodeAt(i);
     }
+    return buf;
+  }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -110,53 +110,57 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
     }, 0);
   };
 
-    const navigateToMoatAR = (e) => {
-        e.preventDefault();
-        setTimeout(async function () {
-            if (window.arweaveWallet) {
-                const info = {
-                    name: "KwilDB", // optional application name
-                    //logo:KwilLogo
-                };
+  const navigateToMoatAR = (e) => {
+    e.preventDefault();
+    setTimeout(async function () {
+      if (window.arweaveWallet) {
+        const info = {
+          name: "KwilDB", // optional application name
+          //logo:KwilLogo
+        };
 
-                console.log(
-                    await window.arweaveWallet.connect(
-                        ["ACCESS_ADDRESS", "SIGNATURE"],
-                        info
-                    )
-                );
+        console.log(
+          await window.arweaveWallet.connect(
+            ["ACCESS_ADDRESS", "SIGNATURE"],
+            info
+          )
+        );
 
-                const address = await window.arweaveWallet.getActiveAddress();
-                console.log(address);
+        const address = await window.arweaveWallet.getActiveAddress();
+        console.log(address);
 
-                const buff = str2ab(phrase);
+        const buff = str2ab(phrase);
 
-                const sig = await window.arweaveWallet.signature(buff, {
-                    name: "RSA-PSS",
-                    saltLength: 0,
-                });
-                const signature = JSON.stringify(sig);
-                console.log(signature);
+        const sig = await window.arweaveWallet.signature(buff, {
+          name: "RSA-PSS",
+          saltLength: 0,
+        });
+        const signature = JSON.stringify(sig);
+        console.log(signature);
 
-                const privKeyResult = JSON.parse(
-                    await KwilDB.decryptKey(signature, address, privateKey)
-                );
-                const secretResult = await KwilDB.decryptKey(signature, address, secret);
+        const privKeyResult = JSON.parse(
+          await KwilDB.decryptKey(signature, address, privateKey)
+        );
+        const secretResult = await KwilDB.decryptKey(
+          signature,
+          address,
+          secret
+        );
 
-                handleClose();
-                navigate("/" + moatName, {
-                    state: {
-                        privKey: privKeyResult,
-                        owner: owner,
-                        secret: secretResult,
-                        expanded: true,
-                    },
-                });
-            } else {
-                window.alert("Arconnect not detected");
-            }
-        }, 0);
-    };
+        handleClose();
+        navigate("/" + moatName, {
+          state: {
+            privKey: privKeyResult,
+            owner: owner,
+            secret: secretResult,
+            expanded: true,
+          },
+        });
+      } else {
+        window.alert("Arconnect not detected");
+      }
+    }, 0);
+  };
 
   return (
     <>
@@ -280,7 +284,9 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
               margin: "0px 10px",
               borderRadius: "9px",
             }}
-            onClick={copying ? pasteCopy : arweave ? navigateToMoatAR : navigateToMoat}
+            onClick={
+              copying ? pasteCopy : arweave ? navigateToMoatAR : navigateToMoat
+            }
           >
             Submit
           </Button>
