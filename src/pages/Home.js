@@ -8,15 +8,39 @@ import Moat from "../components/Moat";
 import { ReactComponent as Metamask } from "../assets/logos/MetaMask_Fox.svg";
 import Arconnect from "../assets/logos/arconnect.png";
 import Navbar from "../components/Navbar";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import NavTree from "../components/NavTree";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  InputBase,
+  CircularProgress,
+} from "@mui/material";
 
 export default function Home() {
   const wallet = localStorage.getItem("wallet");
   const address = localStorage.getItem("address");
 
   const [moats, setMoats] = useState([]);
-  const [loaded, setLoaded] = useState(false);
-  const arConnect = React.useRef(false);
+
+  const [moatName, setMoatName] = useState("");
+  const [schemaName, setSchemaName] = useState("");
+  const [tableName, setTableName] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [privKeyResult, setPrivKeyResult] = useState("");
+  const [secretResult, setSecretResult] = useState("");
+
+  const [customQuery, setCustomQuery] = useState("");
+
+  const [cols, setCols] = useState([]);
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
     if (wallet === "metamask") {
@@ -24,15 +48,42 @@ export default function Home() {
         const temp = await KwilDB.getMoats("https://test-db.kwil.xyz", address);
         console.log(temp);
         setMoats(temp);
-        setLoaded(true);
       }, 0);
     } else if (wallet === "arconnect") {
       setTimeout(async function () {
         setMoats(await KwilDB.getMoats("https://test-db.kwil.xyz", address));
-        setLoaded(true);
       }, 0);
     }
   }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(async function () {
+      const kwilDB = KwilDB.createConnector(
+        {
+          host: "test-db.kwil.xyz",
+          protocol: "https",
+          port: null,
+          moat: moatName,
+          privateKey: privKeyResult,
+        },
+        secretResult
+      );
+      const result = await kwilDB.query(`SELECT *
+                                               FROM ${schemaName}.${tableName};`);
+      console.log(result);
+      console.log(result.fields.length);
+      let columns = [];
+      for (let i = 0; i < result.fields.length; i++) {
+        console.log(result.fields[i].name);
+        columns.push(result.fields[i].name);
+      }
+      console.log(columns);
+      setCols(columns);
+      setRows(result.rows);
+      setLoading(false);
+    });
+  }, [tableName]);
 
   return (
     <div
@@ -41,9 +92,152 @@ export default function Home() {
         width: "100vw",
         minHeight: "100vh",
         paddingBottom: 40,
+        display: "flex",
       }}
     >
-      <NavTree moats={moats} />
+      <NavTree
+        moats={moats}
+        moatName={moatName}
+        setMoatName={setMoatName}
+        schemaName={schemaName}
+        setSchemaName={setSchemaName}
+        tableName={tableName}
+        setTableName={setTableName}
+        privKeyResult={privKeyResult}
+        setPrivKeyResult={setPrivKeyResult}
+        secretResult={secretResult}
+        setSecretResult={setSecretResult}
+      />
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "calc(100vw - 240px)",
+          height: "100vh",
+          marginLeft: "240px",
+        }}
+      >
+        <p
+          style={{
+            display: moatName === "" ? "flex" : "none",
+            color: "#fff",
+            marginTop: "148px",
+            marginLeft: "20px",
+            fontSize: "20px",
+          }}
+        >
+          <ArrowBackIcon /> Please select a moat
+        </p>
+        <p
+          style={{
+            display: tableName === "" && moatName !== "" ? "flex" : "none",
+            color: "#fff",
+            marginTop: "300px",
+            marginLeft: "20px",
+            fontSize: "20px",
+          }}
+        >
+          <ArrowBackIcon /> Please select a table
+        </p>
+        <p style={{ fontSize: "32px", color: "#fff", margin: "40px 40px 0px" }}>
+          {tableName}
+        </p>
+        <CircularProgress
+          sx={{
+            display: loading && tableName !== "" ? "flex" : "none",
+            margin: "auto",
+            color: "#ff4f99",
+          }}
+        />
+        <TableContainer
+          sx={{
+            display: tableName === "" || loading ? "none" : "flex",
+            backgroundColor: "#212121",
+            borderRadius: "12px",
+            height: "fit-content",
+            width: "calc(100vw - 320px)",
+            margin: "30px 40px auto",
+          }}
+          component={Paper}
+        >
+          <Table sx={{}} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                {cols.map((column, index) => (
+                  <TableCell
+                    key={index}
+                    sx={{ backgroundColor: "#151515", color: "#fff" }}
+                  >
+                    {column}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow
+                  key={index}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  {cols.map((column, index) => (
+                    <TableCell
+                      key={index}
+                      sx={{
+                        color: "#fff",
+                        borderBottom: "1px solid #808080",
+                      }}
+                    >
+                      {row[column]}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Button
+          sx={{
+            display: privKeyResult === "" ? "none" : "flex",
+            color: "#fff",
+            backgroundColor: "#212121",
+            textTransform: "none",
+            margin: "auto 20px 0px auto",
+          }}
+        >
+          Run Query
+        </Button>
+        <div
+          style={{
+            background:
+              "radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%)",
+            width: "100%",
+            height: "100px",
+            margin: "10px 0 0 0",
+            display: privKeyResult === "" ? "none" : "flex",
+          }}
+        >
+          <p style={{ margin: "8px 4px", color: "#fff" }}>></p>
+          <InputBase
+            sx={{
+              backgroundColor: "#transparent",
+              color: "#fff",
+              borderRadius: "9px",
+              pl: "4px",
+              width: "100%",
+              margin: "4px auto auto 0px",
+              // border: "1px solid #fcfcfc",
+            }}
+            multiline
+            onChange={(e) => setCustomQuery(e.target.value)}
+            placeholder="Start typing query..."
+            value={customQuery}
+            inputProps={{
+              autoCorrect: "off",
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 }
