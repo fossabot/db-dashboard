@@ -91,12 +91,15 @@ export default function Home() {
         background: "linear-gradient(30deg, #101010, #000)",
         width: "100vw",
         minHeight: "100vh",
+        maxHeight: "100vh",
+        overflow: "hidden",
         paddingBottom: 40,
         display: "flex",
       }}
     >
       <NavTree
         moats={moats}
+        setMoats={setMoats}
         moatName={moatName}
         setMoatName={setMoatName}
         schemaName={schemaName}
@@ -115,6 +118,8 @@ export default function Home() {
           flexDirection: "column",
           width: "calc(100vw - 240px)",
           height: "100vh",
+          maxHeight: "100vh",
+          overflow: "hidden",
           marginLeft: "240px",
         }}
       >
@@ -124,6 +129,7 @@ export default function Home() {
             color: "#fff",
             marginTop: "148px",
             marginLeft: "20px",
+            position: "fixed",
             fontSize: "20px",
           }}
         >
@@ -131,9 +137,10 @@ export default function Home() {
         </p>
         <p
           style={{
-            display: tableName === "" && moatName !== "" ? "flex" : "none",
+            display: tableName === "" && privKeyResult !== "" ? "flex" : "none",
             color: "#fff",
-            marginTop: "300px",
+            position: "fixed",
+            marginTop: "290px",
             marginLeft: "20px",
             fontSize: "20px",
           }}
@@ -196,46 +203,56 @@ export default function Home() {
             </TableBody>
           </Table>
         </TableContainer>
-        <Button
-          sx={{
-            display: privKeyResult === "" ? "none" : "flex",
-            color: "#fff",
-            backgroundColor: "#212121",
-            textTransform: "none",
-            margin: "auto 20px 0px auto",
-          }}
-        >
-          Run Query
-        </Button>
+
         <div
           style={{
-            background:
-              "radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%)",
-            width: "100%",
-            height: "100px",
-            margin: "10px 0 0 0",
-            display: privKeyResult === "" ? "none" : "flex",
+            display: "flex",
+            flexDirection: "column",
+            position: "fixed",
+            bottom: 0,
+            width: "calc(100vw - 240px)",
           }}
         >
-          <p style={{ margin: "8px 4px", color: "#fff" }}>></p>
-          <InputBase
+          <Button
             sx={{
-              backgroundColor: "#transparent",
               color: "#fff",
-              borderRadius: "9px",
-              pl: "4px",
+              backgroundColor: "#212121",
+              textTransform: "none",
+              margin: "auto 20px 0px auto",
+            }}
+          >
+            Run Query
+          </Button>
+          <div
+            style={{
+              background:
+                "radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%)",
               width: "100%",
-              margin: "4px auto auto 0px",
-              // border: "1px solid #fcfcfc",
+              height: "100px",
+              margin: "10px 0 0 0",
+              display: "flex",
             }}
-            multiline
-            onChange={(e) => setCustomQuery(e.target.value)}
-            placeholder="Start typing query..."
-            value={customQuery}
-            inputProps={{
-              autoCorrect: "off",
-            }}
-          />
+          >
+            <p style={{ margin: "8px 4px", color: "#fff" }}>></p>
+            <InputBase
+              sx={{
+                backgroundColor: "transparent",
+                color: "#fff",
+                borderRadius: "9px",
+                pl: "4px",
+                width: "100%",
+                margin: "4px auto auto 0px",
+                // border: "1px solid #fcfcfc",
+              }}
+              multiline
+              onChange={(e) => setCustomQuery(e.target.value)}
+              placeholder="Start typing query..."
+              value={customQuery}
+              inputProps={{
+                autoCorrect: "off",
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -24,11 +24,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import AddIcon from "@mui/icons-material/Add";
 import KwilDBIcon from "../assets/logos/KwilDB.svg";
 import { ethers } from "ethers";
 
 export default function NavTree({
   moats,
+  setMoats,
   moatName,
   setMoatName,
   schemaName,
@@ -58,15 +60,29 @@ export default function NavTree({
   const [copyStatus, setCopyStatus] = useState(null);
 
   const [loadingTree, setLoadingTree] = useState(false);
+  const [loadAddingSchema, setLoadAddingSchema] = useState(false);
+  const [loadAddingMoat, setLoadAddingMoat] = useState(false);
+
+  const [schemas, setSchemas] = useState([]);
+  const [addingSchema, setAddingSchema] = useState(false);
+  const [newSchema, setNewSchema] = useState("");
+
+  const [addingMoat, setAddingMoat] = useState(false);
+  const [newMoatName, setNewMoatName] = useState("");
+  const [newPhrase, setNewPhrase] = useState("");
+
+  const [pools, setPools] = useState([]);
 
   const handleChange = (e) => {
-    setOpen(true);
-    setPrevious(moat);
-    setMoat(e.target.value);
-    setMoatName(moats[e.target.value].moat);
-    setOwner(moats[e.target.value].owner);
-    setSecret(moats[e.target.value].secret);
-    setAPIKey(moats[e.target.value].api_key);
+    if (e.target.value !== undefined) {
+      setOpen(true);
+      setPrevious(moat);
+      setMoat(e.target.value);
+      setMoatName(moats[e.target.value].moat);
+      setOwner(moats[e.target.value].owner);
+      setSecret(moats[e.target.value].secret);
+      setAPIKey(moats[e.target.value].api_key);
+    }
   };
 
   const signMoat = () => {
@@ -109,8 +125,6 @@ export default function NavTree({
     },
   };
 
-  const [schemas, setSchemas] = useState([]);
-
   useEffect(() => {
     setLoadingTree(true);
     setTimeout(async function () {
@@ -129,7 +143,6 @@ export default function NavTree({
           `SELECT schema_name FROM information_schema.schemata EXCEPT SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'pg_toast%' OR schema_name LIKE 'pg_temp%' OR schema_name = 'pg_catalog' OR schema_name = 'information_schema';`
         )
       ).rows;
-
       let schemas = [];
       let i = 0;
       temp.forEach((schema) => {
@@ -160,6 +173,34 @@ export default function NavTree({
         });
       });
     });
+    setTimeout(async function () {
+      console.log("set timeout");
+      const result = await KwilDB.getPoolsByMoat(
+        "https://registry.kwil.xyz",
+        moatName
+      );
+      console.log(result);
+      for (let i = 0; i < result.length; i++) {
+        const result2 = await KwilDB.pools.getPool(
+          result[i].pool_name,
+          result[i].blockchain,
+          result[i].token
+        );
+        console.log(result2);
+        setPools((old) => [
+          ...old,
+          {
+            name: result[i].pool_name,
+            validator: result2.validator,
+            creator: result2.creator,
+            balance: result2.pool,
+            token: result[i].token,
+            chain: result[i].blockchain,
+          },
+        ]);
+      }
+      setLoading(false);
+    }, 0);
   }, [privKeyResult]);
 
   const paste = (type) => {
@@ -182,6 +223,62 @@ export default function NavTree({
         }
       );
     }
+  };
+
+  const createSchema = (e) => {
+    e.preventDefault();
+    setLoadAddingSchema(true);
+    setTimeout(async function () {
+      const kwilDB = KwilDB.createConnector(
+        {
+          host: "test-db.kwil.xyz",
+          protocol: "https",
+          port: null,
+          moat: moatName,
+          privateKey: privKeyResult,
+        },
+        secretResult
+      );
+      await kwilDB.query(`CREATE SCHEMA if NOT EXISTS ${newSchema}`, true);
+      setSchemas((old) => [...old, { name: newSchema, tables: [] }]);
+      setAddingSchema(false);
+      setLoadAddingSchema(false);
+    });
+  };
+
+  const createMoat = (e) => {
+    e.preventDefault();
+    //debug, DELETE
+    setLoadAddingMoat(true);
+    setTimeout(async function () {
+      await window.ethereum.send("eth_requestAccounts");
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      console.log(provider);
+      const signer = provider.getSigner();
+      console.log(signer);
+      const signature = await signer.signMessage(newPhrase);
+      const address = await signer.getAddress();
+      const result = await KwilDB.createMoat(
+        "https://test-db.kwil.xyz",
+        newMoatName,
+        signature,
+        address
+      );
+      console.log(result);
+
+      if (result.creation === false) {
+      } else {
+        const temp = await KwilDB.getMoats("https://test-db.kwil.xyz", address);
+        console.log(temp);
+        setMoats(temp);
+        setMoat(temp.length - 1);
+        setMoatName(newMoatName);
+        setLoadAddingMoat(false);
+        setAddingMoat(false);
+        setPrivKeyResult(result.privateKey);
+        setSecretResult(result.secret);
+      }
+    }, 0);
   };
 
   return (
@@ -242,6 +339,13 @@ export default function NavTree({
                 </MenuItem>
               );
             })}
+            <MenuItem
+              onClick={() => setAddingMoat(true)}
+              sx={{ color: "#ff4f99" }}
+            >
+              Create New Moat{" "}
+              <AddIcon sx={{ height: "20px", marginLeft: "auto" }} />
+            </MenuItem>
           </Select>
         </FormControl>
         <Modal
@@ -330,6 +434,99 @@ export default function NavTree({
             An error occurred trying to decrypt moat data!
           </Alert>
         </Snackbar>
+        <Modal
+          open={addingMoat}
+          onClose={() => {
+            setAddingMoat(false);
+          }}
+          sx={{ display: "flex" }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: "#151515",
+              margin: "auto",
+              height: "auto",
+              width: "40vw",
+              border: "2px solid #ff4f99",
+              borderRadius: "14px",
+            }}
+          >
+            <p
+              style={{
+                color: "#fff",
+                background:
+                  "linear-gradient(241.4deg, #717AFF 29.4%, #FF4F99 89.99%)",
+                margin: "0px",
+                borderRadius: "12px 12px 0px 0px",
+                padding: "15px",
+                textAlign: "center",
+                fontSize: "28px",
+                fontWeight: "bold",
+              }}
+            >
+              Create New Moat
+            </p>
+            <Typography sx={{ margin: "40px 20px 0px", color: "#fff" }}>
+              Moat Name
+            </Typography>
+            <InputBase
+              sx={{
+                backgroundColor: "#212121",
+                color: "#fff",
+                borderRadius: "9px",
+                pl: "10px",
+                minHeight: "45px",
+                margin: "10px 20px",
+                border: "1px solid #fcfcfc",
+              }}
+              onChange={(e) => setNewMoatName(e.target.value)}
+              placeholder="Type here..."
+              value={newMoatName}
+              inputProps={{
+                autoCorrect: "off",
+              }}
+            />
+            <Typography sx={{ margin: "20px 20px 0px", color: "#fff" }}>
+              Signing Phrase
+            </Typography>
+            <InputBase
+              sx={{
+                backgroundColor: "#212121",
+                color: "#fff",
+                borderRadius: "9px",
+                pl: "10px",
+                minHeight: "45px",
+                margin: "10px 20px",
+                border: "1px solid #fcfcfc",
+              }}
+              multiline
+              onChange={(e) => setNewPhrase(e.target.value)}
+              placeholder="Type here..."
+              value={newPhrase}
+              inputProps={{
+                autoCorrect: "off",
+              }}
+            />
+            <Button
+              sx={{
+                color: "#fff",
+                backgroundColor: "#ff4f99 !important",
+                textTransform: "none",
+                margin: "40px auto",
+                borderRadius: "9px",
+                width: "50%",
+              }}
+              onClick={createMoat}
+            >
+              Create Data Moat
+            </Button>
+            <Backdrop open={loadAddingMoat} sx={{ display: "flex" }}>
+              <CircularProgress sx={{ margin: "auto", color: "#ff4f99" }} />
+            </Backdrop>
+          </div>
+        </Modal>
 
         <div
           style={{
@@ -414,90 +611,245 @@ export default function NavTree({
                 color: "#ff4f99",
               }}
             />
-            {schemas.map((schema, index) => {
-              return (
-                <Accordion
-                  key={index}
-                  disableGutters
+            <div
+              style={{
+                display: loadingTree ? "none" : "flex",
+                flexDirection: "column",
+              }}
+            >
+              {schemas.map((schema, index) => {
+                return (
+                  <Accordion
+                    key={index}
+                    disableGutters
+                    sx={{
+                      width: "100%",
+                      backgroundColor: "transparent",
+                      boxShadow: "none",
+                    }}
+                  >
+                    <AccordionSummary
+                      sx={{
+                        "& .MuiAccordionSummary-content": { margin: 0 },
+                        "&.MuiAccordionSummary-root": {
+                          maxHeight: "38px",
+                          minHeight: "38px",
+                          padding: "0 8px",
+                        },
+                      }}
+                      expandIcon={<ExpandMoreIcon sx={{ color: "#ff4f99" }} />}
+                    >
+                      <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
+                        {schema.name}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        "&.MuiAccordionDetails-root": {
+                          padding: "0px 16px 8px 16px",
+                        },
+                      }}
+                    >
+                      {schema.tables.map((table) => (
+                        <Button
+                          startIcon={
+                            tableName === table ? (
+                              <RadioButtonCheckedIcon
+                                sx={{ color: "#ff4f99" }}
+                              />
+                            ) : (
+                              <RadioButtonUncheckedIcon />
+                            )
+                          }
+                          onClick={() => {
+                            if (tableName !== table) {
+                              setSchemaName(schema.name);
+                              setTableName(table);
+                            } else {
+                              setSchemaName("");
+                              setTableName("");
+                            }
+                          }}
+                          sx={{
+                            color: "#fff",
+                            backgroundColor: "transparent !important",
+                            textTransform: "none",
+                            maxHeight: "32px",
+                            minHeight: "32px",
+                            justifyContent: "left",
+                          }}
+                        >
+                          {table}
+                        </Button>
+                      ))}
+                    </AccordionDetails>
+                  </Accordion>
+                );
+              })}
+            </div>
+
+            <Button
+              onClick={() => setAddingSchema(true)}
+              sx={{
+                display: loadingTree ? "none" : "flex",
+                color: "#ff4f99",
+                textTransform: "none",
+                justifyContent: "left",
+                fontWeight: "bold",
+                backgroundColor: "transparent !important",
+              }}
+              endIcon={<AddIcon />}
+            >
+              Create Schema
+            </Button>
+            <CircularProgress
+              sx={{
+                display: loadAddingSchema ? "flex" : "none",
+                margin: "auto",
+                color: "#ff4f99",
+              }}
+            />
+            <div
+              style={{
+                display:
+                  addingSchema && !loadingTree && !loadAddingSchema
+                    ? "flex"
+                    : "none",
+                flexDirection: "column",
+              }}
+            >
+              <InputBase
+                sx={{
+                  backgroundColor: "#333333",
+                  color: "#fff",
+                  borderRadius: "9px",
+                  pl: "10px",
+                  width: "100%",
+                  margin: "4px auto auto 0px",
+                  border: "1px solid #fcfcfc",
+                }}
+                onChange={(e) => setNewSchema(e.target.value)}
+                placeholder="New schema..."
+                value={newSchema}
+                inputProps={{
+                  autoCorrect: "off",
+                }}
+              />
+              <div style={{ display: "flex" }}>
+                <Button
+                  fullWidth
+                  onClick={() => setAddingSchema(false)}
                   sx={{
-                    width: "100%",
-                    backgroundColor: "transparent",
-                    boxShadow: "none",
+                    color: "#fff",
+                    textTransform: "none",
+                    backgroundColor: "#434343 !important",
+                    margin: "10px 5px 0px 0px",
+                    borderRadius: "12px",
                   }}
                 >
-                  <AccordionSummary
+                  Cancel
+                </Button>
+                <Button
+                  fullWidth
+                  onClick={createSchema}
+                  sx={{
+                    color: "#fff",
+                    textTransform: "none",
+                    backgroundColor: "#ff4f99 !important",
+                    margin: "10px 0px 0px 5px",
+                    borderRadius: "12px",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: loadingTree ? "none" : "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Typography
+                sx={{ color: "#fff", marginLeft: "8px", fontWeight: "bold" }}
+              >
+                Funding Pools
+              </Typography>
+              <Button
+                startIcon={
+                  true ? (
+                    <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )
+                }
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "transparent !important",
+                  textTransform: "none",
+                  maxHeight: "32px",
+                  minHeight: "32px",
+                  justifyContent: "left",
+                }}
+              >
+                View Funding Dashboard
+              </Button>
+              {pools.map((pool, index) => {
+                return (
+                  <Accordion
+                    key={index}
+                    disableGutters
                     sx={{
-                      "& .MuiAccordionSummary-content": { margin: 0 },
-                      "&.MuiAccordionSummary-root": {
-                        maxHeight: "38px",
-                        minHeight: "38px",
-                        padding: "0 8px",
-                      },
-                    }}
-                    expandIcon={<ExpandMoreIcon sx={{ color: "#ff4f99" }} />}
-                  >
-                    <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
-                      {schema.name}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      "&.MuiAccordionDetails-root": {
-                        padding: "0px 16px 8px 16px",
-                      },
+                      width: "100%",
+                      backgroundColor: "transparent",
+                      boxShadow: "none",
                     }}
                   >
-                    {schema.tables.map((table) => (
-                      <Button
-                        startIcon={
-                          tableName === table ? (
-                            <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
-                          ) : (
-                            <RadioButtonUncheckedIcon />
-                          )
-                        }
-                        onClick={() => {
-                          setSchemaName(schema.name);
-                          setTableName(table);
-                        }}
-                        sx={{
-                          color: "#fff",
-                          backgroundColor: "transparent !important",
-                          textTransform: "none",
-                          maxHeight: "32px",
-                          minHeight: "32px",
-                          justifyContent: "left",
-                        }}
+                    <AccordionSummary
+                      sx={{
+                        "& .MuiAccordionSummary-content": { margin: 0 },
+                        "&.MuiAccordionSummary-root": {
+                          maxHeight: "38px",
+                          minHeight: "38px",
+                          padding: "0 8px",
+                        },
+                      }}
+                      expandIcon={<ExpandMoreIcon sx={{ color: "#ff4f99" }} />}
+                    >
+                      <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
+                        {pool.name}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        "&.MuiAccordionDetails-root": {
+                          padding: "0px 16px 8px 16px",
+                        },
+                      }}
+                    >
+                      <Typography sx={{ color: "#fff" }}>
+                        Chain: {pool.chain}
+                      </Typography>
+                      <Typography sx={{ color: "#fff" }}>
+                        Token: {pool.token}
+                      </Typography>
+                      <Typography
+                        sx={{ color: "#fff", wordBreak: "break-all" }}
                       >
-                        {table}
-                      </Button>
-                    ))}
-                  </AccordionDetails>
-                </Accordion>
-              );
-            })}
+                        Validator: {pool.validator}
+                      </Typography>
+                    </AccordionDetails>
+                  </Accordion>
+                );
+              })}
+            </div>
           </div>
         </div>
-
-        {/* <TreeView
-          // onNodeSelect={(e, value) => navigateToPage(e, value)}
-          aria-label="rich object"
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpanded={["root"]}
-          defaultExpandIcon={<ChevronRightIcon />}
-          sx={{
-            height: "calc(100vh - 200px)",
-            flexGrow: 1,
-            minWidth: 200,
-            maxWidth: 200,
-            backgroundColor: "#000",
-            borderRadius: "0px 12px 12px 0px",
-          }}
-        >
-          {renderTree(data)}
-        </TreeView>*/}
       </Drawer>
     </>
   );
