@@ -54,6 +54,11 @@ export default function NavTree({ expanded, setExpanded }) {
         )
       ).rows;
 
+      if (typeof temp === 'undefined'){
+        console.log('broke boi');
+        return;
+      }
+
       let schemas = [];
       let i = 0;
       let treeItems = 0;
