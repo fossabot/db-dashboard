@@ -27,6 +27,7 @@ import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import AddIcon from "@mui/icons-material/Add";
 import KwilDBIcon from "../assets/logos/KwilDB.svg";
 import { ethers } from "ethers";
+import ChainMap from "../ChainMap";
 
 export default function NavTree({
   moats,
@@ -41,6 +42,8 @@ export default function NavTree({
   setPrivKeyResult,
   secretResult,
   setSecretResult,
+  selectedPools,
+  setSelectedPools,
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -62,6 +65,8 @@ export default function NavTree({
   const [loadingTree, setLoadingTree] = useState(false);
   const [loadAddingSchema, setLoadAddingSchema] = useState(false);
   const [loadAddingMoat, setLoadAddingMoat] = useState(false);
+  const [loadAddingPool, setLoadAddingPool] = useState(false);
+  const [noFunds, setNoFunds] = useState(false);
 
   const [schemas, setSchemas] = useState([]);
   const [addingSchema, setAddingSchema] = useState(false);
@@ -70,6 +75,11 @@ export default function NavTree({
   const [addingMoat, setAddingMoat] = useState(false);
   const [newMoatName, setNewMoatName] = useState("");
   const [newPhrase, setNewPhrase] = useState("");
+
+  const [addingPool, setAddingPool] = useState(false);
+  const [poolName, setPoolName] = useState("");
+  const [chain, setChain] = useState("polygon");
+  const [token, setToken] = useState("USDC");
 
   const [pools, setPools] = useState([]);
 
@@ -83,6 +93,19 @@ export default function NavTree({
       setSecret(moats[e.target.value].secret);
       setAPIKey(moats[e.target.value].api_key);
     }
+  };
+
+  const handleChangeChain = (e) => {
+    setChain(e.target.value);
+    /*chainID.current = {hex:"0x89",int:137};
+         if (e.target.value === "goerli"){
+             setToken("USDC");
+             chainID.current = {hex:"0x5",int:5};
+         }*/
+  };
+
+  const handleChangeToken = (e) => {
+    setToken(e.target.value);
   };
 
   const signMoat = () => {
@@ -138,40 +161,44 @@ export default function NavTree({
         },
         secretResult
       );
-      let temp = (
-        await kwilDB.query(
-          `SELECT schema_name FROM information_schema.schemata EXCEPT SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'pg_toast%' OR schema_name LIKE 'pg_temp%' OR schema_name = 'pg_catalog' OR schema_name = 'information_schema';`
-        )
+      let temp = await kwilDB.query(
+        `SELECT schema_name FROM information_schema.schemata EXCEPT SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'pg_toast%' OR schema_name LIKE 'pg_temp%' OR schema_name = 'pg_catalog' OR schema_name = 'information_schema';`
       ).rows;
       let schemas = [];
       let i = 0;
-      temp.forEach((schema) => {
-        setTimeout(async function () {
-          console.log(schema.schema_name);
-          schemas.push({
-            name: schema.schema_name,
-            tables: [],
-          });
-          let temp2 = (
-            await kwilDB.query(`SELECT table_name
+      console.log(temp);
+      if (temp) {
+        temp.forEach((schema) => {
+          setTimeout(async function () {
+            console.log(schema.schema_name);
+            schemas.push({
+              name: schema.schema_name,
+              tables: [],
+            });
+            let temp2 = (
+              await kwilDB.query(`SELECT table_name
                                                 FROM information_schema.tables
                                                 WHERE table_schema = '${schema.schema_name}';`)
-          ).rows;
+            ).rows;
 
-          let tables = [];
+            let tables = [];
 
-          temp2.forEach((table) => {
-            tables.push(table.table_name);
+            temp2.forEach((table) => {
+              tables.push(table.table_name);
+            });
+            schemas[i].tables = tables;
+            i++;
+            if (i === temp.length) {
+              console.log(schemas);
+              setSchemas(schemas);
+              setLoadingTree(false);
+            }
           });
-          schemas[i].tables = tables;
-          i++;
-          if (i === temp.length) {
-            console.log(schemas);
-            setSchemas(schemas);
-            setLoadingTree(false);
-          }
         });
-      });
+      } else {
+        setLoadingTree(false);
+        setNoFunds(true);
+      }
     });
     setTimeout(async function () {
       console.log("set timeout");
@@ -180,7 +207,8 @@ export default function NavTree({
         moatName
       );
       console.log(result);
-      for (let i = 0; i < result.length; i++) {
+      setPools(result);
+      /*for (let i = 0; i < result.length; i++) {
         const result2 = await KwilDB.pools.getPool(
           result[i].pool_name,
           result[i].blockchain,
@@ -198,8 +226,7 @@ export default function NavTree({
             chain: result[i].blockchain,
           },
         ]);
-      }
-      setLoading(false);
+      }*/
     }, 0);
   }, [privKeyResult]);
 
@@ -278,6 +305,62 @@ export default function NavTree({
         setPrivKeyResult(result.privateKey);
         setSecretResult(result.secret);
       }
+    }, 0);
+  };
+
+  const createPool = (e) => {
+    e.preventDefault();
+    console.log(window.ethereum.networkVersion);
+    const chainID = ChainMap().get(chain);
+    console.log(chainID);
+    setTimeout(async function () {
+      if (window.ethereum.networkVersion !== chainID.int) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: chainID.hex }],
+          });
+        } catch (err) {
+          if (err.message === "User rejected the request.") {
+            //window.alert("user rejected the thing")
+            return;
+          }
+          window.alert(
+            "you do not have the specified chain added to your wallet!"
+          );
+          return;
+        }
+      }
+      setLoadAddingPool(true);
+      await window.ethereum.send("eth_requestAccounts");
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      console.log(provider);
+      const signer = provider.getSigner();
+      console.log(signer);
+      const address = await signer.getAddress();
+
+      console.log(poolName);
+      console.log(address);
+      console.log(chain);
+      console.log(token);
+
+      const result = await KwilDB.pools.createFundingPool(
+        poolName,
+        address,
+        address,
+        chain,
+        token,
+        moatName
+      );
+      console.log(result);
+      console.log(typeof result);
+      setLoadAddingPool(false);
+      /* if (typeof result === "string") {
+              setStatus("fail");
+              setErrMsg(result);
+          } else {
+              setStatus("success");
+          }*/
     }, 0);
   };
 
@@ -617,6 +700,15 @@ export default function NavTree({
                 flexDirection: "column",
               }}
             >
+              <p
+                style={{
+                  display: noFunds ? "flex" : "none",
+                  color: "#fff",
+                  margin: "20px 8px 40px",
+                }}
+              >
+                Please add funds to a funding pool to get started.
+              </p>
               {schemas.map((schema, index) => {
                 return (
                   <Accordion
@@ -693,7 +785,7 @@ export default function NavTree({
             <Button
               onClick={() => setAddingSchema(true)}
               sx={{
-                display: loadingTree ? "none" : "flex",
+                display: loadingTree || noFunds ? "none" : "flex",
                 color: "#ff4f99",
                 textTransform: "none",
                 justifyContent: "left",
@@ -778,75 +870,197 @@ export default function NavTree({
               >
                 Funding Pools
               </Typography>
-              <Button
-                startIcon={
-                  true ? (
-                    <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
-                  ) : (
-                    <RadioButtonUncheckedIcon />
-                  )
-                }
-                sx={{
-                  color: "#fff",
-                  backgroundColor: "transparent !important",
-                  textTransform: "none",
-                  maxHeight: "32px",
-                  minHeight: "32px",
-                  justifyContent: "left",
-                }}
-              >
-                View Funding Dashboard
-              </Button>
               {pools.map((pool, index) => {
                 return (
-                  <Accordion
+                  <Button
                     key={index}
-                    disableGutters
+                    startIcon={
+                      selectedPools.includes(pool) ? (
+                        <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
+                      ) : (
+                        <RadioButtonUncheckedIcon />
+                      )
+                    }
                     sx={{
-                      width: "100%",
-                      backgroundColor: "transparent",
-                      boxShadow: "none",
+                      color: "#fff",
+                      backgroundColor: "transparent !important",
+                      textTransform: "none",
+                      maxHeight: "32px",
+                      minHeight: "32px",
+                      justifyContent: "left",
+                    }}
+                    onClick={() => {
+                      if (selectedPools.includes(pool)) {
+                        setSelectedPools(
+                          selectedPools.filter(
+                            (item) => item.pool_name !== pool.pool_name
+                          )
+                        );
+                      } else {
+                        setSelectedPools((old) => [...old, pool]);
+                      }
                     }}
                   >
-                    <AccordionSummary
-                      sx={{
-                        "& .MuiAccordionSummary-content": { margin: 0 },
-                        "&.MuiAccordionSummary-root": {
-                          maxHeight: "38px",
-                          minHeight: "38px",
-                          padding: "0 8px",
-                        },
-                      }}
-                      expandIcon={<ExpandMoreIcon sx={{ color: "#ff4f99" }} />}
-                    >
-                      <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
-                        {pool.name}
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        "&.MuiAccordionDetails-root": {
-                          padding: "0px 16px 8px 16px",
-                        },
-                      }}
-                    >
-                      <Typography sx={{ color: "#fff" }}>
-                        Chain: {pool.chain}
-                      </Typography>
-                      <Typography sx={{ color: "#fff" }}>
-                        Token: {pool.token}
-                      </Typography>
-                      <Typography
-                        sx={{ color: "#fff", wordBreak: "break-all" }}
-                      >
-                        Validator: {pool.validator}
-                      </Typography>
-                    </AccordionDetails>
-                  </Accordion>
+                    {pool.pool_name}
+                  </Button>
                 );
               })}
+              <Button
+                onClick={() => setAddingPool(true)}
+                sx={{
+                  display: loadingTree ? "none" : "flex",
+                  color: "#ff4f99",
+                  textTransform: "none",
+                  justifyContent: "left",
+                  fontWeight: "bold",
+                  backgroundColor: "transparent !important",
+                }}
+                endIcon={<AddIcon />}
+              >
+                Create Pool
+              </Button>
+              <Modal
+                open={addingPool}
+                onClose={() => {
+                  setAddingPool(false);
+                }}
+                sx={{ display: "flex" }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    backgroundColor: "#151515",
+                    margin: "auto",
+                    height: "auto",
+                    width: "40vw",
+                    border: "2px solid #ff4f99",
+                    borderRadius: "14px",
+                  }}
+                >
+                  <p
+                    style={{
+                      color: "#fff",
+                      background:
+                        "linear-gradient(241.4deg, #717AFF 29.4%, #FF4F99 89.99%)",
+                      margin: "0px",
+                      borderRadius: "12px 12px 0px 0px",
+                      padding: "15px",
+                      textAlign: "center",
+                      fontSize: "28px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Create New Funding Pool
+                  </p>
+                  <InputBase
+                    value={poolName}
+                    placeholder={"Funding Pool Name"}
+                    sx={{
+                      paddingLeft: "15px",
+                      paddingRight: "10px",
+                      margin: "50px auto 0px auto",
+                      width: "350px",
+                      height: "48px",
+                      backgroundColor: "white",
+                      borderRadius: "9px",
+                      border: "none !important",
+                      "& .MuiFilledInput-underline": {
+                        borderBottom: "0px solid black !important",
+                      },
+                    }}
+                    hiddenLabel={true}
+                    id="outlined-basic"
+                    variant="filled"
+                    label=""
+                    onChange={(e) => setPoolName(e.target.value)}
+                  />
+                  <FormControl
+                    required
+                    sx={{
+                      paddingTop: "8px",
+                      paddingLeft: "15px",
+                      paddingRight: "10px",
+                      margin: "30px auto 30px auto",
+                      width: "325px",
+                      height: "40px",
+                      backgroundColor: "white",
+                      borderRadius: "9px",
+                      border: "none !important",
+                      "& .MuiFilledInput-underline": {
+                        borderBottom: "0px solid black !important",
+                      },
+                    }}
+                  >
+                    <Select
+                      displayEmpty
+                      value={chain}
+                      onChange={handleChangeChain}
+                      input={<InputBase />}
+                    >
+                      <MenuItem disabled value="">
+                        <em>Blockchain</em>
+                      </MenuItem>
+                      {/*<MenuItem value="ethereum">Ethereum</MenuItem>*/}
+                      <MenuItem value="polygon">Polygon</MenuItem>
+                      <MenuItem value="goerli">
+                        Goerli Ethereum Testnet
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                  <FormControl
+                    required
+                    sx={{
+                      paddingTop: "8px",
+                      paddingLeft: "15px",
+                      paddingRight: "10px",
+                      margin: "0px auto 50px auto",
+                      width: "325px",
+                      height: "40px",
+                      backgroundColor: "white",
+                      borderRadius: "9px",
+                      border: "none !important",
+                      "& .MuiFilledInput-underline": {
+                        borderBottom: "0px solid black !important",
+                      },
+                    }}
+                  >
+                    <Select
+                      displayEmpty
+                      value={token}
+                      onChange={handleChangeToken}
+                      input={<InputBase />}
+                    >
+                      <MenuItem disabled value="">
+                        <em>Token</em>
+                      </MenuItem>
+                      {/*<MenuItem value="ethereum">Ethereum</MenuItem>*/}
+                      <MenuItem value="USDC">USDC</MenuItem>
+                      {chain === "polygon" && (
+                        <MenuItem value="KRED">KRED</MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+                  <Button
+                    sx={{
+                      color: "#fff",
+                      backgroundColor: "#ff4f99 !important",
+                      textTransform: "none",
+                      margin: "40px auto",
+                      borderRadius: "9px",
+                      width: "50%",
+                    }}
+                    onClick={createPool}
+                  >
+                    Create Data Moat
+                  </Button>
+                  <Backdrop open={loadAddingPool} sx={{ display: "flex" }}>
+                    <CircularProgress
+                      sx={{ margin: "auto", color: "#ff4f99" }}
+                    />
+                  </Backdrop>
+                </div>
+              </Modal>
             </div>
           </div>
         </div>

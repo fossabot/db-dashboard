@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import KwilDB from "kwildb";
 import { ethers } from "ethers";
 
@@ -9,6 +9,7 @@ import { ReactComponent as Metamask } from "../assets/logos/MetaMask_Fox.svg";
 import Arconnect from "../assets/logos/arconnect.png";
 import Navbar from "../components/Navbar";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import FundingPool from "../components/FundingPool";
 import NavTree from "../components/NavTree";
 import {
   Paper,
@@ -21,6 +22,7 @@ import {
   Button,
   InputBase,
   CircularProgress,
+  Grid,
 } from "@mui/material";
 
 export default function Home() {
@@ -33,6 +35,9 @@ export default function Home() {
   const [schemaName, setSchemaName] = useState("");
   const [tableName, setTableName] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [selectedPools, setSelectedPools] = useState([]);
+  const [balances, setBalances] = useState(new Map());
 
   const [privKeyResult, setPrivKeyResult] = useState("");
   const [secretResult, setSecretResult] = useState("");
@@ -110,6 +115,8 @@ export default function Home() {
         setPrivKeyResult={setPrivKeyResult}
         secretResult={secretResult}
         setSecretResult={setSecretResult}
+        selectedPools={selectedPools}
+        setSelectedPools={setSelectedPools}
       />
 
       <div
@@ -123,7 +130,7 @@ export default function Home() {
           marginLeft: "240px",
         }}
       >
-        <p
+        {/* <p
           style={{
             display: moatName === "" ? "flex" : "none",
             color: "#fff",
@@ -146,63 +153,96 @@ export default function Home() {
           }}
         >
           <ArrowBackIcon /> Please select a table
-        </p>
-        <p style={{ fontSize: "32px", color: "#fff", margin: "40px 40px 0px" }}>
-          {tableName}
-        </p>
-        <CircularProgress
-          sx={{
-            display: loading && tableName !== "" ? "flex" : "none",
-            margin: "auto",
-            color: "#ff4f99",
+        </p>*/}
+        <div
+          style={{
+            display: tableName !== "" ? "flex" : "none",
+            flexDirection: "column",
+            flex: 1,
           }}
-        />
-        <TableContainer
-          sx={{
-            display: tableName === "" || loading ? "none" : "flex",
-            backgroundColor: "#212121",
-            borderRadius: "12px",
-            height: "fit-content",
-            width: "calc(100vw - 320px)",
-            margin: "30px 40px auto",
-          }}
-          component={Paper}
         >
-          <Table sx={{}} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                {cols.map((column, index) => (
-                  <TableCell
-                    key={index}
-                    sx={{ backgroundColor: "#151515", color: "#fff" }}
-                  >
-                    {column}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => (
-                <TableRow
-                  key={index}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
+          <p
+            style={{ fontSize: "32px", color: "#fff", margin: "40px 40px 0px" }}
+          >
+            {tableName}
+          </p>
+          <CircularProgress
+            sx={{
+              display: loading && tableName !== "" ? "flex" : "none",
+              margin: "auto",
+              color: "#ff4f99",
+            }}
+          />
+          <TableContainer
+            sx={{
+              display: tableName === "" || loading ? "none" : "flex",
+              backgroundColor: "#212121",
+              borderRadius: "12px",
+              height: "fit-content",
+              width: "calc(100vw - 320px)",
+              margin: "30px 40px auto",
+            }}
+            component={Paper}
+          >
+            <Table sx={{}} aria-label="simple table">
+              <TableHead>
+                <TableRow>
                   {cols.map((column, index) => (
                     <TableCell
                       key={index}
-                      sx={{
-                        color: "#fff",
-                        borderBottom: "1px solid #808080",
-                      }}
+                      sx={{ backgroundColor: "#151515", color: "#fff" }}
                     >
-                      {row[column]}
+                      {column}
                     </TableCell>
                   ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    {cols.map((column, index) => (
+                      <TableCell
+                        key={index}
+                        sx={{
+                          color: "#fff",
+                          borderBottom: "1px solid #808080",
+                        }}
+                      >
+                        {row[column]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+
+        <div
+          style={{
+            display: selectedPools.length > 0 ? "flex" : "none",
+            flexDirection: "column",
+            flex: 1,
+          }}
+        >
+          <p
+            style={{ fontSize: "32px", color: "#fff", margin: "40px 40px 0px" }}
+          >
+            Funding Pools
+          </p>
+          <Grid container spacing={2} sx={{ margin: "0px" }}>
+            {selectedPools.map((pool) => {
+              return (
+                <Grid item xs={6}>
+                  <FundingPool pool={pool} />;
+                </Grid>
+              );
+            })}
+          </Grid>
+        </div>
 
         <div
           style={{
