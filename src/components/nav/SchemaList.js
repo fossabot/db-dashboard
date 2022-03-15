@@ -22,6 +22,8 @@ export default function SchemaList({
   setTableName,
   setSchemaName,
   setSelectedPools,
+  update,
+  setUpdate,
 }) {
   const [noFunds, setNoFunds] = useState(false);
 
@@ -47,9 +49,10 @@ export default function SchemaList({
         secretResult
       );
       await kwilDB.query(`CREATE SCHEMA if NOT EXISTS ${newSchema}`, true);
-      setSchemas((old) => [...old, { name: newSchema, tables: [] }]);
+      // setSchemas((old) => [...old, { name: newSchema, tables: [] }]);
       setAddingSchema(false);
       setLoadAddingSchema(false);
+      setUpdate(update + 1);
     });
   };
 
@@ -108,7 +111,7 @@ export default function SchemaList({
         setNoFunds(true);
       }
     });
-  }, [privKeyResult]);
+  }, [privKeyResult, update]);
 
   return (
     <div
@@ -129,6 +132,7 @@ export default function SchemaList({
         style={{
           display: loading ? "none" : "flex",
           flexDirection: "column",
+          flex: 1,
         }}
       >
         <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
@@ -143,6 +147,7 @@ export default function SchemaList({
         >
           Please add funds to a funding pool to get started.
         </p>
+
         {schemas.map((schema, index) => {
           return (
             <Accordion
@@ -213,79 +218,79 @@ export default function SchemaList({
             </Accordion>
           );
         })}
-      </div>
-      <Button
-        onClick={() => setAddingSchema(true)}
-        sx={{
-          display: loading || noFunds ? "none" : "flex",
-          color: "#ff4f99",
-          textTransform: "none",
-          justifyContent: "left",
-          fontWeight: "bold",
-          backgroundColor: "transparent !important",
-        }}
-        endIcon={<AddIcon />}
-      >
-        Create Schema
-      </Button>
-      <CircularProgress
-        sx={{
-          display: loadAddingSchema ? "flex" : "none",
-          margin: "auto",
-          color: "#ff4f99",
-        }}
-      />
-      <div
-        style={{
-          display:
-            addingSchema && !loading && !loadAddingSchema ? "flex" : "none",
-          flexDirection: "column",
-        }}
-      >
-        <InputBase
+        <Button
+          onClick={() => setAddingSchema(true)}
           sx={{
-            backgroundColor: "#333333",
-            color: "#fff",
-            borderRadius: "9px",
-            pl: "10px",
-            width: "100%",
-            margin: "4px auto auto 0px",
-            border: "1px solid #fcfcfc",
+            display: loading || noFunds ? "none" : "flex",
+            color: "#ff4f99",
+            textTransform: "none",
+            justifyContent: "left",
+            fontWeight: "bold",
+            backgroundColor: "transparent !important",
           }}
-          onChange={(e) => setNewSchema(e.target.value)}
-          placeholder="New schema..."
-          value={newSchema}
-          inputProps={{
-            autoCorrect: "off",
+          endIcon={<AddIcon />}
+        >
+          Create Schema
+        </Button>
+        <CircularProgress
+          sx={{
+            display: loadAddingSchema ? "flex" : "none",
+            margin: "auto",
+            color: "#ff4f99",
           }}
         />
-        <div style={{ display: "flex" }}>
-          <Button
-            fullWidth
-            onClick={() => setAddingSchema(false)}
+        <div
+          style={{
+            display:
+              addingSchema && !loading && !loadAddingSchema ? "flex" : "none",
+            flexDirection: "column",
+          }}
+        >
+          <InputBase
             sx={{
+              backgroundColor: "#333333",
               color: "#fff",
-              textTransform: "none",
-              backgroundColor: "#434343 !important",
-              margin: "10px 5px 0px 0px",
-              borderRadius: "12px",
+              borderRadius: "9px",
+              pl: "10px",
+              width: "100%",
+              margin: "4px auto auto 0px",
+              border: "1px solid #fcfcfc",
             }}
-          >
-            Cancel
-          </Button>
-          <Button
-            fullWidth
-            onClick={createSchema}
-            sx={{
-              color: "#fff",
-              textTransform: "none",
-              backgroundColor: "#ff4f99 !important",
-              margin: "10px 0px 0px 5px",
-              borderRadius: "12px",
+            onChange={(e) => setNewSchema(e.target.value)}
+            placeholder="New schema..."
+            value={newSchema}
+            inputProps={{
+              autoCorrect: "off",
             }}
-          >
-            Confirm
-          </Button>
+          />
+          <div style={{ display: "flex" }}>
+            <Button
+              fullWidth
+              onClick={() => setAddingSchema(false)}
+              sx={{
+                color: "#fff",
+                textTransform: "none",
+                backgroundColor: "#434343 !important",
+                margin: "10px 5px 0px 0px",
+                borderRadius: "12px",
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              fullWidth
+              onClick={createSchema}
+              sx={{
+                color: "#fff",
+                textTransform: "none",
+                backgroundColor: "#ff4f99 !important",
+                margin: "10px 0px 0px 5px",
+                borderRadius: "12px",
+              }}
+            >
+              Confirm
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -14,7 +14,12 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import ChainMap from "../ChainMap";
 import { ethers } from "ethers";
 
-export default function FundingPool({ pool }) {
+export default function FundingPool({
+  pool,
+  totalFunds,
+  setTotalFunds,
+  setTotalData,
+}) {
   const multiplier = useRef(
     pool.token === "USDC" ? 1000000 : 1000000000000000000
   );
@@ -102,9 +107,14 @@ export default function FundingPool({ pool }) {
           setErrMsg(result);
           // window.location.reload();
         } else {
+          let newBal = parseInt(balance) + amount * multiplier.current;
+          console.log(newBal);
+          setBalance(newBal);
+          let newTotal = parseFloat(totalFunds) + parseFloat(amount);
+
+          setTotalFunds(newTotal);
+          setTotalData(Math.round((newTotal / (8.5 * 1.3)) * 1000000000));
           setStatus("success");
-          setBalance((balance) => balance + amount);
-          // window.location.reload();
         }
       }, 0);
     }
