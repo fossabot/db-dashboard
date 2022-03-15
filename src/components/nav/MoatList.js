@@ -29,6 +29,7 @@ export default function MoatList({
   setTableName,
   setSelectedPools,
 }) {
+  const wallet = localStorage.getItem("wallet");
   const [open, setOpen] = useState(false);
   const [moat, setMoat] = useState("");
   const [previous, setPrevious] = useState({});
@@ -65,34 +66,81 @@ export default function MoatList({
 
   const signMoat = () => {
     setLoading(true);
-    setTimeout(async function () {
-      console.log(phrase);
-      await window.ethereum.send("eth_requestAccounts");
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      console.log(provider);
-      const signer = provider.getSigner();
-      console.log(signer);
-      const signature = await signer.signMessage(phrase);
-      const address = await signer.getAddress();
-      let privKeyResult;
-      let secretResult;
-      try {
-        privKeyResult = JSON.parse(
-          await KwilDB.decryptKey(signature, address, apiKey)
+    if (wallet === "metamask") {
+      setTimeout(async function () {
+        console.log(phrase);
+        await window.ethereum.send("eth_requestAccounts");
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        console.log(provider);
+        const signer = provider.getSigner();
+        console.log(signer);
+        const signature = await signer.signMessage(phrase);
+        const address = await signer.getAddress();
+        let privKeyResult;
+        let secretResult;
+        try {
+          privKeyResult = JSON.parse(
+            await KwilDB.decryptKey(signature, address, apiKey)
+          );
+          secretResult = await KwilDB.decryptKey(signature, address, secret);
+          setPrivKeyResult(privKeyResult);
+          setSecretResult(secretResult);
+          setLoading(false);
+          setOpen(false);
+        } catch (e) {
+          setOpenSignSnackbar(true);
+          setMoat(previous);
+          setLoading(false);
+          setOpen(false);
+          return;
+        }
+      }, 0);
+    } else if (wallet === "arconnect") {
+      setTimeout(async function () {
+        const info = {
+          name: "KwilDB", // optional application name
+          //logo:KwilLogo
+        };
+
+        console.log(
+          await window.arweaveWallet.connect(
+            ["ACCESS_ADDRESS", "SIGNATURE"],
+            info
+          )
         );
-        secretResult = await KwilDB.decryptKey(signature, address, secret);
-        setPrivKeyResult(privKeyResult);
-        setSecretResult(secretResult);
-        setLoading(false);
-        setOpen(false);
-      } catch (e) {
-        setOpenSignSnackbar(true);
-        setMoat(previous);
-        setLoading(false);
-        setOpen(false);
-        return;
-      }
-    }, 0);
+        const address = await window.arweaveWallet.getActiveAddress();
+        console.log(address);
+
+        const enc = new TextEncoder(); // always utf-8
+        const buff = enc.encode(phrase);
+        console.log(buff);
+        const sig = await window.arweaveWallet.signature(buff, {
+          name: "RSA-PSS",
+          saltLength: 0,
+        });
+        const signature = JSON.stringify(sig);
+        console.log(signature);
+
+        let privKeyResult;
+        let secretResult;
+        try {
+          privKeyResult = JSON.parse(
+            await KwilDB.decryptKey(signature, address, apiKey)
+          );
+          secretResult = await KwilDB.decryptKey(signature, address, secret);
+          setPrivKeyResult(privKeyResult);
+          setSecretResult(secretResult);
+          setLoading(false);
+          setOpen(false);
+        } catch (e) {
+          setOpenSignSnackbar(true);
+          setMoat(previous);
+          setLoading(false);
+          setOpen(false);
+          return;
+        }
+      }, 0);
+    }
   };
 
   const MenuProps = {
@@ -129,35 +177,93 @@ export default function MoatList({
     e.preventDefault();
     //debug, DELETE
     setLoadAddingMoat(true);
-    setTimeout(async function () {
-      await window.ethereum.send("eth_requestAccounts");
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      console.log(provider);
-      const signer = provider.getSigner();
-      console.log(signer);
-      const signature = await signer.signMessage(newPhrase);
-      const address = await signer.getAddress();
-      const result = await KwilDB.createMoat(
-        "https://test-db.kwil.xyz",
-        newMoatName,
-        signature,
-        address
-      );
-      console.log(result);
+    if (wallet === "metamask") {
+      setTimeout(async function () {
+        await window.ethereum.send("eth_requestAccounts");
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        console.log(provider);
+        const signer = provider.getSigner();
+        console.log(signer);
+        const signature = await signer.signMessage(newPhrase);
+        const address = await signer.getAddress();
+        const result = await KwilDB.createMoat(
+          "https://test-db.kwil.xyz",
+          newMoatName,
+          signature,
+          address
+        );
+        console.log(result);
 
-      if (result.creation === false) {
-      } else {
-        const temp = await KwilDB.getMoats("https://test-db.kwil.xyz", address);
-        console.log(temp);
-        setMoats(temp);
-        setMoat(temp.length - 1);
-        setMoatName(newMoatName);
+        if (result.creation === false) {
+        } else {
+          const temp = await KwilDB.getMoats(
+            "https://test-db.kwil.xyz",
+            address
+          );
+          console.log(temp);
+          setMoats(temp);
+          setMoat(temp.length - 1);
+          setMoatName(newMoatName);
+          setLoadAddingMoat(false);
+          setAddingMoat(false);
+          setPrivKeyResult(result.privateKey);
+          setSecretResult(result.secret);
+        }
+      }, 0);
+    } else if (wallet === "arconnect") {
+      setTimeout(async function () {
+        const info = {
+          name: "KwilDB", // optional application name
+          //logo:KwilLogo
+        };
+
+        console.log(
+          await window.arweaveWallet.connect(
+            ["ACCESS_ADDRESS", "SIGNATURE"],
+            info
+          )
+        );
+
+        const address = await window.arweaveWallet.getActiveAddress();
+        console.log(address);
+
+        const enc = new TextEncoder(); // always utf-8
+        const buff = enc.encode(newPhrase);
+        console.log(buff);
+
+        //const buff = str2ab(signingPhrase);
+
+        const sig = await window.arweaveWallet.signature(buff, {
+          name: "RSA-PSS",
+          saltLength: 0,
+        });
+        const signature = JSON.stringify(sig);
+        console.log(signature);
+
+        const result = await KwilDB.createMoat(
+          "https://test-db.kwil.xyz",
+          newMoatName,
+          signature,
+          address
+        );
         setLoadAddingMoat(false);
-        setAddingMoat(false);
-        setPrivKeyResult(result.privateKey);
-        setSecretResult(result.secret);
-      }
-    }, 0);
+        if (result.creation === false) {
+        } else {
+          const temp = await KwilDB.getMoats(
+            "https://test-db.kwil.xyz",
+            address
+          );
+          console.log(temp);
+          setMoats(temp);
+          setMoat(temp.length - 1);
+          setMoatName(newMoatName);
+          setLoadAddingMoat(false);
+          setAddingMoat(false);
+          setPrivKeyResult(result.privateKey);
+          setSecretResult(result.secret);
+        }
+      }, 0);
+    }
   };
 
   return (
@@ -188,7 +294,7 @@ export default function MoatList({
           sx={{ color: "#fff" }}
         >
           <MenuItem disabled value="" sx={{ color: "#fff", width: "200px" }}>
-            <em>Select Moat</em>
+            <em>Select Data Set</em>
           </MenuItem>
           {moats.map((item, index) => {
             return (
@@ -201,7 +307,7 @@ export default function MoatList({
             onClick={() => setAddingMoat(true)}
             sx={{ color: "#ff4f99" }}
           >
-            Create New Moat{" "}
+            Create New Data Set{" "}
             <AddIcon sx={{ height: "20px", marginLeft: "auto" }} />
           </MenuItem>
         </Select>
@@ -289,7 +395,7 @@ export default function MoatList({
           severity="error"
           sx={{ width: "100%" }}
         >
-          An error occurred trying to decrypt moat data!
+          An error occurred trying to decrypt data!
         </Alert>
       </Snackbar>
       <Modal
@@ -324,10 +430,10 @@ export default function MoatList({
               fontWeight: "bold",
             }}
           >
-            Create New Moat
+            Create New Data Set
           </p>
           <Typography sx={{ margin: "40px 20px 0px", color: "#fff" }}>
-            Moat Name
+            Data Set Name
           </Typography>
           <InputBase
             sx={{
@@ -378,7 +484,7 @@ export default function MoatList({
             }}
             onClick={createMoat}
           >
-            Create Data Moat
+            Create Data Set
           </Button>
           <Backdrop open={loadAddingMoat} sx={{ display: "flex" }}>
             <CircularProgress sx={{ margin: "auto", color: "#ff4f99" }} />

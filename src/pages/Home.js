@@ -48,17 +48,11 @@ export default function Home() {
   const [update, setUpdate] = useState(0);
 
   useEffect(() => {
-    if (wallet === "metamask") {
-      setTimeout(async function () {
-        const temp = await KwilDB.getMoats("https://test-db.kwil.xyz", address);
-        console.log(temp);
-        setMoats(temp);
-      }, 0);
-    } else if (wallet === "arconnect") {
-      setTimeout(async function () {
-        setMoats(await KwilDB.getMoats("https://test-db.kwil.xyz", address));
-      }, 0);
-    }
+    setTimeout(async function () {
+      const temp = await KwilDB.getMoats("https://test-db.kwil.xyz", address);
+      console.log(temp);
+      setMoats(temp);
+    }, 0);
   }, []);
 
   return (

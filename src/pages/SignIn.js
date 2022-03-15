@@ -19,24 +19,8 @@ import { ethers } from "ethers";
 export default function SignIn() {
   const navigate = useNavigate();
 
-  const [meta, setMeta] = useState(false);
-  const [arconn, setArconn] = useState(false);
-  const [unselected, setUnselected] = useState(false);
-
-  const select = (type) => {
+  const signIn = async (type) => {
     if (type === "meta") {
-      setArconn(false);
-      setUnselected(false);
-      setMeta(true);
-    } else {
-      setMeta(false);
-      setUnselected(false);
-      setArconn(true);
-    }
-  };
-
-  const signIn = async () => {
-    if (meta) {
       localStorage.setItem("wallet", "metamask");
       await window.ethereum.send("eth_requestAccounts");
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -44,7 +28,7 @@ export default function SignIn() {
       const address = await signer.getAddress();
       localStorage.setItem("address", address);
       navigate("/home");
-    } else if (arconn) {
+    } else if (type === "arconn") {
       localStorage.setItem("wallet", "arconnect");
       if (window.arweaveWallet) {
         const info = {
@@ -63,10 +47,8 @@ export default function SignIn() {
         localStorage.setItem("address", address);
         navigate("/home");
       } else {
-        window.alert("arconnect not detected");
+        window.alert("Arconnect not detected");
       }
-    } else {
-      setUnselected(true);
     }
   };
 
@@ -101,14 +83,14 @@ export default function SignIn() {
         src={KwilDB}
         alt="kwil-db-logo"
         width="300px"
-        style={{ margin: "15vh auto auto auto" }}
+        style={{ margin: "15vh auto 40px auto" }}
       />
-      <p style={{ margin: "auto", fontSize: "28px", color: "#fff" }}>
+      <p style={{ margin: "20px auto", fontSize: "28px", color: "#fff" }}>
         Select a Wallet
       </p>
-      <div style={{ margin: "auto", display: "flex" }}>
+      <div style={{ margin: "40px auto", display: "flex" }}>
         <Button
-          onClick={() => select("meta")}
+          onClick={() => signIn("meta")}
           sx={{
             backgroundColor: "#fff !important",
             width: "64px",
@@ -116,13 +98,13 @@ export default function SignIn() {
             borderRadius: "12px",
             display: "flex",
             marginRight: "20px",
-            boxShadow: meta ? "3px 3px 6px #438ea0" : "none",
+            boxShadow: "none",
           }}
         >
           <Metamask style={{ height: "52px", margin: "auto" }} />
         </Button>
         <Button
-          onClick={() => select("arconn")}
+          onClick={() => signIn("arconn")}
           sx={{
             backgroundColor: "#fff !important",
             width: "64px",
@@ -130,7 +112,7 @@ export default function SignIn() {
             borderRadius: "12px",
             display: "flex",
             marginLeft: "20px",
-            boxShadow: arconn ? "3px 3px 6px #438ea0" : "none",
+            boxShadow: "none",
           }}
         >
           <img
@@ -140,30 +122,6 @@ export default function SignIn() {
           />
         </Button>
       </div>
-      <p
-        style={{
-          margin: "0 auto",
-          color: "#ff0000",
-          display: unselected ? "flex" : "none",
-        }}
-      >
-        Please select your preferred wallet.
-      </p>
-      <p style={{ margin: "auto", color: "#fff" }}>then</p>
-      <Button
-        onClick={signIn}
-        sx={{
-          textTransform: "none",
-          background: "linear-gradient(30deg, #FF4F99 30%, #717AFF 90%)",
-          color: "#fff",
-          width: "200px",
-          borderRadius: "12px",
-          fontSize: "18px",
-          margin: "auto auto 30vh auto",
-        }}
-      >
-        Sign In
-      </Button>
     </div>
   );
 }
