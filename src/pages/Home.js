@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import KwilDB from "kwildb";
+import { PieChart } from "react-minimal-pie-chart";
 import { ethers } from "ethers";
 
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -37,7 +38,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   const [selectedPools, setSelectedPools] = useState([]);
-  const [balances, setBalances] = useState(new Map());
+  const [totalFunds, setTotalFunds] = useState(0);
+  const [usedFunds, setUsedFunds] = useState(0);
 
   const [privKeyResult, setPrivKeyResult] = useState("");
   const [secretResult, setSecretResult] = useState("");
@@ -60,6 +62,27 @@ export default function Home() {
       }, 0);
     }
   }, []);
+
+  useEffect(() => {
+    setTimeout(async function () {
+      const kwilDB = KwilDB.createConnector(
+        {
+          host: "test-db.kwil.xyz",
+          protocol: "https",
+          port: null,
+          moat: moatName,
+          privateKey: privKeyResult,
+        },
+        secretResult
+      );
+      const total = await kwilDB.getMoatFunding();
+      setTotalFunds(total.funding);
+      console.log(total);
+      const used = await kwilDB.getMoatDebit();
+      setUsedFunds((used.debit / 1000000000) * 8.5 * 1.3);
+      console.log((used.debit / 1000000000) * 8.5 * 1.3);
+    });
+  }, [privKeyResult]);
 
   useEffect(() => {
     setLoading(true);
@@ -130,30 +153,6 @@ export default function Home() {
           marginLeft: "240px",
         }}
       >
-        {/* <p
-          style={{
-            display: moatName === "" ? "flex" : "none",
-            color: "#fff",
-            marginTop: "148px",
-            marginLeft: "20px",
-            position: "fixed",
-            fontSize: "20px",
-          }}
-        >
-          <ArrowBackIcon /> Please select a moat
-        </p>
-        <p
-          style={{
-            display: tableName === "" && privKeyResult !== "" ? "flex" : "none",
-            color: "#fff",
-            position: "fixed",
-            marginTop: "290px",
-            marginLeft: "20px",
-            fontSize: "20px",
-          }}
-        >
-          <ArrowBackIcon /> Please select a table
-        </p>*/}
         <div
           style={{
             display: tableName !== "" ? "flex" : "none",
@@ -233,11 +232,45 @@ export default function Home() {
           >
             Funding Pools
           </p>
-          <Grid container spacing={2} sx={{ margin: "0px" }}>
+          <div
+            style={{
+              width: "100px",
+              height: "100px",
+              margin: "20px",
+              display: totalFunds !== 0 ? "flex" : "none",
+            }}
+          >
+            <PieChart
+              data={[{ title: "Used", value: usedFunds, color: "#ff4f99" }]}
+              totalValue={totalFunds}
+              background="#212121"
+              viewBoxSize={[100, 100]}
+              lineWidth={15}
+              rounded
+              label={({ dataEntry }) =>
+                Math.round((dataEntry.value * 10000) / totalFunds) / 100 + "%"
+              }
+              labelStyle={{
+                fontSize: "20px",
+                fontFamily: "sans-serif",
+                fill: "#E38627",
+              }}
+              labelPosition={0}
+            />
+          </div>
+
+          <Grid
+            container
+            spacing={2}
+            sx={{
+              margin: "0px",
+              width: "calc(100% - 20px)",
+            }}
+          >
             {selectedPools.map((pool) => {
               return (
                 <Grid item xs={6}>
-                  <FundingPool pool={pool} />;
+                  <FundingPool key={pool.pool_name} pool={pool} />;
                 </Grid>
               );
             })}
