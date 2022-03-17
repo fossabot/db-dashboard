@@ -9,6 +9,7 @@ import {
   Button,
   CircularProgress,
   Backdrop,
+  Skeleton,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import ChainMap from "../ChainMap";
@@ -28,6 +29,7 @@ export default function FundingPool({
   );
 
   const [balance, setBalance] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [amount, setAmount] = useState(0);
@@ -53,6 +55,7 @@ export default function FundingPool({
       );
       console.log(result);
       setBalance(result.pool);
+      setLoading(false);
     });
   }, []);
 
@@ -115,6 +118,7 @@ export default function FundingPool({
           setTotalFunds(newTotal);
           setTotalData(Math.round((newTotal / (8.5 * 1.3)) * 1000000000));
           setStatus("success");
+          handleClose();
         }
       }, 0);
     }
@@ -140,9 +144,14 @@ export default function FundingPool({
           <span style={{ color: "#717aff" }}>Token: </span>
           {pool.token}
         </p>
-        <p style={{ color: "#fff", margin: "auto" }}>
+        <p
+          style={{
+            color: "#fff",
+            margin: "auto",
+          }}
+        >
           <span style={{ color: "#717aff" }}>Balance: </span>
-          {balance / multiplier.current}
+          {loading ? "Loading..." : balance / multiplier.current}
         </p>
       </div>
 
@@ -206,6 +215,11 @@ export default function FundingPool({
               },
             }}
             onChange={(e) => setAmount(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                addFunds();
+              }
+            }}
             placeholder="Amount"
             value={amount === 0 ? "" : amount}
             inputProps={{

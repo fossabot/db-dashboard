@@ -13,6 +13,7 @@ import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import AddIcon from "@mui/icons-material/Add";
 import KwilDB from "kwildb";
+// import KwilLoader from "../../assets/Kwil_feather_icon_animation_loop.svg";
 
 export default function SchemaList({
   moatName,
@@ -121,6 +122,26 @@ export default function SchemaList({
         flexDirection: "column",
       }}
     >
+      {/*<div
+        style={{
+          display: loading && privKeyResult !== "" ? "flex" : "none",
+          margin: "auto",
+        }}
+      >
+        <object
+          style={{
+            width: "150px",
+            height: "150px",
+            //position:'absolute',
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+          type="image/svg+xml"
+          data={KwilLoader}
+        >
+          svg-animation
+        </object>
+      </div>*/}
       <CircularProgress
         sx={{
           display: loading && privKeyResult !== "" ? "flex" : "none",

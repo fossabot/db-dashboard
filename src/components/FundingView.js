@@ -51,7 +51,7 @@ export default function FundingView({
       </p>
       <div
         style={{
-          margin: "20px",
+          margin: "20px 40px",
           display: totalFunds !== 0 ? "flex" : "none",
         }}
       >
@@ -116,8 +116,8 @@ export default function FundingView({
         container
         spacing={2}
         sx={{
-          margin: "0px",
-          width: "calc(100% - 20px)",
+          margin: "0px 20px",
+          width: "calc(100% - 280px)",
         }}
       >
         {selectedPools.map((pool) => {
@@ -130,7 +130,6 @@ export default function FundingView({
                 setTotalFunds={setTotalFunds}
                 setTotalData={setTotalData}
               />
-              ;
             </Grid>
           );
         })}

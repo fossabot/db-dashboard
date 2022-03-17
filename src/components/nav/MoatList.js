@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Alert,
   Backdrop,
@@ -359,6 +359,12 @@ export default function MoatList({
             }}
             multiline
             onChange={(e) => setPhrase(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                signMoat();
+              }
+            }}
             placeholder="Signing phrase"
             value={phrase}
             inputProps={{
@@ -366,6 +372,7 @@ export default function MoatList({
             }}
           />
           <Button
+            type="submit"
             sx={{
               color: "#fff",
               backgroundColor: "#ff4f99 !important",
