@@ -10,6 +10,9 @@ import {
   TableRow,
 } from "@mui/material";
 import KwilDB from "kwildb";
+import { Scrollbars } from "react-custom-scrollbars";
+import CustomScroll from "react-custom-scroll";
+import SimpleBarReact from "simplebar-react";
 
 export default function TableView({
   moatName,
@@ -82,67 +85,140 @@ export default function TableView({
 
   return (
     <div
+      id="table-view-wrapper"
       style={{
         display: "flex",
         flexDirection: "column",
-        flex: 1,
+        width: "calc(100vw - 240px)",
+        height: "100vh",
       }}
     >
-      <p style={{ fontSize: "32px", color: "#fff", margin: "40px 40px 0px" }}>
+      <p
+        style={{ fontSize: "32px", color: "#fff", margin: "40px 0px 0px 40px" }}
+      >
         {tableName}
       </p>
       <CircularProgress
         sx={{
-          display: loading && tableName !== "" ? "flex" : "none",
-          margin: "auto",
+          display: loading ? "flex" : "none",
+          margin: "300px auto",
           color: "#ff4f99",
         }}
       />
+
       <TableContainer
         sx={{
-          display: tableName === "" || loading ? "none" : "flex",
-          backgroundColor: "#212121",
-          borderRadius: "12px",
-          height: "fit-content",
-          width: "calc(100vw - 320px)",
-          margin: "30px 40px auto",
+          display: loading ? "none" : "flex",
+          borderRadius: "0px",
+          maxWidth: "calc(100vw - 320px)",
+          height: "100%",
+          backgroundColor: "transparent",
+          margin: "30px 40px 40px",
         }}
         component={Paper}
       >
-        <Table sx={{}} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              {cols.map((column, index) => (
-                <TableCell
-                  key={index}
-                  sx={{ backgroundColor: "#151515", color: "#fff" }}
-                >
-                  {column}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow
-                key={index}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
+        <Scrollbars
+          renderThumbHorizontal={({ style, ...props }) => (
+            <div
+              {...props}
+              style={{
+                ...style,
+                height: "12px",
+                backgroundColor: "#ffffff80",
+                borderRadius: "6px",
+              }}
+            />
+          )}
+          renderTrackHorizontal={({ style, ...props }) => (
+            <div
+              {...props}
+              style={{
+                ...style,
+                height: "12px",
+                width: "100%",
+                backgroundColor: "transparent",
+                position: "absolute",
+                bottom: 0,
+              }}
+            />
+          )}
+          renderThumbVertical={({ style, ...props }) => (
+            <div
+              {...props}
+              style={{
+                ...style,
+                width: "12px",
+                backgroundColor: "#ffffff80",
+                borderRadius: "6px",
+              }}
+            />
+          )}
+          renderTrackVeritcal={({ style, ...props }) => (
+            <div
+              {...props}
+              style={{
+                ...style,
+                width: "12px",
+                height: "100%",
+                backgroundColor: "transparent",
+              }}
+            />
+          )}
+          renderView={({ style, ...props }) => (
+            <div
+              {...props}
+              style={{ ...style, backgroundColor: "transparent" }}
+            />
+          )}
+          style={{ width: "100%", height: "100%" }}
+        >
+          <Table>
+            <TableHead
+              sx={{
+                position: "sticky",
+                top: 0,
+                background:
+                  "linear-gradient(30deg, transparent -50%, #717aff 200%)",
+                backgroundColor: "#000",
+              }}
+            >
+              <TableRow>
                 {cols.map((column, index) => (
                   <TableCell
                     key={index}
-                    sx={{
-                      color: "#fff",
-                      borderBottom: "1px solid #808080",
-                    }}
+                    sx={{ color: "#fff", borderBottom: "none" }}
                   >
-                    {row[column]}
+                    {column}
                   </TableCell>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody sx={{ backgroundColor: "transparent" }}>
+              {rows.map((row, index) => (
+                <TableRow
+                  key={index}
+                  sx={{
+                    "&:last-child td, &:last-child th": { border: 0 },
+                    backgroundColor: index % 2 === 0 ? "#212121" : "#151515",
+                  }}
+                >
+                  {cols.map((column, index) => (
+                    <TableCell
+                      key={index}
+                      size="small"
+                      sx={{
+                        color: "#fff",
+                        borderBottom: "none",
+                      }}
+                    >
+                      {row[column]}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Scrollbars>
       </TableContainer>
     </div>
   );

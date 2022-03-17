@@ -273,7 +273,7 @@ export default function MoatList({
           paddingLeft: "15px",
           paddingRight: "10px",
           margin: "0px 8px 0px 8px",
-          width: "200px",
+          //width: "200px",
           height: "30px",
           backgroundColor: "#333333",
           borderRadius: "5px",
@@ -293,7 +293,7 @@ export default function MoatList({
           IconComponent={ExpandMoreIcon}
           sx={{ color: "#fff" }}
         >
-          <MenuItem disabled value="" sx={{ color: "#fff", width: "200px" }}>
+          <MenuItem disabled value="" sx={{ color: "#fff" }}>
             <em>Select Data Set</em>
           </MenuItem>
           {moats.map((item, index) => {

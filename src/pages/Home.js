@@ -59,11 +59,11 @@ export default function Home() {
     <div
       style={{
         background: "linear-gradient(30deg, #101010, #000)",
+        minWidth: "100vw",
         width: "100vw",
         minHeight: "100vh",
-        maxHeight: "100vh",
+        // maxHeight: "100vh",
         overflow: "hidden",
-        paddingBottom: 40,
         display: "flex",
       }}
     >
@@ -87,11 +87,13 @@ export default function Home() {
       />
 
       <div
+        id="home-right"
         style={{
           display: "flex",
           flexDirection: "column",
+          minWidth: "100vw",
           width: "calc(100vw - 240px)",
-          height: "100vh",
+          minHeight: "100vh",
           maxHeight: "100vh",
           overflow: "hidden",
           marginLeft: "240px",
