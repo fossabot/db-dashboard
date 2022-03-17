@@ -99,67 +99,13 @@ export default function TableView({
       >
         {tableName}
       </p>
-      {/* <CircularProgress
+      <CircularProgress
         sx={{
           display: loading ? "flex" : "none",
           margin: "300px auto",
           color: "#ff4f99",
         }}
-      />*/}
-      <TableContainer
-        sx={{
-          display: loading ? "flex" : "none",
-          borderRadius: "0px",
-          maxWidth: "calc(100vw - 320px)",
-          height: "50%",
-          backgroundColor: "transparent",
-          margin: "30px 40px 40px",
-        }}
-        component={Paper}
-      >
-        <Table>
-          <TableHead
-            sx={{
-              background:
-                "linear-gradient(30deg, transparent -50%, #717aff 200%)",
-              backgroundColor: "#000",
-            }}
-          >
-            <TableRow>
-              <TableCell sx={{ borderBottom: "none" }}>
-                <Skeleton sx={{ backgroundColor: "#434343" }} />
-              </TableCell>
-              <TableCell sx={{ borderBottom: "none" }}>
-                <Skeleton sx={{ backgroundColor: "#434343" }} />
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody sx={{ backgroundColor: "transparent" }}>
-            {[...Array(10)].map((item, index) => (
-              <TableRow
-                key={item}
-                sx={{
-                  "&:last-child td, &:last-child th": { border: 0 },
-                  backgroundColor: index % 2 === 0 ? "#212121" : "#151515",
-                }}
-              >
-                <TableCell sx={{ borderBottom: "none" }}>
-                  <Skeleton
-                    variant="rectangular"
-                    sx={{ backgroundColor: "#434343" }}
-                  />
-                </TableCell>
-                <TableCell sx={{ borderBottom: "none" }}>
-                  <Skeleton
-                    variant="rectangular"
-                    sx={{ backgroundColor: "#434343" }}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      />
 
       <TableContainer
         sx={{

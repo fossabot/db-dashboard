@@ -156,9 +156,9 @@ export default function SchemaList({
           flex: 1,
         }}
       >
-        <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
+        {/*<Typography sx={{ color: "#fff", fontWeight: "bold" }}>
           Schemas
-        </Typography>
+        </Typography>*/}
         <p
           style={{
             display: noFunds ? "flex" : "none",
@@ -169,90 +169,125 @@ export default function SchemaList({
           Please add funds to a funding pool to get started.
         </p>
 
-        {schemas.map((schema, index) => {
-          return (
-            <Accordion
-              key={index}
-              disableGutters
-              sx={{
-                width: "100%",
-                backgroundColor: "transparent",
-                boxShadow: "none",
-              }}
-            >
-              <AccordionSummary
-                sx={{
-                  "& .MuiAccordionSummary-content": { margin: 0 },
-                  "&.MuiAccordionSummary-root": {
-                    maxHeight: "38px",
-                    minHeight: "38px",
-                    padding: "0 8px",
-                  },
-                }}
-                expandIcon={<ExpandMoreIcon sx={{ color: "#ff4f99" }} />}
-              >
-                <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
-                  {schema.name}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  "&.MuiAccordionDetails-root": {
-                    padding: "0px 16px 8px 16px",
-                  },
-                }}
-              >
-                {schema.tables.map((table) => (
-                  <Button
-                    startIcon={
-                      tableName === table ? (
-                        <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
-                      ) : (
-                        <RadioButtonUncheckedIcon />
-                      )
-                    }
-                    onClick={() => {
-                      if (tableName !== table) {
-                        setSchemaName(schema.name);
-                        setTableName(table);
-                        setSelectedPools([]);
-                      } else {
-                        setSchemaName("");
-                        setTableName("");
-                      }
-                    }}
+        <Accordion
+          disableGutters
+          sx={{
+            width: "100%",
+            backgroundColor: "transparent",
+            boxShadow: "none",
+          }}
+        >
+          <AccordionSummary
+            sx={{
+              "& .MuiAccordionSummary-content": { margin: 0 },
+              "&.MuiAccordionSummary-root": {
+                maxHeight: "38px",
+                minHeight: "38px",
+                padding: "0 8px",
+              },
+            }}
+            expandIcon={<ExpandMoreIcon sx={{ color: "#ff4f99" }} />}
+          >
+            <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
+              Schemas
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              "&.MuiAccordionDetails-root": {
+                padding: "0px 8px",
+              },
+            }}
+          >
+            {schemas.map((schema, index) => {
+              return (
+                <Accordion
+                  key={index}
+                  disableGutters
+                  sx={{
+                    width: "100%",
+                    backgroundColor: "transparent",
+                    boxShadow: "none",
+                  }}
+                >
+                  <AccordionSummary
                     sx={{
-                      color: "#fff",
-                      backgroundColor: "transparent !important",
-                      textTransform: "none",
-                      maxHeight: "32px",
-                      minHeight: "32px",
-                      justifyContent: "left",
+                      "& .MuiAccordionSummary-content": { margin: 0 },
+                      "&.MuiAccordionSummary-root": {
+                        maxHeight: "38px",
+                        minHeight: "38px",
+                        padding: "0px 8px",
+                      },
+                    }}
+                    expandIcon={<ExpandMoreIcon sx={{ color: "#ff4f99" }} />}
+                  >
+                    <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
+                      {schema.name}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      "&.MuiAccordionDetails-root": {
+                        padding: "0px 8px 8px",
+                      },
                     }}
                   >
-                    {table}
-                  </Button>
-                ))}
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
-        <Button
-          onClick={() => setAddingSchema(true)}
-          sx={{
-            display: loading || noFunds ? "none" : "flex",
-            color: "#ff4f99",
-            textTransform: "none",
-            justifyContent: "left",
-            fontWeight: "bold",
-            backgroundColor: "transparent !important",
-          }}
-          endIcon={<AddIcon />}
-        >
-          Create Schema
-        </Button>
+                    {schema.tables.map((table) => (
+                      <Button
+                        startIcon={
+                          tableName === table ? (
+                            <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
+                          ) : (
+                            <RadioButtonUncheckedIcon />
+                          )
+                        }
+                        onClick={() => {
+                          if (tableName !== table) {
+                            setSchemaName(schema.name);
+                            setTableName(table);
+                            setSelectedPools([]);
+                          } else {
+                            setSchemaName("");
+                            setTableName("");
+                          }
+                        }}
+                        sx={{
+                          color: "#fff",
+                          backgroundColor: "transparent !important",
+                          textTransform: "none",
+                          maxHeight: "32px",
+                          minHeight: "32px",
+                          justifyContent: "left",
+                        }}
+                      >
+                        {table}
+                      </Button>
+                    ))}
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })}
+            <Button
+              onClick={() => setAddingSchema(true)}
+              sx={{
+                display: loading || noFunds ? "none" : "flex",
+                color: "#ff4f99",
+                textTransform: "none",
+                justifyContent: "left",
+                fontWeight: "bold",
+                backgroundColor: "transparent !important",
+              }}
+              endIcon={<AddIcon />}
+            >
+              Create Schema
+            </Button>
+          </AccordionDetails>
+        </Accordion>
+
         <CircularProgress
           sx={{
             display: loadAddingSchema ? "flex" : "none",

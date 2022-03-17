@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Alert,
   Backdrop,
   Button,
@@ -18,6 +21,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ChainMap from "../../ChainMap";
 import { ethers } from "ethers";
 import KwilDB from "kwildb";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export default function FundingPoolList({
   moatName,
@@ -139,59 +143,94 @@ export default function FundingPoolList({
         flexDirection: "column",
       }}
     >
-      <Typography sx={{ color: "#fff", marginLeft: "8px", fontWeight: "bold" }}>
+      {/*<Typography sx={{ color: "#fff", marginLeft: "8px", fontWeight: "bold" }}>
         Funding Pools
-      </Typography>
-      {pools.map((pool, index) => {
-        return (
-          <Button
-            key={index}
-            startIcon={
-              selectedPools.includes(pool) ? (
-                <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
-              ) : (
-                <RadioButtonUncheckedIcon />
-              )
-            }
-            sx={{
-              color: "#fff",
-              backgroundColor: "transparent !important",
-              textTransform: "none",
-              maxHeight: "32px",
-              minHeight: "32px",
-              justifyContent: "left",
-            }}
-            onClick={() => {
-              setTableName("");
-              if (selectedPools.includes(pool)) {
-                setSelectedPools(
-                  selectedPools.filter(
-                    (item) => item.pool_name !== pool.pool_name
-                  )
-                );
-              } else {
-                setSelectedPools((old) => [...old, pool]);
-              }
-            }}
-          >
-            {pool.pool_name}
-          </Button>
-        );
-      })}
-      <Button
-        onClick={() => setAddingPool(true)}
+      </Typography>*/}
+      <Accordion
+        disableGutters
         sx={{
-          display: loading ? "none" : "flex",
-          color: "#ff4f99",
-          textTransform: "none",
-          justifyContent: "left",
-          fontWeight: "bold",
-          backgroundColor: "transparent !important",
+          width: "100%",
+          backgroundColor: "transparent",
+          boxShadow: "none",
         }}
-        endIcon={<AddIcon />}
       >
-        Create Pool
-      </Button>
+        <AccordionSummary
+          sx={{
+            "& .MuiAccordionSummary-content": { margin: 0 },
+            "&.MuiAccordionSummary-root": {
+              maxHeight: "38px",
+              minHeight: "38px",
+              padding: "0 16px",
+            },
+          }}
+          expandIcon={<ExpandMoreIcon sx={{ color: "#ff4f99" }} />}
+        >
+          <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
+            Funding Pools
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            "&.MuiAccordionDetails-root": {
+              padding: "0px 16px 8px 16px",
+            },
+          }}
+        >
+          {pools.map((pool, index) => {
+            return (
+              <Button
+                key={index}
+                startIcon={
+                  selectedPools.includes(pool) ? (
+                    <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )
+                }
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "transparent !important",
+                  textTransform: "none",
+                  maxHeight: "32px",
+                  minHeight: "32px",
+                  justifyContent: "left",
+                }}
+                onClick={() => {
+                  setTableName("");
+                  if (selectedPools.includes(pool)) {
+                    setSelectedPools(
+                      selectedPools.filter(
+                        (item) => item.pool_name !== pool.pool_name
+                      )
+                    );
+                  } else {
+                    setSelectedPools((old) => [...old, pool]);
+                  }
+                }}
+              >
+                {pool.pool_name}
+              </Button>
+            );
+          })}
+          <Button
+            onClick={() => setAddingPool(true)}
+            sx={{
+              display: loading ? "none" : "flex",
+              color: "#ff4f99",
+              textTransform: "none",
+              justifyContent: "left",
+              fontWeight: "bold",
+              backgroundColor: "transparent !important",
+            }}
+            endIcon={<AddIcon />}
+          >
+            Create Pool
+          </Button>
+        </AccordionDetails>
+      </Accordion>
+
       <Modal
         open={addingPool}
         onClose={() => {
