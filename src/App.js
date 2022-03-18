@@ -1,9 +1,7 @@
 import React from 'react';
 import './App.css';
 import { ethers } from 'ethers';
-//import ecclesia from "ecclesia";
 import KwilDB from 'kwildb';
-//import arweave from 'arweave';
 import Main from './Main';
 
 function App() {

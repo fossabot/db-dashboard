@@ -17,7 +17,6 @@ import {
 
 import Navbar from "../components/Navbar";
 import NavTree from "../components/NavTree";
-// import dark from '../assets/backgrounds/kwil_pattern_dark_2.svg'
 
 function TableView() {
   const location = useLocation();

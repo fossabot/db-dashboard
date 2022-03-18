@@ -1,5 +1,4 @@
 import React, {useRef, useState} from "react";
-import { useNavigate } from "react-router-dom";
 import KwilDB from "kwildb";
 import { ethers } from "ethers";
 

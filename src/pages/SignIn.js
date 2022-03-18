@@ -1,11 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@mui/material";
-
-import Kwil from "../assets/logos/kwil.svg";
-import grad1 from "../assets/gradients/grad1.svg";
-import Navbar from "../components/Navbar";
 
 import tri from "../assets/shapes/tri.svg";
 import loop from "../assets/shapes/loop.svg";

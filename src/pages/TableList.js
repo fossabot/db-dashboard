@@ -15,7 +15,6 @@ import Navbar from "../components/Navbar";
 import Table from "../components/Table";
 import NavTree from "../components/NavTree";
 
-// import AddIcon from "@mui/icons-material/Add";
 
 function TableList() {
   const location = useLocation();

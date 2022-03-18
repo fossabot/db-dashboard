@@ -25,7 +25,7 @@
 		"recharts": "^2.1.9",
 		"simplebar-react": "^2.3.6",
 		"web-vitals": "^2.1.4",
-		"webpack": "^5.69.1",
+		"webpack": "^5.70.0",
 		"webpack-cli": "^4.9.2"
 	},
 	"scripts": {

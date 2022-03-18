@@ -5,9 +5,7 @@ import KwilDB from "kwildb";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
-  Backdrop,
   Box,
-  CircularProgress,
   Fade,
   IconButton,
   InputAdornment,
@@ -27,15 +25,6 @@ export default function Create() {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
-
-  function str2ab(str) {
-    let buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-    let bufView = new Uint16Array(buf);
-    for (let i = 0, strLen = str.length; i < strLen; i++) {
-      bufView[i] = str.charCodeAt(i);
-    }
-    return buf;
-  }
 
   //const [status, setStatus] = useState(null);
 

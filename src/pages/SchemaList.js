@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import KwilDB from "kwildb";
 
 import { Button, InputBase, Modal, Breadcrumbs } from "@mui/material";

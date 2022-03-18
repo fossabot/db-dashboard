@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import KwilDB from "kwildb";
-import { ethers } from "ethers";
 
 import { Button, Skeleton } from "@mui/material";
 

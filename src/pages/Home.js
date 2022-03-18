@@ -1,34 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import KwilDB from "kwildb";
-import { PieChart } from "react-minimal-pie-chart";
-import { ethers } from "ethers";
-
-import LoadingButton from "@mui/lab/LoadingButton";
-
-import Moat from "../components/Moat";
-import { ReactComponent as Metamask } from "../assets/logos/MetaMask_Fox.svg";
-import Arconnect from "../assets/logos/arconnect.png";
-import Navbar from "../components/Navbar";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import FundingPool from "../components/FundingPool";
 import NavTree from "../components/NavTree";
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  InputBase,
-  CircularProgress,
-  Grid,
-} from "@mui/material";
 
 import FundingView from "../components/FundingView";
 import TableView from "../components/TableView";
-import Console from "../components/Console";
 
 export default function Home() {
   const wallet = localStorage.getItem("wallet");

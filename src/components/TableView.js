@@ -8,12 +8,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Skeleton,
 } from "@mui/material";
 import KwilDB from "kwildb";
 import { Scrollbars } from "react-custom-scrollbars";
-import CustomScroll from "react-custom-scroll";
-import SimpleBarReact from "simplebar-react";
 
 export default function TableView({
   moatName,
