@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import { ethers } from 'ethers';
+//import { ethers } from 'ethers';
+import {providers} from "ethers";
 import KwilDB from 'kwildb';
 import Main from './Main';
 
@@ -47,7 +48,7 @@ function App() {
 
 		setTimeout(async function () {
 			await window.ethereum.send('eth_requestAccounts');
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const provider = new providers.Web3Provider(window.ethereum);
 			console.log(provider);
 			const signer = provider.getSigner();
 			console.log(signer);

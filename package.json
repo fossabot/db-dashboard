@@ -8,7 +8,6 @@
 		"@mui/icons-material": "^5.4.2",
 		"@mui/lab": "^5.0.0-alpha.73",
 		"@mui/material": "^5.4.2",
-		"@mui/x-data-grid": "^5.5.1",
 		"@testing-library/jest-dom": "^5.16.2",
 		"@testing-library/react": "^12.1.2",
 		"@testing-library/user-event": "^13.5.0",
@@ -24,11 +23,13 @@
 		"react-scripts": "5.0.0",
 		"recharts": "^2.1.9",
 		"simplebar-react": "^2.3.6",
+		"source-map-explorer": "^2.5.2",
 		"web-vitals": "^2.1.4",
 		"webpack": "^5.70.0",
 		"webpack-cli": "^4.9.2"
 	},
 	"scripts": {
+		"analyze": "source-map-explorer 'build/static/js/*.js'",
 		"start": "BROWSER='google chrome' react-app-rewired start",
 		"build": "react-app-rewired build",
 		"test": "react-app-rewired test",
@@ -63,6 +64,7 @@
 		"react-app-rewired": "^2.2.1",
 		"stream-browserify": "^3.0.0",
 		"stream-http": "^3.2.0",
-		"url": "^0.11.0"
+		"url": "^0.11.0",
+		"webpack-bundle-analyzer": "^4.5.0"
 	}
 }

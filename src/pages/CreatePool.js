@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 import KwilDB from "kwildb";
 import ChainMap from "../ChainMap";
 
@@ -83,7 +83,7 @@ console.log(ChainMap())
         }
       setLoading(true);
       await window.ethereum.send("eth_requestAccounts");
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new providers.Web3Provider(window.ethereum);
       console.log(provider);
       const signer = provider.getSigner();
       console.log(signer);

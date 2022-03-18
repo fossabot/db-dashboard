@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import KwilDB from "kwildb";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 
 import { Button, Popover, InputBase, Snackbar, Alert } from "@mui/material";
 
@@ -37,7 +37,7 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
     setTimeout(async function () {
       console.log(phrase);
       await window.ethereum.send("eth_requestAccounts");
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new providers.Web3Provider(window.ethereum);
       console.log(provider);
       const signer = provider.getSigner();
       console.log(signer);
@@ -124,7 +124,7 @@ export default function Moat({ moatName, privateKey, owner, secret,arweave }) {
     setTimeout(async function () {
       console.log(phrase);
       await window.ethereum.send("eth_requestAccounts");
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new providers.Web3Provider(window.ethereum);
       console.log(provider);
       const signer = provider.getSigner();
       console.log(signer);

@@ -15,7 +15,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 import KwilDB from "kwildb";
 
 export default function MoatList({
@@ -70,7 +70,7 @@ export default function MoatList({
       setTimeout(async function () {
         console.log(phrase);
         await window.ethereum.send("eth_requestAccounts");
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const provider = new providers.Web3Provider(window.ethereum);
         console.log(provider);
         const signer = provider.getSigner();
         console.log(signer);
@@ -180,7 +180,7 @@ export default function MoatList({
     if (wallet === "metamask") {
       setTimeout(async function () {
         await window.ethereum.send("eth_requestAccounts");
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const provider = new providers.Web3Provider(window.ethereum);
         console.log(provider);
         const signer = provider.getSigner();
         console.log(signer);

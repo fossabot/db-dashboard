@@ -11,7 +11,7 @@ import {
   Backdrop,
 } from "@mui/material";
 import ChainMap from "../ChainMap";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 
 export default function FundingPool({
   pool,
@@ -82,7 +82,7 @@ export default function FundingPool({
         }
         setAdding(true);
         await window.ethereum.send("eth_requestAccounts");
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const provider = new providers.Web3Provider(window.ethereum);
         console.log(provider);
         const signer = provider.getSigner();
         console.log(signer);

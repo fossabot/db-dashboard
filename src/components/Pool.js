@@ -1,6 +1,6 @@
 import React, {useRef, useState} from "react";
 import KwilDB from "kwildb";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 
 import {
   Button,
@@ -60,7 +60,7 @@ export default function Moat({ poolName, creator, validator, balance,token,chain
           }
           setAdding(true);
         await window.ethereum.send("eth_requestAccounts");
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const provider = new providers.Web3Provider(window.ethereum);
         console.log(provider);
         const signer = provider.getSigner();
         console.log(signer);

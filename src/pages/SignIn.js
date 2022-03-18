@@ -10,7 +10,7 @@ import star from "../assets/shapes/star.svg";
 import { ReactComponent as Metamask } from "../assets/logos/MetaMask_Fox.svg";
 import Arconnect from "../assets/logos/arconnect.png";
 import KwilDB from "../assets/logos/KwilDB.svg";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export default function SignIn() {
     if (type === "meta") {
       localStorage.setItem("wallet", "metamask");
       await window.ethereum.send("eth_requestAccounts");
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const address = await signer.getAddress();
       localStorage.setItem("address", address);

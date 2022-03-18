@@ -19,7 +19,7 @@ import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import AddIcon from "@mui/icons-material/Add";
 import ChainMap from "../../ChainMap";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 import KwilDB from "kwildb";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
@@ -95,7 +95,7 @@ export default function FundingPoolList({
       }
       setLoadAddingPool(true);
       await window.ethereum.send("eth_requestAccounts");
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new providers.Web3Provider(window.ethereum);
       console.log(provider);
       const signer = provider.getSigner();
       console.log(signer);
