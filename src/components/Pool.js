@@ -83,7 +83,7 @@ export default function Moat({ poolName, creator, validator, balance,token,chain
         if (typeof result === "string") {
           setStatus("fail");
           setErrMsg(result);
-          window.location.reload();
+          //window.location.reload();
         } else {
           setStatus("success");
           window.location.reload();
