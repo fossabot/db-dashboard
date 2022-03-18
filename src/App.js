@@ -1,11 +1,10 @@
 import React from 'react';
 import './App.css';
-//import Main from './Main';
-import KwilDB from "kwildbtester";
+import Main from './Main';
 
 function App() {
 
-	return <p>hello</p>;
+	return <Main/>;
 }
 
 export default App;

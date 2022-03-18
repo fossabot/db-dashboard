@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import KwilDB from "kwildb";
+import KwilDB from "kwildbtester";
 import NavTree from "../components/NavTree";
 
 import FundingView from "../components/FundingView";

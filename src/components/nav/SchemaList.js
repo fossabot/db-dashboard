@@ -12,7 +12,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import AddIcon from "@mui/icons-material/Add";
-import KwilDB from "kwildb";
+import KwilDB from "kwildbtester";
 // import KwilLoader from "../../assets/Kwil_feather_icon_animation_loop.svg";
 
 export default function SchemaList({

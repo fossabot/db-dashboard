@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { providers } from "ethers";
-import KwilDB from "kwildb";
+import KwilDB from "kwildbtester";
 import ChainMap from "../ChainMap";
 
 import LoadingButton from "@mui/lab/LoadingButton";

@@ -9,7 +9,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import KwilDB from "kwildb";
+import KwilDB from "kwildbtester";
 import { Scrollbars } from "react-custom-scrollbars";
 
 export default function TableView({

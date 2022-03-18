@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { PieChart } from "react-minimal-pie-chart";
 import { Grid } from "@mui/material";
 import FundingPool from "./FundingPool";
-import KwilDB from "kwildb";
+import KwilDB from "kwildbtester";
 
 export default function FundingView({
   moatName,

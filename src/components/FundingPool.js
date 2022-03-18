@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import KwilDB from "kwildb";
+import KwilDB from "kwildbtester";
 import AddIcon from "@mui/icons-material/Add";
 import {
   Alert,

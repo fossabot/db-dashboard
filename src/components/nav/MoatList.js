@@ -16,7 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { providers } from "ethers";
-import KwilDB from "kwildb";
+import KwilDB from "kwildbtester";
 
 export default function MoatList({
   moats,

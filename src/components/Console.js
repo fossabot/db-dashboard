@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, InputBase } from "@mui/material";
-import KwilDB from "kwildb";
+import KwilDB from "kwildbtester";
 
 export default function Console({ moatName, privKeyResult, secretResult }) {
   const [customQuery, setCustomQuery] = useState("");

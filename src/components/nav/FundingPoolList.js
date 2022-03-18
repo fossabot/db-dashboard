@@ -20,7 +20,7 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import AddIcon from "@mui/icons-material/Add";
 import ChainMap from "../../ChainMap";
 import { providers } from "ethers";
-import KwilDB from "kwildb";
+import KwilDB from "kwildbtester";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export default function FundingPoolList({
