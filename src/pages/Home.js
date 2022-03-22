@@ -94,8 +94,8 @@ export default function Home() {
           minWidth: "100vw",
           width: "calc(100vw - 240px)",
           minHeight: "100vh",
-          maxHeight: "100vh",
-          overflow: "hidden",
+          //maxHeight: selectedPools.length > 0 ? "auto" : "100vh",
+          //overflow: "hidden",
           marginLeft: "240px",
         }}
       >

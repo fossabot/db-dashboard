@@ -116,7 +116,7 @@ export default function FundingView({
         container
         spacing={2}
         sx={{
-          margin: "0px 20px",
+          margin: "0 20px 20px",
           width: "calc(100% - 280px)",
         }}
       >

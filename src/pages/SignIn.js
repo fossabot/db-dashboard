@@ -59,26 +59,98 @@ export default function SignIn() {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        background: "linear-gradient(210deg, #212121, #000)",
+        background:
+          "radial-gradient(circle at -10% 30%, rgba(255,79,153,.6) 0%, rgba(113,122,255,0.5) 30%, rgba(0,0,0,1) 60%), " +
+          "radial-gradient(ellipse at 10% 80%, rgba(0,255,255,1) 0%, rgba(0,0,0,1) 30%)",
+        backgroundColor: "#000",
         overflow: "hidden",
       }}
     >
-      <img src={tri} alt="bg-shape" style={{ position: "absolute" }} />
-      <img
-        src={loop}
-        alt="bg-shape"
-        style={{ position: "absolute", top: 0, right: 0 }}
-      />
-      <img
-        src={star}
-        alt="bg-shape"
-        style={{ position: "absolute", bottom: 0, right: 0 }}
-      />
-      <img
-        src={bulb}
-        alt="bg-shape"
-        style={{ position: "absolute", bottom: 0, left: 0 }}
-      />
+      <svg
+        style={{
+          position: "absolute",
+          left: "40vw",
+          top: "0",
+          width: "100px",
+          height: "100px",
+        }}
+        viewBox="0 0 100 100"
+        fill="#fff"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="50%" cy="50%" r="2" />
+      </svg>
+      <svg
+        style={{
+          position: "absolute",
+          left: "70vw",
+          top: "40vh",
+          width: "100px",
+          height: "100px",
+        }}
+        viewBox="0 0 100 100"
+        fill="#fff"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="50%" cy="50%" r="4" />
+      </svg>
+      <svg
+        style={{
+          position: "absolute",
+          left: "10vw",
+          top: "70vh",
+          width: "100px",
+          height: "100px",
+        }}
+        viewBox="0 0 100 100"
+        fill="#fff"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="50%" cy="50%" r="4" />
+      </svg>
+      <svg
+        style={{
+          position: "absolute",
+          left: "30vw",
+          top: "20vh",
+          width: "100px",
+          height: "100px",
+        }}
+        viewBox="0 0 100 100"
+        fill="#fff"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="50%" cy="50%" r="3" />
+      </svg>
+      <svg
+        style={{
+          position: "absolute",
+          left: "60vw",
+          top: "75vh",
+          width: "100px",
+          height: "100px",
+        }}
+        viewBox="0 0 100 100"
+        fill="#808080"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="50%" cy="50%" r="3" />
+      </svg>
+      <svg
+        style={{
+          position: "absolute",
+          left: "20vw",
+          top: "13vh",
+          width: "100px",
+          height: "100px",
+        }}
+        viewBox="0 0 100 100"
+        fill="#808080"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="50%" cy="50%" r="4" />
+      </svg>
+
       <img
         src={KwilDB}
         alt="kwil-db-logo"
