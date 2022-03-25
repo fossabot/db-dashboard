@@ -1,16 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@mui/material";
 
-import Kwil from "../assets/logos/kwil.svg";
-import grad1 from "../assets/gradients/grad1.svg";
-import Navbar from "../components/Navbar";
-
-import tri from "../assets/shapes/tri.svg";
-import loop from "../assets/shapes/loop.svg";
-import bulb from "../assets/shapes/bulb.svg";
-import star from "../assets/shapes/star.svg";
 import { ReactComponent as Metamask } from "../assets/logos/MetaMask_Fox.svg";
 import Arconnect from "../assets/logos/arconnect.png";
 import KwilDB from "../assets/logos/KwilDB.svg";

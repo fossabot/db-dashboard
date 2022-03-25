@@ -1,37 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import KwilDB from "kwildb";
-import { Scrollbars } from "react-custom-scrollbars";
-import SimpleBar from "simplebar-react";
+import React from "react";
 
-import { TreeView, TreeItem } from "@mui/lab";
-import {
-  Drawer,
-  FormControl,
-  Select,
-  MenuItem,
-  InputBase,
-  Modal,
-  Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Snackbar,
-  Alert,
-  Backdrop,
-  CircularProgress,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
-import AddIcon from "@mui/icons-material/Add";
-import KwilDBIcon from "../assets/logos/KwilDB.svg";
-import { ethers } from "ethers";
-import FundingPoolList from "./nav/FundingPoolList";
-import SchemaList from "./nav/SchemaList";
-import MoatList from "./nav/MoatList";
+import { Scrollbars } from "react-custom-scrollbars";
+
+import { Drawer } from "@mui/material";
+
+import KwilDBIcon from "../../assets/logos/KwilDB.svg";
+import FundingPoolList from "./FundingPoolList";
+import SchemaList from "./SchemaList";
+import MoatList from "./MoatList";
 
 export default function NavTree({
   moats,
