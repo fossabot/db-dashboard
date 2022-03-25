@@ -49,6 +49,7 @@ export default function MoatList({
   const [addingMoat, setAddingMoat] = useState(false);
   const [newMoatName, setNewMoatName] = useState("");
   const [newPhrase, setNewPhrase] = useState("");
+  const [emptyPhrase, setEmptyPhrase] = useState("");
 
   const handleChange = (e) => {
     if (e.target.value !== undefined) {
@@ -173,96 +174,99 @@ export default function MoatList({
     }
   };
 
-  const createMoat = (e) => {
-    e.preventDefault();
+  const createMoat = () => {
     //debug, DELETE
-    setLoadAddingMoat(true);
-    if (wallet === "metamask") {
-      setTimeout(async function () {
-        await window.ethereum.send("eth_requestAccounts");
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        console.log(provider);
-        const signer = provider.getSigner();
-        console.log(signer);
-        const signature = await signer.signMessage(newPhrase);
-        const address = await signer.getAddress();
-        const result = await KwilDB.createMoat(
-          "https://test-db.kwil.xyz",
-          newMoatName,
-          signature,
-          address
-        );
-        console.log(result);
-
-        if (result.creation === false) {
-        } else {
-          const temp = await KwilDB.getMoats(
+    if (newPhrase === "") {
+      setEmptyPhrase(true);
+    } else {
+      setLoadAddingMoat(true);
+      if (wallet === "metamask") {
+        setTimeout(async function () {
+          await window.ethereum.send("eth_requestAccounts");
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          console.log(provider);
+          const signer = provider.getSigner();
+          console.log(signer);
+          const signature = await signer.signMessage(newPhrase);
+          const address = await signer.getAddress();
+          const result = await KwilDB.createMoat(
             "https://test-db.kwil.xyz",
+            newMoatName,
+            signature,
             address
           );
-          console.log(temp);
-          setMoats(temp);
-          setMoat(temp.length - 1);
-          setMoatName(newMoatName);
-          setLoadAddingMoat(false);
-          setAddingMoat(false);
-          setPrivKeyResult(result.privateKey);
-          setSecretResult(result.secret);
-        }
-      }, 0);
-    } else if (wallet === "arconnect") {
-      setTimeout(async function () {
-        const info = {
-          name: "KwilDB", // optional application name
-          //logo:KwilLogo
-        };
+          console.log(result);
 
-        console.log(
-          await window.arweaveWallet.connect(
-            ["ACCESS_ADDRESS", "SIGNATURE"],
-            info
-          )
-        );
+          if (result.creation === false) {
+          } else {
+            const temp = await KwilDB.getMoats(
+              "https://test-db.kwil.xyz",
+              address
+            );
+            console.log(temp);
+            setMoats(temp);
+            setMoat(temp.length - 1);
+            setMoatName(newMoatName);
+            setLoadAddingMoat(false);
+            setAddingMoat(false);
+            setPrivKeyResult(result.privateKey);
+            setSecretResult(result.secret);
+          }
+        }, 0);
+      } else if (wallet === "arconnect") {
+        setTimeout(async function () {
+          const info = {
+            name: "KwilDB", // optional application name
+            //logo:KwilLogo
+          };
 
-        const address = await window.arweaveWallet.getActiveAddress();
-        console.log(address);
+          console.log(
+            await window.arweaveWallet.connect(
+              ["ACCESS_ADDRESS", "SIGNATURE"],
+              info
+            )
+          );
 
-        const enc = new TextEncoder(); // always utf-8
-        const buff = enc.encode(newPhrase);
-        console.log(buff);
+          const address = await window.arweaveWallet.getActiveAddress();
+          console.log(address);
 
-        //const buff = str2ab(signingPhrase);
+          const enc = new TextEncoder(); // always utf-8
+          const buff = enc.encode(newPhrase);
+          console.log(buff);
 
-        const sig = await window.arweaveWallet.signature(buff, {
-          name: "RSA-PSS",
-          saltLength: 0,
-        });
-        const signature = JSON.stringify(sig);
-        console.log(signature);
+          //const buff = str2ab(signingPhrase);
 
-        const result = await KwilDB.createMoat(
-          "https://test-db.kwil.xyz",
-          newMoatName,
-          signature,
-          address
-        );
-        setLoadAddingMoat(false);
-        if (result.creation === false) {
-        } else {
-          const temp = await KwilDB.getMoats(
+          const sig = await window.arweaveWallet.signature(buff, {
+            name: "RSA-PSS",
+            saltLength: 0,
+          });
+          const signature = JSON.stringify(sig);
+          console.log(signature);
+
+          const result = await KwilDB.createMoat(
             "https://test-db.kwil.xyz",
+            newMoatName,
+            signature,
             address
           );
-          console.log(temp);
-          setMoats(temp);
-          setMoat(temp.length - 1);
-          setMoatName(newMoatName);
           setLoadAddingMoat(false);
-          setAddingMoat(false);
-          setPrivKeyResult(result.privateKey);
-          setSecretResult(result.secret);
-        }
-      }, 0);
+          if (result.creation === false) {
+          } else {
+            const temp = await KwilDB.getMoats(
+              "https://test-db.kwil.xyz",
+              address
+            );
+            console.log(temp);
+            setMoats(temp);
+            setMoat(temp.length - 1);
+            setMoatName(newMoatName);
+            setLoadAddingMoat(false);
+            setAddingMoat(false);
+            setPrivKeyResult(result.privateKey);
+            setSecretResult(result.secret);
+          }
+        }, 0);
+      }
     }
   };
 
@@ -453,14 +457,30 @@ export default function MoatList({
               border: "1px solid #fcfcfc",
             }}
             onChange={(e) => setNewMoatName(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                createMoat();
+              }
+            }}
             placeholder="Type here..."
             value={newMoatName}
             inputProps={{
               autoCorrect: "off",
             }}
           />
-          <Typography sx={{ margin: "20px 20px 0px", color: "#fff" }}>
-            Signing Phrase
+          <Typography
+            sx={{ margin: "20px 20px 0px", color: "#fff", display: "flex" }}
+          >
+            Signing Phrase{" "}
+            <span
+              style={{
+                display: emptyPhrase ? "flex" : "none",
+                color: "#ff0000",
+              }}
+            >
+              *
+            </span>
           </Typography>
           <InputBase
             sx={{
@@ -474,6 +494,12 @@ export default function MoatList({
             }}
             multiline
             onChange={(e) => setNewPhrase(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                createMoat();
+              }
+            }}
             placeholder="Type here..."
             value={newPhrase}
             inputProps={{
