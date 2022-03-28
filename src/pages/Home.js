@@ -13,14 +13,10 @@ export default function Home() {
 
   const [moats, setMoats] = useState([]);
 
-  const [moatName, setMoatName] = useState("");
   const [schemaName, setSchemaName] = useState("");
   const [tableName, setTableName] = useState("");
 
   const [selectedPools, setSelectedPools] = useState([]);
-
-  const [privKeyResult, setPrivKeyResult] = useState("");
-  const [secretResult, setSecretResult] = useState("");
 
   const [update, setUpdate] = useState(0);
 
@@ -47,16 +43,10 @@ export default function Home() {
       <NavTree
         moats={moats}
         setMoats={setMoats}
-        moatName={moatName}
-        setMoatName={setMoatName}
         schemaName={schemaName}
         setSchemaName={setSchemaName}
         tableName={tableName}
         setTableName={setTableName}
-        privKeyResult={privKeyResult}
-        setPrivKeyResult={setPrivKeyResult}
-        secretResult={secretResult}
-        setSecretResult={setSecretResult}
         selectedPools={selectedPools}
         setSelectedPools={setSelectedPools}
         update={update}
@@ -77,23 +67,11 @@ export default function Home() {
         }}
       >
         <div style={{ display: tableName ? "flex" : "none" }}>
-          <TableView
-            moatName={moatName}
-            schemaName={schemaName}
-            tableName={tableName}
-            privKeyResult={privKeyResult}
-            secretResult={secretResult}
-          />
+          <TableView schemaName={schemaName} tableName={tableName} />
         </div>
 
         <div style={{ display: selectedPools.length > 0 ? "flex" : "none" }}>
-          <FundingView
-            moatName={moatName}
-            privKeyResult={privKeyResult}
-            secretResult={secretResult}
-            selectedPools={selectedPools}
-            update={update}
-          />
+          <FundingView selectedPools={selectedPools} update={update} />
         </div>
 
         {/*<Console

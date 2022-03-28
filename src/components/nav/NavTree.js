@@ -1,7 +1,5 @@
 import React from "react";
-
 import { Scrollbars } from "react-custom-scrollbars";
-
 import { Drawer } from "@mui/material";
 
 import KwilDBIcon from "../../assets/logos/KwilDB.svg";
@@ -12,16 +10,10 @@ import MoatList from "./MoatList";
 export default function NavTree({
   moats,
   setMoats,
-  moatName,
-  setMoatName,
   schemaName,
   setSchemaName,
   tableName,
   setTableName,
-  privKeyResult,
-  setPrivKeyResult,
-  secretResult,
-  setSecretResult,
   selectedPools,
   setSelectedPools,
   update,
@@ -53,11 +45,6 @@ export default function NavTree({
       <MoatList
         moats={moats}
         setMoats={setMoats}
-        setMoatName={setMoatName}
-        privKeyResult={privKeyResult}
-        setPrivKeyResult={setPrivKeyResult}
-        secretResult={secretResult}
-        setSecretResult={setSecretResult}
         setTableName={setTableName}
         setSelectedPools={setSelectedPools}
       />
@@ -80,9 +67,6 @@ export default function NavTree({
         style={{ width: 240, height: "100%" }}
       >
         <SchemaList
-          moatName={moatName}
-          privKeyResult={privKeyResult}
-          secretResult={secretResult}
           tableName={tableName}
           setTableName={setTableName}
           setSchemaName={setSchemaName}
@@ -91,8 +75,6 @@ export default function NavTree({
           setUpdate={setUpdate}
         />
         <FundingPoolList
-          moatName={moatName}
-          privKeyResult={privKeyResult}
           selectedPools={selectedPools}
           setSelectedPools={setSelectedPools}
           setTableName={setTableName}

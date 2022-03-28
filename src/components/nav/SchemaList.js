@@ -13,12 +13,11 @@ import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import AddIcon from "@mui/icons-material/Add";
 import KwilDB from "kwildb";
+import { useSelector } from "react-redux";
+import { AES, enc } from "crypto-js";
 // import KwilLoader from "../../assets/Kwil_feather_icon_animation_loop.svg";
 
 export default function SchemaList({
-  moatName,
-  privKeyResult,
-  secretResult,
   tableName,
   setTableName,
   setSchemaName,
@@ -35,6 +34,16 @@ export default function SchemaList({
 
   const [loading, setLoading] = useState(false);
 
+  const privKey = AES.decrypt(
+    useSelector((state) => state.privKey),
+    "kwil"
+  ).toString(enc.Utf8);
+  const secret = AES.decrypt(
+    useSelector((state) => state.secret),
+    "kwil"
+  ).toString(enc.Utf8);
+  const moatName = useSelector((state) => state.moat.name);
+
   const createSchema = (e) => {
     e.preventDefault();
     setLoadAddingSchema(true);
@@ -45,9 +54,9 @@ export default function SchemaList({
           protocol: "https",
           port: null,
           moat: moatName,
-          privateKey: privKeyResult,
+          privateKey: JSON.parse(privKey),
         },
-        secretResult
+        secret
       );
       await kwilDB.query(`CREATE SCHEMA if NOT EXISTS ${newSchema}`, true);
       // setSchemas((old) => [...old, { name: newSchema, tables: [] }]);
@@ -66,9 +75,9 @@ export default function SchemaList({
           protocol: "https",
           port: null,
           moat: moatName,
-          privateKey: privKeyResult,
+          privateKey: JSON.parse(privKey),
         },
-        secretResult
+        secret
       );
       let temp = (
         await kwilDB.query(
@@ -112,7 +121,7 @@ export default function SchemaList({
         setNoFunds(true);
       }
     });
-  }, [privKeyResult, update]);
+  }, [privKey, update]);
 
   return (
     <div
@@ -122,29 +131,9 @@ export default function SchemaList({
         flexDirection: "column",
       }}
     >
-      {/*<div
-        style={{
-          display: loading && privKeyResult !== "" ? "flex" : "none",
-          margin: "auto",
-        }}
-      >
-        <object
-          style={{
-            width: "150px",
-            height: "150px",
-            //position:'absolute',
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-          type="image/svg+xml"
-          data={KwilLoader}
-        >
-          svg-animation
-        </object>
-      </div>*/}
       <CircularProgress
         sx={{
-          display: loading && privKeyResult !== "" ? "flex" : "none",
+          display: loading && privKey !== "" ? "flex" : "none",
           margin: "auto",
           color: "#ff4f99",
         }}
@@ -156,9 +145,6 @@ export default function SchemaList({
           flex: 1,
         }}
       >
-        {/*<Typography sx={{ color: "#fff", fontWeight: "bold" }}>
-          Schemas
-        </Typography>*/}
         <p
           style={{
             display: noFunds ? "flex" : "none",

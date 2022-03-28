@@ -22,10 +22,11 @@ import ChainMap from "../../ChainMap";
 import { ethers } from "ethers";
 import KwilDB from "kwildb";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useDispatch, useSelector } from "react-redux";
+import { addPool } from "../../actions";
+import { AES, enc } from "crypto-js";
 
 export default function FundingPoolList({
-  moatName,
-  privKeyResult,
   selectedPools,
   setSelectedPools,
   setTableName,
@@ -43,6 +44,17 @@ export default function FundingPoolList({
 
   const [loadAddingPool, setLoadAddingPool] = useState(false);
 
+  const dispatch = useDispatch();
+  const privKey = AES.decrypt(
+    useSelector((state) => state.privKey),
+    "kwil"
+  ).toString(enc.Utf8);
+  const secret = AES.decrypt(
+    useSelector((state) => state.secret),
+    "kwil"
+  ).toString(enc.Utf8);
+  const moatName = useSelector((state) => state.moat.name);
+
   useEffect(() => {
     setLoading(true);
     setTimeout(async function () {
@@ -55,7 +67,7 @@ export default function FundingPoolList({
       setPools(result);
       setLoading(false);
     }, 0);
-  }, [privKeyResult]);
+  }, [privKey]);
 
   const handleChangeChain = (e) => {
     setChain(e.target.value);
@@ -139,13 +151,10 @@ export default function FundingPoolList({
   return (
     <div
       style={{
-        display: loading || privKeyResult === "" ? "none" : "flex",
+        display: loading || privKey === "" ? "none" : "flex",
         flexDirection: "column",
       }}
     >
-      {/*<Typography sx={{ color: "#fff", marginLeft: "8px", fontWeight: "bold" }}>
-        Funding Pools
-      </Typography>*/}
       <Accordion
         disableGutters
         sx={{

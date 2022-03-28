@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@mui/material";
@@ -7,11 +7,19 @@ import { ReactComponent as Metamask } from "../assets/logos/MetaMask_Fox.svg";
 import Arconnect from "../assets/logos/arconnect.png";
 import KwilDB from "../assets/logos/KwilDB.svg";
 import { ethers } from "ethers";
+import { logout } from "../actions";
+import { useDispatch } from "react-redux";
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(logout());
+  }, []);
 
   const signIn = async (type) => {
+    sessionStorage.clear();
     if (type === "meta") {
       localStorage.setItem("wallet", "metamask");
       await window.ethereum.send("eth_requestAccounts");

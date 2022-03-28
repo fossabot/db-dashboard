@@ -17,27 +17,24 @@ import AddIcon from "@mui/icons-material/Add";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { ethers } from "ethers";
 import KwilDB from "kwildb";
+import { useDispatch, useSelector } from "react-redux";
+import { setPrivKey, setSecret, setMoatName, setMoat } from "../../actions";
+import { AES, enc } from "crypto-js";
 
 export default function MoatList({
   moats,
   setMoats,
-  setMoatName,
-  privKeyResult,
-  setPrivKeyResult,
-  secretResult,
-  setSecretResult,
   setTableName,
   setSelectedPools,
 }) {
   const wallet = localStorage.getItem("wallet");
   const [open, setOpen] = useState(false);
-  const [moat, setMoat] = useState("");
   const [previous, setPrevious] = useState({});
 
   const [phrase, setPhrase] = useState("");
   const [owner, setOwner] = useState("");
   const [apiKey, setAPIKey] = useState("");
-  const [secret, setSecret] = useState("");
+  const [encryptedSecret, setEncryptedSecret] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -51,14 +48,25 @@ export default function MoatList({
   const [newPhrase, setNewPhrase] = useState("");
   const [emptyPhrase, setEmptyPhrase] = useState("");
 
+  const dispatch = useDispatch();
+  const moat = useSelector((state) => state.moat.index);
+  const privKey = AES.decrypt(
+    useSelector((state) => state.privKey),
+    "kwil"
+  ).toString(enc.Utf8);
+  const secret = AES.decrypt(
+    useSelector((state) => state.secret),
+    "kwil"
+  ).toString(enc.Utf8);
+
   const handleChange = (e) => {
     if (e.target.value !== undefined) {
       setOpen(true);
       setPrevious(moat);
-      setMoat(e.target.value);
-      setMoatName(moats[e.target.value].moat);
+      dispatch(setMoat(e.target.value));
+      dispatch(setMoatName(moats[e.target.value].moat));
       setOwner(moats[e.target.value].owner);
-      setSecret(moats[e.target.value].secret);
+      setEncryptedSecret(moats[e.target.value].secret);
       setAPIKey(moats[e.target.value].api_key);
       setTableName("");
       setSelectedPools([]);
@@ -83,9 +91,18 @@ export default function MoatList({
           privKeyResult = JSON.parse(
             await KwilDB.decryptKey(signature, address, apiKey)
           );
-          secretResult = await KwilDB.decryptKey(signature, address, secret);
-          setPrivKeyResult(privKeyResult);
-          setSecretResult(secretResult);
+          secretResult = await KwilDB.decryptKey(
+            signature,
+            address,
+            encryptedSecret
+          );
+          let encryptedKey = AES.encrypt(
+            JSON.stringify(privKeyResult),
+            "kwil"
+          ).toString();
+          dispatch(setPrivKey(encryptedKey));
+          let encryptedSecret1 = AES.encrypt(secretResult, "kwil").toString();
+          dispatch(setSecret(encryptedSecret1));
           setLoading(false);
           setOpen(false);
         } catch (e) {
@@ -128,9 +145,18 @@ export default function MoatList({
           privKeyResult = JSON.parse(
             await KwilDB.decryptKey(signature, address, apiKey)
           );
-          secretResult = await KwilDB.decryptKey(signature, address, secret);
-          setPrivKeyResult(privKeyResult);
-          setSecretResult(secretResult);
+          secretResult = await KwilDB.decryptKey(
+            signature,
+            address,
+            encryptedSecret
+          );
+          let encryptedKey = AES.encrypt(
+            JSON.stringify(privKeyResult),
+            "kwil"
+          ).toString();
+          dispatch(setPrivKey(encryptedKey));
+          let encryptedSecret1 = AES.encrypt(secretResult, "kwil").toString();
+          dispatch(setSecret(encryptedSecret1));
           setLoading(false);
           setOpen(false);
         } catch (e) {
@@ -154,7 +180,7 @@ export default function MoatList({
 
   const paste = (type) => {
     if (type === "key") {
-      navigator.clipboard.writeText(JSON.stringify(privKeyResult)).then(
+      navigator.clipboard.writeText(privKey).then(
         () => {
           setCopyStatus("success");
         },
@@ -163,7 +189,7 @@ export default function MoatList({
         }
       );
     } else {
-      navigator.clipboard.writeText(secretResult).then(
+      navigator.clipboard.writeText(secret).then(
         () => {
           setCopyStatus("success");
         },
@@ -205,12 +231,20 @@ export default function MoatList({
             );
             console.log(temp);
             setMoats(temp);
-            setMoat(temp.length - 1);
-            setMoatName(newMoatName);
+            dispatch(setMoat(temp.length - 1));
+            dispatch(setMoatName(newMoatName));
             setLoadAddingMoat(false);
             setAddingMoat(false);
-            setPrivKeyResult(result.privateKey);
-            setSecretResult(result.secret);
+            let encryptedKey = AES.encrypt(
+              JSON.stringify(result.privateKey),
+              "kwil"
+            ).toString();
+            dispatch(setPrivKey(encryptedKey));
+            let encryptedSecret1 = AES.encrypt(
+              result.secret,
+              "kwil"
+            ).toString();
+            dispatch(setSecret(encryptedSecret1));
           }
         }, 0);
       } else if (wallet === "arconnect") {
@@ -258,12 +292,20 @@ export default function MoatList({
             );
             console.log(temp);
             setMoats(temp);
-            setMoat(temp.length - 1);
-            setMoatName(newMoatName);
+            dispatch(setMoat(temp.length - 1));
+            dispatch(setMoatName(newMoatName));
             setLoadAddingMoat(false);
             setAddingMoat(false);
-            setPrivKeyResult(result.privateKey);
-            setSecretResult(result.secret);
+            let encryptedKey = AES.encrypt(
+              JSON.stringify(result.privateKey),
+              "kwil"
+            ).toString();
+            dispatch(setPrivKey(encryptedKey));
+            let encryptedSecret1 = AES.encrypt(
+              result.secret,
+              "kwil"
+            ).toString();
+            dispatch(setSecret(encryptedSecret1));
           }
         }, 0);
       }
@@ -527,7 +569,7 @@ export default function MoatList({
 
       <div
         style={{
-          display: privKeyResult === "" ? "none" : "flex",
+          display: privKey === "" ? "none" : "flex",
           flexDirection: "column",
         }}
       >

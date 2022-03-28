@@ -3,18 +3,24 @@ import { PieChart } from "react-minimal-pie-chart";
 import { Grid } from "@mui/material";
 import FundingPool from "./FundingPool";
 import KwilDB from "kwildb";
+import { useSelector } from "react-redux";
+import { AES, enc } from "crypto-js";
 
-export default function FundingView({
-  moatName,
-  privKeyResult,
-  secretResult,
-  selectedPools,
-  update,
-}) {
+export default function FundingView({ selectedPools, update }) {
   const [totalFunds, setTotalFunds] = useState(0);
   const [totalData, setTotalData] = useState(0);
   const [usedFunds, setUsedFunds] = useState(0);
   const [usedData, setUsedData] = useState(0);
+
+  const privKey = AES.decrypt(
+    useSelector((state) => state.privKey),
+    "kwil"
+  ).toString(enc.Utf8);
+  const secret = AES.decrypt(
+    useSelector((state) => state.secret),
+    "kwil"
+  ).toString(enc.Utf8);
+  const moatName = useSelector((state) => state.moat.name);
 
   useEffect(() => {
     setTimeout(async function () {
@@ -24,9 +30,9 @@ export default function FundingView({
           protocol: "https",
           port: null,
           moat: moatName,
-          privateKey: privKeyResult,
+          privateKey: privKey,
         },
-        secretResult
+        secret
       );
       const total = await kwilDB.getMoatFunding();
       setTotalFunds(total.funding);
@@ -36,7 +42,7 @@ export default function FundingView({
       setUsedFunds((used.debit / 1000000000) * 8.5 * 1.3);
       setUsedData(used.debit);
     });
-  }, [privKeyResult, update]);
+  }, [privKey, update]);
 
   return (
     <div

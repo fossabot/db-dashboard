@@ -11,46 +11,23 @@ import {
 } from "@mui/material";
 import KwilDB from "kwildb";
 import { Scrollbars } from "react-custom-scrollbars";
+import { useSelector } from "react-redux";
+import { AES, enc } from "crypto-js";
 
-export default function TableView({
-  moatName,
-  schemaName,
-  tableName,
-  privKeyResult,
-  secretResult,
-}) {
+export default function TableView({ schemaName, tableName }) {
   const [cols, setCols] = useState([]);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(async function () {
-      const kwilDB = KwilDB.createConnector(
-        {
-          host: "test-db.kwil.xyz",
-          protocol: "https",
-          port: null,
-          moat: moatName,
-          privateKey: privKeyResult,
-        },
-        secretResult
-      );
-      const result = await kwilDB.query(`SELECT *
-                                               FROM ${schemaName}.${tableName};`);
-      console.log(result);
-      console.log(result.fields.length);
-      let columns = [];
-      for (let i = 0; i < result.fields.length; i++) {
-        console.log(result.fields[i].name);
-        columns.push(result.fields[i].name);
-      }
-      console.log(columns);
-      setCols(columns);
-      setRows(result.rows);
-      setLoading(false);
-    });
-  }, [tableName]);
+  const privKey = AES.decrypt(
+    useSelector((state) => state.privKey),
+    "kwil"
+  ).toString(enc.Utf8);
+  const secret = AES.decrypt(
+    useSelector((state) => state.secret),
+    "kwil"
+  ).toString(enc.Utf8);
+  const moatName = useSelector((state) => state.moat.name);
 
   useEffect(() => {
     setLoading(true);
@@ -61,9 +38,9 @@ export default function TableView({
           protocol: "https",
           port: null,
           moat: moatName,
-          privateKey: privKeyResult,
+          privateKey: JSON.parse(privKey),
         },
-        secretResult
+        secret
       );
       const result = await kwilDB.query(`SELECT *
                                                FROM ${schemaName}.${tableName};`);
