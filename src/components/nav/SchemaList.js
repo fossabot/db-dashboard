@@ -15,16 +15,11 @@ import AddIcon from "@mui/icons-material/Add";
 import KwilDB from "kwildb";
 import { useSelector } from "react-redux";
 import { AES, enc } from "crypto-js";
+import TableList from "./TableList";
+import Schema from "./Schema";
 // import KwilLoader from "../../assets/Kwil_feather_icon_animation_loop.svg";
 
-export default function SchemaList({
-  tableName,
-  setTableName,
-  setSchemaName,
-  setSelectedPools,
-  update,
-  setUpdate,
-}) {
+export default function SchemaList({ setSelectedPools, update, setUpdate }) {
   const [noFunds, setNoFunds] = useState(false);
 
   const [schemas, setSchemas] = useState([]);
@@ -43,6 +38,7 @@ export default function SchemaList({
     "kwil"
   ).toString(enc.Utf8);
   const moatName = useSelector((state) => state.moat.name);
+  const tableName = useSelector((state) => state.selected.table);
 
   const createSchema = (e) => {
     e.preventDefault();
@@ -84,37 +80,13 @@ export default function SchemaList({
           `SELECT schema_name FROM information_schema.schemata EXCEPT SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'pg_toast%' OR schema_name LIKE 'pg_temp%' OR schema_name = 'pg_catalog' OR schema_name = 'information_schema';`
         )
       ).rows;
-      let schemas = [];
-      let i = 0;
+
       console.log(temp);
+
       if (temp) {
         setNoFunds(false);
-        temp.forEach((schema) => {
-          setTimeout(async function () {
-            console.log(schema.schema_name);
-            schemas.push({
-              name: schema.schema_name,
-              tables: [],
-            });
-            let temp2 = (
-              await kwilDB.query(`SELECT table_name
-                                                FROM information_schema.tables
-                                                WHERE table_schema = '${schema.schema_name}';`)
-            ).rows;
-
-            let tables = [];
-            temp2.forEach((table) => {
-              tables.push(table.table_name);
-            });
-            schemas[i].tables = tables;
-            i++;
-            if (i === temp.length) {
-              console.log(schemas);
-              setSchemas(schemas);
-              setLoading(false);
-            }
-          });
-        });
+        setSchemas(temp);
+        setLoading(false);
       } else {
         setLoading(false);
         setSchemas([]);
@@ -156,6 +128,7 @@ export default function SchemaList({
         </p>
 
         <Accordion
+          defaultExpanded={tableName !== "" ? true : false}
           disableGutters
           sx={{
             width: "100%",
@@ -189,72 +162,11 @@ export default function SchemaList({
           >
             {schemas.map((schema, index) => {
               return (
-                <Accordion
+                <Schema
                   key={index}
-                  disableGutters
-                  sx={{
-                    width: "100%",
-                    backgroundColor: "transparent",
-                    boxShadow: "none",
-                  }}
-                >
-                  <AccordionSummary
-                    sx={{
-                      "& .MuiAccordionSummary-content": { margin: 0 },
-                      "&.MuiAccordionSummary-root": {
-                        maxHeight: "38px",
-                        minHeight: "38px",
-                        padding: "0px 8px",
-                      },
-                    }}
-                    expandIcon={<ExpandMoreIcon sx={{ color: "#ff4f99" }} />}
-                  >
-                    <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
-                      {schema.name}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      "&.MuiAccordionDetails-root": {
-                        padding: "0px 8px 8px",
-                      },
-                    }}
-                  >
-                    {schema.tables.map((table) => (
-                      <Button
-                        startIcon={
-                          tableName === table ? (
-                            <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
-                          ) : (
-                            <RadioButtonUncheckedIcon />
-                          )
-                        }
-                        onClick={() => {
-                          if (tableName !== table) {
-                            setSchemaName(schema.name);
-                            setTableName(table);
-                            setSelectedPools([]);
-                          } else {
-                            setSchemaName("");
-                            setTableName("");
-                          }
-                        }}
-                        sx={{
-                          color: "#fff",
-                          backgroundColor: "transparent !important",
-                          textTransform: "none",
-                          maxHeight: "32px",
-                          minHeight: "32px",
-                          justifyContent: "left",
-                        }}
-                      >
-                        {table}
-                      </Button>
-                    ))}
-                  </AccordionDetails>
-                </Accordion>
+                  name={schema.schema_name}
+                  setSelectedPools={setSelectedPools}
+                />
               );
             })}
             <Button

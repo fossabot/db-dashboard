@@ -31,3 +31,17 @@ export const logout = () => {
     type: "LOGOUT",
   };
 };
+
+export const setSchema = (schema) => {
+  return {
+    type: "SET_SCHEMA",
+    payload: schema,
+  };
+};
+
+export const setTable = (table) => {
+  return {
+    type: "SET_TABLE",
+    payload: table,
+  };
+};

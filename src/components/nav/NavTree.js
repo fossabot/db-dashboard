@@ -10,10 +10,6 @@ import MoatList from "./MoatList";
 export default function NavTree({
   moats,
   setMoats,
-  schemaName,
-  setSchemaName,
-  tableName,
-  setTableName,
   selectedPools,
   setSelectedPools,
   update,
@@ -45,7 +41,6 @@ export default function NavTree({
       <MoatList
         moats={moats}
         setMoats={setMoats}
-        setTableName={setTableName}
         setSelectedPools={setSelectedPools}
       />
       <Scrollbars
@@ -67,9 +62,6 @@ export default function NavTree({
         style={{ width: 240, height: "100%" }}
       >
         <SchemaList
-          tableName={tableName}
-          setTableName={setTableName}
-          setSchemaName={setSchemaName}
           setSelectedPools={setSelectedPools}
           update={update}
           setUpdate={setUpdate}
@@ -77,7 +69,6 @@ export default function NavTree({
         <FundingPoolList
           selectedPools={selectedPools}
           setSelectedPools={setSelectedPools}
-          setTableName={setTableName}
         />
       </Scrollbars>
     </Drawer>

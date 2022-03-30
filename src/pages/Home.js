@@ -6,6 +6,7 @@ import NavTree from "../components/nav/NavTree";
 import FundingView from "../components/FundingView";
 import TableView from "../components/TableView";
 import Console from "../components/Console";
+import { useSelector } from "react-redux";
 
 export default function Home() {
   const wallet = localStorage.getItem("wallet");
@@ -13,8 +14,8 @@ export default function Home() {
 
   const [moats, setMoats] = useState([]);
 
-  const [schemaName, setSchemaName] = useState("");
-  const [tableName, setTableName] = useState("");
+  const schemaName = useSelector((state) => state.selected.schema);
+  const tableName = useSelector((state) => state.selected.table);
 
   const [selectedPools, setSelectedPools] = useState([]);
 
@@ -43,10 +44,6 @@ export default function Home() {
       <NavTree
         moats={moats}
         setMoats={setMoats}
-        schemaName={schemaName}
-        setSchemaName={setSchemaName}
-        tableName={tableName}
-        setTableName={setTableName}
         selectedPools={selectedPools}
         setSelectedPools={setSelectedPools}
         update={update}

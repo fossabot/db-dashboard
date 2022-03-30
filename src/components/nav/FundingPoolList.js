@@ -23,14 +23,10 @@ import { ethers } from "ethers";
 import KwilDB from "kwildb";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useDispatch, useSelector } from "react-redux";
-import { addPool } from "../../actions";
+import { addPool, setSchema, setTable } from "../../actions";
 import { AES, enc } from "crypto-js";
 
-export default function FundingPoolList({
-  selectedPools,
-  setSelectedPools,
-  setTableName,
-}) {
+export default function FundingPoolList({ selectedPools, setSelectedPools }) {
   const [pools, setPools] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -207,7 +203,8 @@ export default function FundingPoolList({
                   justifyContent: "left",
                 }}
                 onClick={() => {
-                  setTableName("");
+                  dispatch(setSchema(""));
+                  dispatch(setTable(""));
                   if (selectedPools.includes(pool)) {
                     setSelectedPools(
                       selectedPools.filter(

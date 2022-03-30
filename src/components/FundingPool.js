@@ -155,7 +155,13 @@ export default function FundingPool({
         </p>
       </div>
 
-      <p style={{ color: "#fff", margin: "6px auto 6px 0px" }}>
+      <p
+        style={{
+          color: "#fff",
+          margin: "6px auto 6px 0px",
+          wordBreak: "break-word",
+        }}
+      >
         <span style={{ color: "#717aff" }}>Validator: </span>
         {pool.validator}
       </p>
