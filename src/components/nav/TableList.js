@@ -19,6 +19,7 @@ export default function TableList({ schema, setSelectedPools }) {
     "kwil"
   ).toString(enc.Utf8);
   const moatName = useSelector((state) => state.moat.name);
+  const schemaName = useSelector((state) => state.data.schema);
   const tableName = useSelector((state) => state.data.table);
   const dispatch = useDispatch();
 
@@ -51,14 +52,14 @@ export default function TableList({ schema, setSelectedPools }) {
           <Button
             key={index}
             startIcon={
-              tableName === table.table_name ? (
+              tableName === table.table_name && schemaName === schema ? (
                 <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
               ) : (
                 <RadioButtonUncheckedIcon />
               )
             }
             onClick={() => {
-              if (tableName !== table.table_name) {
+              if (tableName !== table.table_name || schemaName !== schema) {
                 dispatch(setData(schema, table.table_name));
                 setSelectedPools([]);
               } else {

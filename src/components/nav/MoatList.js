@@ -18,13 +18,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { ethers } from "ethers";
 import KwilDB from "kwildb";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setPrivKey,
-  setSecret,
-  setMoatName,
-  setMoat,
-  setData,
-} from "../../actions";
+import { setPrivKey, setSecret, setMoat, setData } from "../../actions";
 import { AES, enc } from "crypto-js";
 
 export default function MoatList({ moats, setMoats, setSelectedPools }) {
@@ -50,7 +44,8 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
   const [emptyPhrase, setEmptyPhrase] = useState("");
 
   const dispatch = useDispatch();
-  const moat = useSelector((state) => state.moat.index);
+  const moatIndex = useSelector((state) => state.moat.index);
+  const moatName = useSelector((state) => state.moat.name);
   const privKey = AES.decrypt(
     useSelector((state) => state.privKey),
     "kwil"
@@ -63,9 +58,8 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
   const handleChange = (e) => {
     if (e.target.value !== undefined) {
       setOpen(true);
-      setPrevious(moat);
-      dispatch(setMoat(e.target.value));
-      dispatch(setMoatName(moats[e.target.value].moat));
+      setPrevious({ name: moatName, index: moatIndex });
+      dispatch(setMoat(e.target.value, moats[e.target.value].moat));
       dispatch(setData("", ""));
       setOwner(moats[e.target.value].owner);
       setEncryptedSecret(moats[e.target.value].secret);
@@ -108,7 +102,7 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
           setOpen(false);
         } catch (e) {
           setOpenSignSnackbar(true);
-          dispatch(setMoat(previous));
+          dispatch(setMoat(previous.index, previous.name));
           setLoading(false);
           setOpen(false);
           return;
@@ -162,7 +156,7 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
           setOpen(false);
         } catch (e) {
           setOpenSignSnackbar(true);
-          dispatch(setMoat(previous));
+          dispatch(setMoat(previous.index, previous.name));
           setLoading(false);
           setOpen(false);
           return;
@@ -232,8 +226,7 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
             );
             console.log(temp);
             setMoats(temp);
-            dispatch(setMoat(temp.length - 1));
-            dispatch(setMoatName(newMoatName));
+            dispatch(setMoat(temp.length - 1, newMoatName));
             setLoadAddingMoat(false);
             setAddingMoat(false);
             let encryptedKey = AES.encrypt(
@@ -293,8 +286,7 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
             );
             console.log(temp);
             setMoats(temp);
-            dispatch(setMoat(temp.length - 1));
-            dispatch(setMoatName(newMoatName));
+            dispatch(setMoat(temp.length - 1, newMoatName));
             setLoadAddingMoat(false);
             setAddingMoat(false);
             let encryptedKey = AES.encrypt(
@@ -333,7 +325,7 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
       >
         <Select
           displayEmpty
-          value={moat}
+          value={moatIndex}
           onChange={handleChange}
           input={<InputBase />}
           MenuProps={MenuProps}
@@ -363,7 +355,7 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
         open={open}
         onClose={() => {
           setOpen(false);
-          dispatch(setMoat(previous));
+          dispatch(setMoat(previous.index, previous.name));
         }}
         sx={{ display: "flex" }}
       >

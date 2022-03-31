@@ -12,17 +12,13 @@ export const setSecret = (newSecret) => {
   };
 };
 
-export const setMoatName = (newMoat) => {
-  return {
-    type: "SET_MOATNAME",
-    payload: newMoat,
-  };
-};
-
-export const setMoat = (newIndex) => {
+export const setMoat = (index, name) => {
   return {
     type: "SET_MOAT",
-    payload: newIndex,
+    payload: {
+      index,
+      name,
+    },
   };
 };
 

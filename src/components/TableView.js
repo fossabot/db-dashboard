@@ -56,7 +56,7 @@ export default function TableView({ schemaName, tableName }) {
       setRows(result.rows);
       setLoading(false);
     });
-  }, [tableName]);
+  }, [tableName, schemaName]);
 
   return (
     <div
