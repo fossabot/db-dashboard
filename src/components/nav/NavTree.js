@@ -46,20 +46,11 @@ export default function NavTree({
         setSelectedPools={setSelectedPools}
       />
       <Scrollbars
-        renderThumbVertical={({ style, ...props }) => (
+        renderView={({ style, ...props }) => (
           <div
             {...props}
-            style={{
-              ...style,
-              width: "8px",
-              backgroundColor: "#212121bf",
-              borderRadius: "4px",
-              marginRight: "4px",
-            }}
+            style={{ ...style, overflowX: "hidden", paddingBottom: "40px" }}
           />
-        )}
-        renderView={({ style, ...props }) => (
-          <div {...props} style={{ ...style, overflowX: "hidden" }} />
         )}
         style={{ width: 240, height: "100%" }}
       >
