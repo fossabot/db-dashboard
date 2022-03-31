@@ -18,10 +18,10 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { ethers } from "ethers";
 import KwilDB from "kwildb";
 import { useDispatch, useSelector } from "react-redux";
-import { setPrivKey, setSecret, setMoat, setData } from "../../actions";
+import { setPrivKey, setSecret, setMoat, setTable } from "../../actions";
 import { AES, enc } from "crypto-js";
 
-export default function MoatList({ moats, setMoats, setSelectedPools }) {
+export default function MoatList({ moats, setMoats }) {
   const wallet = localStorage.getItem("wallet");
   const [open, setOpen] = useState(false);
   const [previous, setPrevious] = useState({});
@@ -60,11 +60,10 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
       setOpen(true);
       setPrevious({ name: moatName, index: moatIndex });
       dispatch(setMoat(e.target.value, moats[e.target.value].moat));
-      dispatch(setData("", ""));
+      dispatch(setTable("", ""));
       setOwner(moats[e.target.value].owner);
       setEncryptedSecret(moats[e.target.value].secret);
       setAPIKey(moats[e.target.value].api_key);
-      setSelectedPools([]);
     }
   };
 

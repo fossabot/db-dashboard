@@ -19,7 +19,8 @@ export default function Home() {
   const initialTable = useRef(tableName);
   const initialSchema = useRef(schemaName);
 
-  const [selectedPools, setSelectedPools] = useState([]);
+  const selectedPools = useSelector((state) => state.data.pools);
+  const initialPools = useRef(selectedPools);
 
   const [update, setUpdate] = useState(0);
 
@@ -38,7 +39,6 @@ export default function Home() {
         minWidth: "100vw",
         width: "100vw",
         minHeight: "100vh",
-        // maxHeight: "100vh",
         overflow: "hidden",
         display: "flex",
       }}
@@ -46,10 +46,9 @@ export default function Home() {
       <NavTree
         initialSchema={initialSchema}
         initialTable={initialTable}
+        initialPools={initialPools}
         moats={moats}
         setMoats={setMoats}
-        selectedPools={selectedPools}
-        setSelectedPools={setSelectedPools}
         update={update}
         setUpdate={setUpdate}
       />
@@ -62,8 +61,6 @@ export default function Home() {
           minWidth: "100vw",
           width: "calc(100vw - 240px)",
           minHeight: "100vh",
-          //maxHeight: selectedPools.length > 0 ? "auto" : "100vh",
-          //overflow: "hidden",
           marginLeft: "240px",
         }}
       >

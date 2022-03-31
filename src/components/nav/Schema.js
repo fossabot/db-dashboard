@@ -9,7 +9,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TableList from "./TableList";
 import { useSelector } from "react-redux";
 
-export default function Schema({ initialSchema, name, setSelectedPools }) {
+export default function Schema({ initialSchema, name }) {
   const [expanded, setExpanded] = useState(initialSchema.current === name);
 
   return (
@@ -47,11 +47,7 @@ export default function Schema({ initialSchema, name, setSelectedPools }) {
           },
         }}
       >
-        {expanded ? (
-          <TableList schema={name} setSelectedPools={setSelectedPools} />
-        ) : (
-          <></>
-        )}
+        {expanded ? <TableList schema={name} /> : <></>}
       </AccordionDetails>
     </Accordion>
   );

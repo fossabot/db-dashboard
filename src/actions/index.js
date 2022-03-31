@@ -28,12 +28,26 @@ export const logout = () => {
   };
 };
 
-export const setData = (schema, table) => {
+export const setTable = (schema, table) => {
   return {
-    type: "SET_DATA",
+    type: "SET_TABLE",
     payload: {
       schema,
       table,
     },
+  };
+};
+
+export const addPool = (pool) => {
+  return {
+    type: "ADD_POOL",
+    payload: pool,
+  };
+};
+
+export const removePool = (pool) => {
+  return {
+    type: "REMOVE_POOL",
+    payload: pool,
   };
 };

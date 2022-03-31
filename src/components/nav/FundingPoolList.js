@@ -23,10 +23,10 @@ import { ethers } from "ethers";
 import KwilDB from "kwildb";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useDispatch, useSelector } from "react-redux";
-import { addPool, setData } from "../../actions";
+import { addPool, removePool } from "../../actions";
 import { AES, enc } from "crypto-js";
 
-export default function FundingPoolList({ selectedPools, setSelectedPools }) {
+export default function FundingPoolList({ initialPools }) {
   const [pools, setPools] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -50,6 +50,7 @@ export default function FundingPoolList({ selectedPools, setSelectedPools }) {
     "kwil"
   ).toString(enc.Utf8);
   const moatName = useSelector((state) => state.moat.name);
+  const selectedPools = useSelector((state) => state.data.pools);
 
   useEffect(() => {
     setLoading(true);
@@ -152,6 +153,7 @@ export default function FundingPoolList({ selectedPools, setSelectedPools }) {
       }}
     >
       <Accordion
+        defaultExpanded={initialPools.current.length > 0}
         disableGutters
         sx={{
           width: "100%",
@@ -188,7 +190,7 @@ export default function FundingPoolList({ selectedPools, setSelectedPools }) {
               <Button
                 key={index}
                 startIcon={
-                  selectedPools.includes(pool) ? (
+                  selectedPools.includes(JSON.stringify(pool)) ? (
                     <RadioButtonCheckedIcon sx={{ color: "#ff4f99" }} />
                   ) : (
                     <RadioButtonUncheckedIcon />
@@ -203,15 +205,10 @@ export default function FundingPoolList({ selectedPools, setSelectedPools }) {
                   justifyContent: "left",
                 }}
                 onClick={() => {
-                  dispatch(setData("", ""));
-                  if (selectedPools.includes(pool)) {
-                    setSelectedPools(
-                      selectedPools.filter(
-                        (item) => item.pool_name !== pool.pool_name
-                      )
-                    );
+                  if (selectedPools.includes(JSON.stringify(pool))) {
+                    dispatch(removePool(JSON.stringify(pool)));
                   } else {
-                    setSelectedPools((old) => [...old, pool]);
+                    dispatch(addPool(JSON.stringify(pool)));
                   }
                 }}
               >

@@ -22,7 +22,6 @@ import Schema from "./Schema";
 export default function SchemaList({
   initialSchema,
   initialTable,
-  setSelectedPools,
   update,
   setUpdate,
 }) {
@@ -172,7 +171,6 @@ export default function SchemaList({
                   initialSchema={initialSchema}
                   key={index}
                   name={schema.schema_name}
-                  setSelectedPools={setSelectedPools}
                 />
               );
             })}

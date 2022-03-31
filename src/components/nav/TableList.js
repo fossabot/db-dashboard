@@ -5,9 +5,9 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import KwilDB from "kwildb";
 import { AES, enc } from "crypto-js";
 import { useSelector, useDispatch } from "react-redux";
-import { setData } from "../../actions";
+import { setTable } from "../../actions";
 
-export default function TableList({ schema, setSelectedPools }) {
+export default function TableList({ schema }) {
   const [tables, setTables] = useState([]);
 
   const privKey = AES.decrypt(
@@ -60,10 +60,9 @@ export default function TableList({ schema, setSelectedPools }) {
             }
             onClick={() => {
               if (tableName !== table.table_name || schemaName !== schema) {
-                dispatch(setData(schema, table.table_name));
-                setSelectedPools([]);
+                dispatch(setTable(schema, table.table_name));
               } else {
-                dispatch(setData("", ""));
+                dispatch(setTable("", ""));
               }
             }}
             sx={{

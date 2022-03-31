@@ -126,12 +126,12 @@ export default function FundingView({ selectedPools, update }) {
           width: "calc(100% - 280px)",
         }}
       >
-        {selectedPools.map((pool) => {
+        {selectedPools.map((pool, index) => {
           return (
             <Grid item xs={6}>
               <FundingPool
-                key={pool.pool_name}
-                pool={pool}
+                key={index}
+                pool={JSON.parse(pool)}
                 totalFunds={totalFunds}
                 setTotalFunds={setTotalFunds}
                 setTotalData={setTotalData}
