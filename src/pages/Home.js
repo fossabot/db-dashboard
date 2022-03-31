@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import KwilDB from "kwildb";
 
 import NavTree from "../components/nav/NavTree";
@@ -14,8 +14,10 @@ export default function Home() {
 
   const [moats, setMoats] = useState([]);
 
-  const schemaName = useSelector((state) => state.selected.schema);
-  const tableName = useSelector((state) => state.selected.table);
+  const schemaName = useSelector((state) => state.data.schema);
+  const tableName = useSelector((state) => state.data.table);
+  const initialTable = useRef(tableName);
+  const initialSchema = useRef(schemaName);
 
   const [selectedPools, setSelectedPools] = useState([]);
 
@@ -42,6 +44,8 @@ export default function Home() {
       }}
     >
       <NavTree
+        initialSchema={initialSchema}
+        initialTable={initialTable}
         moats={moats}
         setMoats={setMoats}
         selectedPools={selectedPools}

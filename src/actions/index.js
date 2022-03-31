@@ -32,16 +32,12 @@ export const logout = () => {
   };
 };
 
-export const setSchema = (schema) => {
+export const setData = (schema, table) => {
   return {
-    type: "SET_SCHEMA",
-    payload: schema,
-  };
-};
-
-export const setTable = (table) => {
-  return {
-    type: "SET_TABLE",
-    payload: table,
+    type: "SET_DATA",
+    payload: {
+      schema,
+      table,
+    },
   };
 };

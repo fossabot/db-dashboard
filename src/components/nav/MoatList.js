@@ -23,8 +23,7 @@ import {
   setSecret,
   setMoatName,
   setMoat,
-  setTable,
-  setSchema,
+  setData,
 } from "../../actions";
 import { AES, enc } from "crypto-js";
 
@@ -67,11 +66,10 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
       setPrevious(moat);
       dispatch(setMoat(e.target.value));
       dispatch(setMoatName(moats[e.target.value].moat));
+      dispatch(setData("", ""));
       setOwner(moats[e.target.value].owner);
       setEncryptedSecret(moats[e.target.value].secret);
       setAPIKey(moats[e.target.value].api_key);
-      dispatch(setSchema(""));
-      dispatch(setTable(""));
       setSelectedPools([]);
     }
   };
@@ -110,7 +108,7 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
           setOpen(false);
         } catch (e) {
           setOpenSignSnackbar(true);
-          setMoat(previous);
+          dispatch(setMoat(previous));
           setLoading(false);
           setOpen(false);
           return;
@@ -164,7 +162,7 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
           setOpen(false);
         } catch (e) {
           setOpenSignSnackbar(true);
-          setMoat(previous);
+          dispatch(setMoat(previous));
           setLoading(false);
           setOpen(false);
           return;
@@ -365,7 +363,7 @@ export default function MoatList({ moats, setMoats, setSelectedPools }) {
         open={open}
         onClose={() => {
           setOpen(false);
-          setMoat(previous);
+          dispatch(setMoat(previous));
         }}
         sx={{ display: "flex" }}
       >

@@ -1,14 +1,14 @@
 import privKeyReducer from "./privKeyReducer";
 import secretReducer from "./secretReducer";
 import moatReducer from "./moatReducer";
-import tableReducer from "./tableReducer";
+import dataReducer from "./dataReducer";
 import { combineReducers } from "redux";
 
 const appReducer = combineReducers({
   moat: moatReducer,
-  selected: tableReducer,
   privKey: privKeyReducer,
   secret: secretReducer,
+  data: dataReducer,
 });
 
 export const rootReducer = (state, action) => {

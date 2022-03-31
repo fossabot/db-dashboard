@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -9,13 +9,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TableList from "./TableList";
 import { useSelector } from "react-redux";
 
-export default function Schema({ name, setSelectedPools }) {
-  const schemaName = useSelector((state) => state.selected.schema);
-  const [expanded, setExpanded] = useState(schemaName === name ? true : false);
+export default function Schema({ initialSchema, name, setSelectedPools }) {
+  const [expanded, setExpanded] = useState(initialSchema.current === name);
 
   return (
     <Accordion
-      defaultExpanded={schemaName === name ? true : false}
+      defaultExpanded={initialSchema.current === name}
       onChange={(e, expanded) => setExpanded(expanded)}
       disableGutters
       sx={{

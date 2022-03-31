@@ -5,12 +5,11 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import KwilDB from "kwildb";
 import { AES, enc } from "crypto-js";
 import { useSelector, useDispatch } from "react-redux";
-import { setTable, setSchema } from "../../actions";
+import { setData } from "../../actions";
 
 export default function TableList({ schema, setSelectedPools }) {
   const [tables, setTables] = useState([]);
 
-  const dispatch = useDispatch();
   const privKey = AES.decrypt(
     useSelector((state) => state.privKey),
     "kwil"
@@ -20,7 +19,8 @@ export default function TableList({ schema, setSelectedPools }) {
     "kwil"
   ).toString(enc.Utf8);
   const moatName = useSelector((state) => state.moat.name);
-  const tableName = useSelector((state) => state.selected.table);
+  const tableName = useSelector((state) => state.data.table);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setTimeout(async function () {
@@ -59,12 +59,10 @@ export default function TableList({ schema, setSelectedPools }) {
             }
             onClick={() => {
               if (tableName !== table.table_name) {
-                dispatch(setSchema(schema));
-                dispatch(setTable(table.table_name));
+                dispatch(setData(schema, table.table_name));
                 setSelectedPools([]);
               } else {
-                dispatch(setSchema(""));
-                dispatch(setTable(""));
+                dispatch(setData("", ""));
               }
             }}
             sx={{

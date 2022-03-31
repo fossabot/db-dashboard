@@ -8,6 +8,8 @@ import SchemaList from "./SchemaList";
 import MoatList from "./MoatList";
 
 export default function NavTree({
+  initialSchema,
+  initialTable,
   moats,
   setMoats,
   selectedPools,
@@ -62,6 +64,8 @@ export default function NavTree({
         style={{ width: 240, height: "100%" }}
       >
         <SchemaList
+          initialSchema={initialSchema}
+          initialTable={initialTable}
           setSelectedPools={setSelectedPools}
           update={update}
           setUpdate={setUpdate}

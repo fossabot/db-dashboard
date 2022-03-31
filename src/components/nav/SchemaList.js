@@ -19,7 +19,13 @@ import TableList from "./TableList";
 import Schema from "./Schema";
 // import KwilLoader from "../../assets/Kwil_feather_icon_animation_loop.svg";
 
-export default function SchemaList({ setSelectedPools, update, setUpdate }) {
+export default function SchemaList({
+  initialSchema,
+  initialTable,
+  setSelectedPools,
+  update,
+  setUpdate,
+}) {
   const [noFunds, setNoFunds] = useState(false);
 
   const [schemas, setSchemas] = useState([]);
@@ -38,7 +44,7 @@ export default function SchemaList({ setSelectedPools, update, setUpdate }) {
     "kwil"
   ).toString(enc.Utf8);
   const moatName = useSelector((state) => state.moat.name);
-  const tableName = useSelector((state) => state.selected.table);
+  //const tableName = useSelector((state) => state.data.table);
 
   const createSchema = (e) => {
     e.preventDefault();
@@ -128,7 +134,7 @@ export default function SchemaList({ setSelectedPools, update, setUpdate }) {
         </p>
 
         <Accordion
-          defaultExpanded={tableName !== "" ? true : false}
+          defaultExpanded={initialTable.current}
           disableGutters
           sx={{
             width: "100%",
@@ -163,6 +169,7 @@ export default function SchemaList({ setSelectedPools, update, setUpdate }) {
             {schemas.map((schema, index) => {
               return (
                 <Schema
+                  initialSchema={initialSchema}
                   key={index}
                   name={schema.schema_name}
                   setSelectedPools={setSelectedPools}
