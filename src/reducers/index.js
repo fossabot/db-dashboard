@@ -3,6 +3,7 @@ import secretReducer from "./secretReducer";
 import moatReducer from "./moatReducer";
 import dataReducer from "./dataReducer";
 import { combineReducers } from "redux";
+import { sessionReducer } from "redux-react-session";
 
 const appReducer = combineReducers({
   moat: moatReducer,
