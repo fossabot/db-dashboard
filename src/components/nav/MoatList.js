@@ -18,10 +18,16 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { ethers } from "ethers";
 import KwilDB from "kwildb";
 import { useDispatch, useSelector } from "react-redux";
-import { setPrivKey, setSecret, setMoat, setTable } from "../../actions";
+import {
+  setPrivKey,
+  setSecret,
+  setMoat,
+  setTable,
+  setMoats,
+} from "../../actions";
 import { AES, enc } from "crypto-js";
 
-export default function MoatList({ moats, setMoats }) {
+export default function MoatList() {
   const wallet = localStorage.getItem("wallet");
   const [open, setOpen] = useState(false);
   const [previous, setPrevious] = useState({});
@@ -46,6 +52,7 @@ export default function MoatList({ moats, setMoats }) {
   const dispatch = useDispatch();
   const moatIndex = useSelector((state) => state.moat.index);
   const moatName = useSelector((state) => state.moat.name);
+  const moats = useSelector((state) => state.data.moats);
   const privKey = AES.decrypt(
     useSelector((state) => state.privKey),
     "kwil"
@@ -224,7 +231,7 @@ export default function MoatList({ moats, setMoats }) {
               address
             );
             console.log(temp);
-            setMoats(temp);
+            dispatch(setMoats(temp));
             dispatch(setMoat(temp.length - 1, newMoatName));
             setLoadAddingMoat(false);
             setAddingMoat(false);
@@ -284,7 +291,7 @@ export default function MoatList({ moats, setMoats }) {
               address
             );
             console.log(temp);
-            setMoats(temp);
+            dispatch(setMoats(temp));
             dispatch(setMoat(temp.length - 1, newMoatName));
             setLoadAddingMoat(false);
             setAddingMoat(false);

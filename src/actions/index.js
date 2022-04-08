@@ -51,3 +51,10 @@ export const removePool = (pool) => {
     payload: pool,
   };
 };
+
+export const setMoats = (moats) => {
+  return {
+    type: "SET_MOATS",
+    payload: moats,
+  };
+};

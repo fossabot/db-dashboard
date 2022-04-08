@@ -6,13 +6,12 @@ import NavTree from "../components/nav/NavTree";
 import FundingView from "../components/FundingView";
 import TableView from "../components/TableView";
 import Console from "../components/Console";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setMoats } from "../actions";
 
 export default function Home() {
   const wallet = localStorage.getItem("wallet");
   const address = localStorage.getItem("address");
-
-  const [moats, setMoats] = useState([]);
 
   const schemaName = useSelector((state) => state.data.schema);
   const tableName = useSelector((state) => state.data.table);
@@ -24,11 +23,13 @@ export default function Home() {
 
   const [update, setUpdate] = useState(0);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setTimeout(async function () {
       const temp = await KwilDB.getMoats("https://test-db.kwil.xyz", address);
       console.log(temp);
-      setMoats(temp);
+      dispatch(setMoats(temp));
     }, 0);
   }, []);
 
@@ -47,8 +48,6 @@ export default function Home() {
         initialSchema={initialSchema}
         initialTable={initialTable}
         initialPools={initialPools}
-        moats={moats}
-        setMoats={setMoats}
         update={update}
         setUpdate={setUpdate}
       />

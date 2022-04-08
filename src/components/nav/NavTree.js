@@ -11,8 +11,6 @@ export default function NavTree({
   initialSchema,
   initialTable,
   initialPools,
-  moats,
-  setMoats,
   update,
   setUpdate,
 }) {
@@ -39,7 +37,7 @@ export default function NavTree({
         alt=""
         style={{ margin: "40px auto", width: "120px" }}
       />
-      <MoatList moats={moats} setMoats={setMoats} />
+      <MoatList />
       <Scrollbars
         renderView={({ style, ...props }) => (
           <div

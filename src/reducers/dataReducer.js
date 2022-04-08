@@ -1,4 +1,7 @@
-const dataReducer = (state = { schema: "", table: "", pools: [] }, action) => {
+const dataReducer = (
+  state = { schema: "", table: "", pools: [], moats: [] },
+  action
+) => {
   switch (action.type) {
     case "SET_TABLE":
       return {
@@ -18,6 +21,11 @@ const dataReducer = (state = { schema: "", table: "", pools: [] }, action) => {
       return {
         ...state,
         pools: state.pools.filter((pool) => pool !== action.payload),
+      };
+    case "SET_MOATS":
+      return {
+        ...state,
+        moats: action.payload,
       };
     default:
       return state;

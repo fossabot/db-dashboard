@@ -25,7 +25,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistentStore}>
+      <PersistGate loading={<div />} persistor={persistentStore}>
         <Main />
       </PersistGate>
     </Provider>
