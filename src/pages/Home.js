@@ -8,6 +8,7 @@ import TableView from "../components/TableView";
 import Console from "../components/Console";
 import { useDispatch, useSelector } from "react-redux";
 import { setMoats } from "../actions";
+import { log } from "../fireBaseConfig";
 
 export default function Home() {
   const wallet = localStorage.getItem("wallet");
@@ -24,6 +25,10 @@ export default function Home() {
   const [update, setUpdate] = useState(0);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    log("homepage_visited");
+  }, []);
 
   useEffect(() => {
     setTimeout(async function () {

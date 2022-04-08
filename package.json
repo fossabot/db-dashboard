@@ -15,6 +15,7 @@
 		"arweave": "^1.10.23",
 		"crypto-js": "^4.1.1",
 		"ethers": "^5.5.4",
+		"firebase": "^9.6.10",
 		"kwildb": "^1.2.27",
 		"react": "^17.0.2",
 		"react-custom-scrollbars": "^4.2.1",
