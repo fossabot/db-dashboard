@@ -1,4 +1,5 @@
 import { getAnalytics, logEvent } from "firebase/analytics";
+import { getPerformance } from "firebase/performance";
 import { initializeApp } from "firebase/app";
 
 export const firebaseConfig = {
@@ -13,6 +14,7 @@ export const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
+export const perf = getPerformance(app);
 
 export const log = (event) => {
   logEvent(analytics, event);
