@@ -48,6 +48,7 @@ export default function MoatList() {
   const [newMoatName, setNewMoatName] = useState("");
   const [newPhrase, setNewPhrase] = useState("");
   const [emptyPhrase, setEmptyPhrase] = useState("");
+  const [error, setError] = useState("");
 
   const dispatch = useDispatch();
   const moatIndex = useSelector((state) => state.moat.index);
@@ -225,6 +226,9 @@ export default function MoatList() {
           console.log(result);
 
           if (result.creation === false) {
+            setError(result.reason);
+            setLoadAddingMoat(false);
+            setAddingMoat(false);
           } else {
             const temp = await KwilDB.getMoats(
               "https://test-db.kwil.xyz",
@@ -565,6 +569,21 @@ export default function MoatList() {
           </Backdrop>
         </div>
       </Modal>
+      <Snackbar
+        sx={{ margin: "0px auto" }}
+        open={error !== ""}
+        autoHideDuration={6000}
+        onClose={() => setError("")}
+      >
+        <Alert
+          variant="filled"
+          onClose={() => setError("")}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Data set creation failed. Reason: {error};
+        </Alert>
+      </Snackbar>
 
       <div
         style={{

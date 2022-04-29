@@ -60,7 +60,6 @@ export default function SchemaList({
         secret
       );
       await kwilDB.query(`CREATE SCHEMA if NOT EXISTS ${newSchema}`, true);
-      // setSchemas((old) => [...old, { name: newSchema, tables: [] }]);
       setAddingSchema(false);
       setLoadAddingSchema(false);
       setUpdate(update + 1);
