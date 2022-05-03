@@ -13,7 +13,8 @@ import {
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import ChainMap from "../ChainMap";
-import { ethers } from "ethers";
+import { ethers} from "ethers";
+import BigNumber from "bignumber.js";
 
 export default function FundingPool({
   pool,
@@ -26,6 +27,9 @@ export default function FundingPool({
   );
   const decimalCheck = useRef(
     pool.token === "USDC" ? 0.000001 : 0.000000000000000001
+  );
+  const shift = useRef(
+      pool.token === "USDC" ? 6 : 18
   );
 
   const [balance, setBalance] = useState(0);
@@ -95,13 +99,23 @@ export default function FundingPool({
         console.log(amount);
         console.log(pool.blockchain);
         console.log(pool.token);
+        console.log(amount);
+        /*console.log(multiplier.current)
+        console.log(amount*multiplier.current)
+        console.log(amount * Math.pow(10,18));
+        console.log(parseFloat(amount))
+        const number = parseFloat(amount) * Math.pow(10,18);
+        console.log(number)*/
+        const BN = new BigNumber(amount);
+        console.log(BN.shiftedBy(shift.current).toString());
+
 
         const result = await KwilDB.pools.fundPool(
           pool.pool_name,
           address,
           pool.blockchain,
           pool.token,
-          (amount * multiplier.current).toString()
+            BN.shiftedBy(shift.current)
         );
         console.log(result);
         setAdding(false);
