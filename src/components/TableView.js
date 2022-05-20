@@ -13,6 +13,7 @@ import KwilDB from "kwildb";
 import { Scrollbars } from "react-custom-scrollbars";
 import { useSelector } from "react-redux";
 import { AES, enc } from "crypto-js";
+import Helmet from "react-helmet";
 
 export default function TableView({ schemaName, tableName }) {
   const [cols, setCols] = useState([]);
@@ -68,6 +69,20 @@ export default function TableView({ schemaName, tableName }) {
         height: "100vh",
       }}
     >
+      {tableName !== "" ? (
+        <Helmet>
+          <title>
+            {tableName} | {moatName} | KwilDB
+          </title>
+          <meta
+            name="description"
+            content="KwilDB is the first decentralized SQL database, enabling complex, highly-scalable, decentralized applications. Manage your KwilDB tables in our DB Visualizer."
+          />
+        </Helmet>
+      ) : (
+        <></>
+      )}
+
       <p
         style={{ fontSize: "32px", color: "#fff", margin: "40px 0px 0px 40px" }}
       >

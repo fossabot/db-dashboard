@@ -5,6 +5,7 @@ import FundingPool from "./FundingPool";
 import KwilDB from "kwildb";
 import { useSelector } from "react-redux";
 import { AES, enc } from "crypto-js";
+import Helmet from "react-helmet";
 
 export default function FundingView({ selectedPools, update }) {
   const [totalFunds, setTotalFunds] = useState(0);
@@ -52,6 +53,17 @@ export default function FundingView({ selectedPools, update }) {
         flex: 1,
       }}
     >
+      {selectedPools.length > 0 ? (
+        <Helmet>
+          <title>Funding | {moatName} | KwilDB</title>
+          <meta
+            name="description"
+            content="KwilDB is the first decentralized SQL database, enabling complex, highly-scalable, decentralized applications. Manage your KwilDB tables in our DB Visualizer."
+          />
+        </Helmet>
+      ) : (
+        <></>
+      )}
       <p style={{ fontSize: "32px", color: "#fff", margin: "40px 40px 0px" }}>
         Funding Pools
       </p>

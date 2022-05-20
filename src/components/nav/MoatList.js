@@ -26,6 +26,7 @@ import {
   setMoats,
 } from "../../actions";
 import { AES, enc } from "crypto-js";
+import Helmet from "react-helmet";
 
 export default function MoatList() {
   const wallet = localStorage.getItem("wallet");
@@ -333,6 +334,18 @@ export default function MoatList() {
           "& .MuiSelect-icon": { color: "#ff4f99" },
         }}
       >
+        {moatName !== "" ? (
+          <Helmet>
+            <title>{moatName} | Home | KwilDB</title>
+            <meta
+              name="description"
+              content="KwilDB is the first decentralized SQL database, enabling complex, highly-scalable, decentralized applications. Manage your KwilDB tables in our DB Visualizer."
+            />
+          </Helmet>
+        ) : (
+          <></>
+        )}
+
         <Select
           displayEmpty
           value={moatIndex}

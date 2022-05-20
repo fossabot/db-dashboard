@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import KwilDB from "kwildb";
+import Helmet from "react-helmet";
 
 import NavTree from "../components/nav/NavTree";
 
@@ -49,6 +50,13 @@ export default function Home() {
         display: "flex",
       }}
     >
+      <Helmet>
+        <title>Home | KwilDB</title>
+        <meta
+          name="description"
+          content="KwilDB is the first decentralized SQL database, enabling complex, highly-scalable, decentralized applications. Manage your KwilDB tables in our DB Visualizer."
+        />
+      </Helmet>
       <NavTree
         initialSchema={initialSchema}
         initialTable={initialTable}
