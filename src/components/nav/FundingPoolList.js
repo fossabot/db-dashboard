@@ -383,8 +383,7 @@ export default function FundingPoolList({ initialPools }) {
           severity="success"
           sx={{ width: "100%" }}
         >
-          Funding Pool created successfully. Go to the Database Manager to add
-          funds!
+          Funding Pool created successfully. Select the pool to add funds.
         </Alert>
       </Snackbar>
       <Snackbar
