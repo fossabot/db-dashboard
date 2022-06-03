@@ -242,6 +242,15 @@ export default function SignIn() {
         </Button>*/}
       </div>
 
+      <div style={{ display: "flex", margin: "auto 10px 10px auto" }}>
+        <a style={{ color: "#808080", marginRight: "20px" }} href="/privacy">
+          Privacy Policy
+        </a>
+        <a style={{ color: "#808080" }} href="/terms">
+          Terms & Conditions
+        </a>
+      </div>
+
       <Snackbar
         sx={{ margin: "0px auto" }}
         open={error}

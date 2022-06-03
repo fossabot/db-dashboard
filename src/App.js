@@ -7,6 +7,13 @@ import { Provider } from "react-redux";
 import { persistStore, persistReducer } from "redux-persist";
 import storageSession from "redux-persist/lib/storage/session";
 import { PersistGate } from "redux-persist/integration/react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "Plus Jakarta Sans",
+  },
+});
 
 export default function App() {
   const persistConfig = {
@@ -26,7 +33,9 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={<div />} persistor={persistentStore}>
-        <Main />
+        <ThemeProvider theme={theme}>
+          <Main />
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   );

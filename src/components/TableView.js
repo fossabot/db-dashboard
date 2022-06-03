@@ -99,7 +99,7 @@ export default function TableView({ schemaName, tableName }) {
       <TableContainer
         sx={{
           display: loading ? "none" : "flex",
-          borderRadius: "0px",
+          borderRadius: "5px",
           maxWidth: "calc(100vw - 320px)",
           height: "100%",
           backgroundColor: "transparent",
@@ -188,7 +188,10 @@ export default function TableView({ schemaName, tableName }) {
                 <TableRow
                   key={index}
                   sx={{
-                    "&:last-child td, &:last-child th": { border: 0 },
+                    "&:last-child td, &:last-child th": {
+                      border: 0,
+                      borderRadius: "0 0 5px 5px",
+                    },
                     backgroundColor: index % 2 === 0 ? "#212121" : "#151515",
                   }}
                 >
