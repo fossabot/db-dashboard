@@ -66,7 +66,7 @@ export default function TableView({ schemaName, tableName }) {
         display: "flex",
         flexDirection: "column",
         width: "calc(100vw - 240px)",
-        height: "100vh",
+        height: "calc(100vh - 40px)",
       }}
     >
       {tableName !== "" ? (
@@ -103,7 +103,7 @@ export default function TableView({ schemaName, tableName }) {
           maxWidth: "calc(100vw - 320px)",
           height: "100%",
           backgroundColor: "transparent",
-          margin: "30px 40px 40px",
+          margin: "30px 40px 0px",
         }}
         component={Paper}
       >
@@ -183,14 +183,18 @@ export default function TableView({ schemaName, tableName }) {
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody sx={{ backgroundColor: "transparent" }}>
+            <TableBody
+              sx={{
+                backgroundColor: "transparent",
+                borderRadius: "0 0 5px 5px",
+              }}
+            >
               {rows.map((row, index) => (
                 <TableRow
                   key={index}
                   sx={{
                     "&:last-child td, &:last-child th": {
                       border: 0,
-                      borderRadius: "0 0 5px 5px",
                     },
                     backgroundColor: index % 2 === 0 ? "#212121" : "#151515",
                   }}

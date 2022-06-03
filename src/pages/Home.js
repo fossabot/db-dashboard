@@ -84,6 +84,19 @@ export default function Home() {
           <FundingView selectedPools={selectedPools} update={update} />
         </div>
 
+        <p
+          onClick={() =>
+            window.open("https://discord.com/invite/n7SKUMQnAs", "_blank")
+          }
+          style={{
+            color: "#808080",
+            textDecoration: "underline",
+            margin: "auto 250px 10px auto",
+            cursor: "pointer",
+          }}
+        >
+          Need Help? Ask on Discord!
+        </p>
         {/*<Console
           moatName={moatName}
           privKeyResult={privKeyResult}
